@@ -1,4 +1,5 @@
-import { Button } from './components'
+import { useState } from 'react'
+import { Button, Filter } from './components'
 import * as styles from './App.css'
 
 interface ComponentDemo {
@@ -7,7 +8,31 @@ interface ComponentDemo {
   demo: React.ReactNode
 }
 
+function FilterDemo() {
+  const [selected, setSelected] = useState(false)
+  return (
+    <>
+      <Filter selected={selected} count={10} onClick={() => setSelected(!selected)}>
+        Filter text
+      </Filter>
+      <Filter onClick={() => {}}>Uten teller</Filter>
+      <Filter count={120} onClick={() => {}}>
+        Mange treff
+      </Filter>
+      <Filter disabled count={10}>
+        Deaktivert
+      </Filter>
+    </>
+  )
+}
+
 const components: ComponentDemo[] = [
+  {
+    name: 'Filter',
+    description:
+      'Brukes når man endrer hva som vises innenfor samme grensesnitt. Klikk for å veksle aktiv tilstand.',
+    demo: <FilterDemo />,
+  },
   {
     name: 'Button',
     description: 'Primary and secondary actions.',
