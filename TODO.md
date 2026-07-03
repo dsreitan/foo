@@ -56,7 +56,7 @@ Status legend follows Kobber's component lifecycle (from the Figma
 - [x] **Alert Label** — inline field/section alerts
 - [x] **Alert Banner** — page-top alerts (success/informative/warning)
 - [x] **Alert Accordion** — expandable secondary alerts
-- [ ] **Counter** — standalone (number/letter × neutral/brand/success/warning); Filter's counter is a starting point
+- [x] **Counter** — standalone (number/letter × neutral/brand/success/warning); Filter's counter is a starting point
 - [ ] **Popover**
 
 ## Cards & modules
