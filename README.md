@@ -24,6 +24,20 @@ npm run build    # type-check and build
 npm run lint     # lint with oxlint
 ```
 
+## Design tokens
+
+Component tokens come from
+[`@gyldendal/kobber-tokens`](https://www.npmjs.com/package/@gyldendal/kobber-tokens),
+imported as a typed JS object in the `.css.ts` files (values are inlined at
+build time by vanilla-extract). See `src/styles/tokens.ts` for the shared
+helpers (`px()`, font family fallback).
+
+## Implemented components
+
+- **Filter** — toggle chip with counter (states: idle, hover, focus, active, disabled)
+- **Badge** — status/category label (brand/rettsdata/neutral × tone a/b, small/medium, status circle)
+- **Button** — early example component, not yet token-driven
+
 ## Project structure
 
 ```
