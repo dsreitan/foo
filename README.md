@@ -36,7 +36,10 @@ helpers (`px()`, font family fallback).
 
 - **Filter** — toggle chip with counter (states: idle, hover, focus, active, disabled)
 - **Badge** — status/category label (brand/rettsdata/neutral × tone a/b, small/medium, status circle)
-- **Button** — early example component, not yet token-driven
+- **Button** — Figma Button + UI Button in one component. Variants are a flat,
+  token-driven map in `Button.css.ts` (one line per combination that exists in
+  the tokens, e.g. `brand-primary-a`, `success-b`); the `variant` prop type is
+  derived from that map, so invalid combinations are compile errors
 
 ## Project structure
 

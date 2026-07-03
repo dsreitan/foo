@@ -59,12 +59,28 @@ const components: ComponentDemo[] = [
   },
   {
     name: 'Button',
-    description: 'Primary and secondary actions.',
+    description:
+      'Utfører en handling. Varianter: farge (brand/neutral + UI-fargene success/warning/informative) × nivå (primary/secondary/tertiary) × tone (a/b).',
     demo: (
       <>
-        <Button>Primær</Button>
-        <Button variant="secondary">Sekundær</Button>
-        <Button disabled>Deaktivert</Button>
+        <div style={{ display: 'contents' }}>
+          <Button>Brand primary</Button>
+          <Button variant="brand-secondary-a">Brand secondary a</Button>
+          <Button variant="brand-secondary-b">Brand secondary b</Button>
+          <Button variant="brand-tertiary-a">Brand tertiary</Button>
+        </div>
+        <div style={{ display: 'contents' }}>
+          <Button variant="neutral-primary-a">Neutral primary</Button>
+          <Button variant="neutral-secondary-b">Neutral secondary</Button>
+          <Button variant="neutral-tertiary-a">Neutral tertiary</Button>
+        </div>
+        <div style={{ display: 'contents' }}>
+          <Button variant="success-a">Success a</Button>
+          <Button variant="success-b">Success b</Button>
+          <Button variant="warning-a">Warning a</Button>
+          <Button variant="warning-b">Warning b</Button>
+          <Button disabled>Deaktivert</Button>
+        </div>
       </>
     ),
   },

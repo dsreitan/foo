@@ -1,56 +1,93 @@
 import { style, styleVariants } from '@vanilla-extract/css'
-import { vars } from '../../styles/theme.css'
+import type { ComplexStyleRule } from '@vanilla-extract/css'
+import { tokens, val, fontFamily } from '../../styles/tokens'
 
-const base = style({
+const { button, uiButton, textLabel } = tokens.component
+const { focus, disabled } = tokens.universal
+
+const text = textLabel.text.color
+
+export const root = style({
+  position: 'relative',
   display: 'inline-flex',
   alignItems: 'center',
   justifyContent: 'center',
-  gap: vars.spacing.s,
-  border: 'none',
-  borderRadius: vars.radius.full,
-  fontFamily: vars.typography.fontFamily,
-  fontSize: vars.typography.fontSize.medium,
-  fontWeight: vars.typography.fontWeight.medium,
-  padding: `${vars.spacing.s} ${vars.spacing.l}`,
+  gap: val(button.gap),
+  height: val(button.size.height),
+  paddingInline: val(button.padding.inline),
+  maxWidth: '100%',
+  border: '1px solid transparent',
+  borderRadius: val(button.border.radius),
+  fontFamily: `${fontFamily.ppMori}, system-ui, sans-serif`,
+  fontSize: val(textLabel.text.size.medium),
+  fontWeight: textLabel.text.weight,
   cursor: 'pointer',
-  transition: 'background-color 0.15s ease, color 0.15s ease',
   selectors: {
     '&:disabled': {
-      backgroundColor: vars.color.disabled,
-      color: vars.color.textInverted,
-      cursor: 'not-allowed',
+      opacity: disabled.container.opacity,
+      cursor: 'auto',
     },
     '&:focus-visible': {
-      outline: `2px solid ${vars.color.focus}`,
-      outlineOffset: '2px',
+      outline: 'none',
+      boxShadow: `0 0 0 ${val(focus.border.width)} ${focus.border.color}`,
     },
   },
 })
 
-export const button = styleVariants({
-  primary: [
-    base,
-    {
-      backgroundColor: vars.color.brand,
-      color: vars.color.textInverted,
-      selectors: {
-        '&:hover:not(:disabled)': {
-          backgroundColor: vars.color.brandHover,
-        },
-      },
+/** Solid button: token background, hover = translucent overlay on top of it. */
+const solid = (
+  background: { fallback: string; hover: string },
+  textColor: string,
+): ComplexStyleRule => ({
+  backgroundColor: background.fallback,
+  color: textColor,
+  selectors: {
+    '&:hover:not(:disabled)': {
+      backgroundImage: `linear-gradient(${background.hover}, ${background.hover})`,
     },
-  ],
-  secondary: [
-    base,
-    {
-      backgroundColor: 'transparent',
-      color: vars.color.brand,
-      boxShadow: `inset 0 0 0 1px ${vars.color.brand}`,
-      selectors: {
-        '&:hover:not(:disabled)': {
-          backgroundColor: vars.color.surface,
-        },
-      },
+  },
+})
+
+/** Tertiary button: transparent, hover/active draws an underline inside the padding. */
+const underlined = (textColor: string, underlineColor: string): ComplexStyleRule => ({
+  backgroundColor: 'transparent',
+  color: textColor,
+  selectors: {
+    '&:hover:not(:disabled)::after, &:active:not(:disabled)::after': {
+      content: '',
+      position: 'absolute',
+      bottom: val(button.underline.padding.bottom),
+      left: val(button.padding.inline),
+      right: val(button.padding.inline),
+      borderBottom: `${val(button.border.width.hover)} solid ${underlineColor}`,
     },
-  ],
+  },
+})
+
+/**
+ * One line per variant that exists in the tokens, named after the Figma
+ * properties: color(-level)-tone. Solid backgrounds get the text-label
+ * color of the opposite tone (dark background -> light text).
+ *
+ * Button = components.button (color x level x tone)
+ * Success/warning/informative = components.uiButton ("UI Button" in Figma, no level)
+ */
+export const variant = styleVariants({
+  'brand-primary-a': solid(button.background.color.brand.primary.toneA, text.brand.toneB),
+  'brand-secondary-a': solid(button.background.color.brand.secondary.toneA, text.brand.toneB),
+  'brand-secondary-b': solid(button.background.color.brand.secondary.toneB, text.brand.toneA),
+  'brand-tertiary-a': underlined(text.brand.toneA, button.border.color.brand.tertiary.toneA.hover),
+
+  'neutral-primary-a': solid(button.background.color.neutral.primary.toneA, text.neutral.toneB),
+  'neutral-secondary-b': solid(button.background.color.neutral.secondary.toneB, text.neutral.toneA),
+  'neutral-tertiary-a': underlined(text.neutral.toneA, button.border.color.neutral.tertiary.toneA.hover),
+
+  'success-a': solid(uiButton.background.color.success.toneA, text.success.toneB),
+  'success-b': solid(uiButton.background.color.success.toneB, text.success.toneA),
+
+  'warning-a': solid(uiButton.background.color.warning.toneA, text.warning.toneB),
+  'warning-b': solid(uiButton.background.color.warning.toneB, text.warning.toneA),
+
+  'informative-a': solid(uiButton.background.color.informative.toneA, text.informative.toneB),
+  'informative-b': solid(uiButton.background.color.informative.toneB, text.informative.toneA),
 })
