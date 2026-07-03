@@ -41,9 +41,11 @@ wrapper over the same styles for content use.
 
 ## Implemented components
 
-- **Navigation Bar** — first composite component. Actions are a children slot
-  (consumers pass their own `<Button onClick={…}>`); the built-in menu button
-  gets its handler via the purpose-named `onMenuClick` prop
+- **Navigation Bar** — first composite component, matching the Figma set
+  (logo | menu | search + profile). Menu items are a children slot (consumers
+  pass their own `<Button onClick={…}>`); the navbar-owned search trigger and
+  profile button get handlers via purpose-named `onSearchClick`/`onProfileClick`
+  props. Menu collapses on mobile like the `size=mobile` variant
 - **Text** — polymorphic content typography (`<Text variant="heading" as="h1">`)
 - **Filter** — toggle chip with counter (states: idle, hover, focus, active, disabled)
 - **Badge** — status/category label (brand/rettsdata/neutral × tone a/b, small/medium, status circle)

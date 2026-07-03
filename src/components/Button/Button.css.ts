@@ -19,6 +19,7 @@ export const root = style([
     height: val(button.size.height),
     paddingInline: val(button.padding.inline),
     maxWidth: '100%',
+    whiteSpace: 'nowrap',
     border: '1px solid transparent',
     borderRadius: val(button.border.radius),
     cursor: 'pointer',
@@ -34,6 +35,13 @@ export const root = style([
     },
   },
 ])
+
+/** Icon-only button: square, like the official .kobber-button--icon-only. */
+export const iconOnly = style({
+  padding: 0,
+  aspectRatio: '1 / 1',
+  minWidth: val(button.size.height),
+})
 
 /** Solid button: token background, hover = translucent overlay on top of it. */
 const solid = (

@@ -30,18 +30,22 @@ const components: ComponentDemo[] = [
   {
     name: 'Navigation Bar',
     description:
-      'Toppbar med logo, meny og andre valg. Handlinger sendes inn som children med egne props; menyknappen eies av navbaren og får onMenuClick.',
+      'Toppbar med logo, meny, søk og profil. Menypunkter sendes inn som children med egne props; søketrigger og profilknapp eies av navbaren og får onSearchClick/onProfileClick.',
     demo: (
       <NavigationBar
         style={{ width: '100%' }}
         logo={<span>Gyldendal</span>}
-        onMenuClick={() => console.log('meny')}
+        onSearchClick={() => console.log('søk')}
+        onProfileClick={() => console.log('profil')}
       >
-        <Button variant="neutral-tertiary-a" onClick={() => console.log('søk')}>
-          Søk
+        <Button variant="brand-tertiary-a" onClick={() => console.log('læremidler')}>
+          Læremidler
         </Button>
-        <Button variant="brand-secondary-b" onClick={() => console.log('logg inn')}>
-          Logg inn
+        <Button variant="brand-tertiary-a" onClick={() => console.log('forfattere')}>
+          Forfattere
+        </Button>
+        <Button variant="brand-tertiary-a" onClick={() => console.log('om oss')}>
+          Om oss
         </Button>
       </NavigationBar>
     ),

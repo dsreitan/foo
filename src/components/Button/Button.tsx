@@ -12,6 +12,8 @@ export type ButtonVariant = keyof typeof styles.variant
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   /** Figma properties color(-level)-tone, e.g. "brand-primary-a" or "success-b" */
   variant?: ButtonVariant
+  /** Square 40x40 button for a single icon; give it an aria-label */
+  iconOnly?: boolean
 }
 
 /**
@@ -19,12 +21,9 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
  * en hendelse". Covers both the Figma Button (brand/neutral x
  * primary/secondary/tertiary) and UI Button (success/warning/informative).
  */
-export function Button({ variant = 'brand-primary-a', ...props }: ButtonProps) {
+export function Button({ variant = 'brand-primary-a', iconOnly = false, ...props }: ButtonProps) {
+  const classes = [styles.root, styles.variant[variant], iconOnly && styles.iconOnly]
   return (
-    <button
-      className={`${styles.root} ${styles.variant[variant]}`}
-      type="button"
-      {...props}
-    />
+    <button className={classes.filter(Boolean).join(' ')} type="button" {...props} />
   )
 }
