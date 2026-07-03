@@ -32,7 +32,7 @@ Status legend follows Kobber's component lifecycle (from the Figma
 
 - [ ] **Theme Button** — mood variants for larger modules (nature/fantasy/thriller/…)
 - [ ] **Button Group**
-- [ ] **Text Link** (`textLink` tokens, `.kobber-text-link`)
+- [x] **Text Link** (`textLink` tokens, `.kobber-text-link`)
 - [ ] **Nav Link / Nav Link Group** (`navLink`, `navLinkGroup`)
 
 ## Forms
@@ -47,7 +47,7 @@ Status legend follows Kobber's component lifecycle (from the Figma
 
 ## Navigation
 
-- [ ] **Breadcrumb / Breadcrumb Item**
+- [x] **Breadcrumb / Breadcrumb Item**
 - [ ] **Menu Item / Menu Item Groups**
 - [ ] **Contextual Navigation Bar** (`_contextualNavigationBar` — WIP, own Figma section)
 
@@ -61,8 +61,8 @@ Status legend follows Kobber's component lifecycle (from the Figma
 
 ## Cards & modules
 
-- [ ] **Content Card** — article entry with title, ingress, badge, tags
-- [ ] **Product Card** — books/digital products
+- [x] **Content Card** — article entry with title, ingress, badge, tags
+- [x] **Product Card** — books/digital products
 - [ ] **Navigation Card** — entry point to a content area
 - [ ] **Feature Card** — image with text overlay (overlay-light/dark)
 - [ ] **Info Card** — person/entity presentation
@@ -78,7 +78,7 @@ Status legend follows Kobber's component lifecycle (from the Figma
 
 ## Content & layout
 
-- [ ] **List / list elements** (`list`, `_listElements`, LIST section on the Text page)
+- [x] **List / list elements** (`list`, `_listElements`, LIST section on the Text page)
 - [ ] **Collapsible**
 - [ ] **Accordion Item / Accordion Group**
 - [ ] **Divider**

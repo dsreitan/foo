@@ -4,9 +4,16 @@ import {
   AlertBanner,
   AlertLabel,
   Badge,
+  Breadcrumb,
+  BreadcrumbItem,
   Button,
   Checkbox,
+  ContentCard,
   Counter,
+  List,
+  ListItem,
+  ProductCard,
+  TextLink,
   Dropdown,
   DropdownItem,
   Filter,
@@ -88,6 +95,133 @@ const components: ComponentDemo[] = [
           <DropdownItem onClick={() => console.log("y")}>Alternativ Y</DropdownItem>
         </Dropdown>
       </>
+    ),
+  },
+  {
+    name: "Text link",
+    description: "Innebygd lenke med aksent-understrek. Bruk Button for handlinger.",
+    demo: (
+      <p style={{ margin: 0 }}>
+        Les mer om <TextLink href="#/">Kobber-designsystemet</TextLink> eller se{" "}
+        <TextLink href="#/" disabled>
+          arkiverte sider
+        </TextLink>
+        .
+      </p>
+    ),
+  },
+  {
+    name: "Breadcrumb",
+    description: "Stien opp hierarkiet; siste element uten href er gjeldende side.",
+    demo: (
+      <Breadcrumb>
+        <BreadcrumbItem href="#/">Hjem</BreadcrumbItem>
+        <BreadcrumbItem href="#/">Læremidler</BreadcrumbItem>
+        <BreadcrumbItem>Matematikk 5</BreadcrumbItem>
+      </Breadcrumb>
+    ),
+  },
+  {
+    name: "List",
+    description: "Innholdslister med aksentfargede markører, ordnet og uordnet.",
+    demo: (
+      <div style={{ display: "flex", gap: 48 }}>
+        <List>
+          <ListItem>Utforskende oppgaver</ListItem>
+          <ListItem>Differensiert innhold</ListItem>
+          <ListItem>Digitale simuleringer</ListItem>
+        </List>
+        <List ordered>
+          <ListItem>Les kapittelet</ListItem>
+          <ListItem>Gjør oppgavene</ListItem>
+          <ListItem>Lever innen fristen</ListItem>
+        </List>
+      </div>
+    ),
+  },
+  {
+    name: "Content card",
+    description:
+      "Artikkel-/innholdskort med bilde-, meta- og tittel-slots. Ikke interaktivt i seg selv.",
+    demo: (
+      <div style={{ display: "flex", gap: 24, width: "100%" }}>
+        <div style={{ width: 280 }}>
+          <ContentCard
+            title="Nye læreplaner i praksis"
+            meta={
+              <Badge color="brand" tone="b">
+                Artikkel
+              </Badge>
+            }
+            image={
+              <div
+                style={{ height: "100%", background: "linear-gradient(135deg, #8a224a, #dc134f)" }}
+              />
+            }
+          >
+            Hvordan de nye læreplanene endrer klasserommet. <TextLink href="#/">Les mer</TextLink>
+          </ContentCard>
+        </div>
+        <div style={{ flex: 1 }}>
+          <ContentCard
+            variant="subtle"
+            title="Lesestrategier"
+            image={
+              <div
+                style={{ height: "100%", background: "linear-gradient(135deg, #481125, #8a224a)" }}
+              />
+            }
+          >
+            Kort introduksjon til lesestrategier for mellomtrinnet.
+          </ContentCard>
+        </div>
+      </div>
+    ),
+  },
+  {
+    name: "Product card",
+    description:
+      "Bok/produkt på farget flate; hele kortet er én lenke. Kun brand og neutral (temafarger er utenfor scope).",
+    demo: (
+      <div style={{ display: "flex", gap: 24 }}>
+        <div style={{ width: 220 }}>
+          <ProductCard
+            href="#/"
+            title="Matematikk 5"
+            subtitle="Grunnbok · Bokmål"
+            image={
+              <div
+                style={{
+                  width: 120,
+                  height: 170,
+                  background: "#fdf9f9",
+                  borderRadius: 4,
+                  boxShadow: "0 2px 8px rgba(40,0,14,.2)",
+                }}
+              />
+            }
+          />
+        </div>
+        <div style={{ width: 220 }}>
+          <ProductCard
+            href="#/"
+            color="neutral"
+            title="Norsk 8–10"
+            subtitle="Digital ressurs"
+            image={
+              <div
+                style={{
+                  width: 120,
+                  height: 170,
+                  background: "#f9fafb",
+                  borderRadius: 4,
+                  boxShadow: "0 2px 8px rgba(15,17,20,.2)",
+                }}
+              />
+            }
+          />
+        </div>
+      </div>
     ),
   },
   {
