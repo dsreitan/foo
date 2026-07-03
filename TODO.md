@@ -37,11 +37,11 @@ Status legend follows Kobber's component lifecycle (from the Figma
 
 ## Forms
 
-- [ ] **Checkbox / Checkbox Group** (official CSS exists — good reference)
-- [ ] **Radiobutton / Radio Group**
-- [ ] **Switch**
-- [ ] **Text Area** (Figma component set `text-area`)
-- [ ] **Search** — full search field with active/typing states (only the navbar trigger exists here)
+- [x] **Checkbox / Checkbox Group** (official CSS exists — good reference)
+- [x] **Radiobutton / Radio Group**
+- [x] **Switch**
+- [x] **Text Area** (Figma component set `text-area`)
+- [x] **Search** — full search field with active/typing states (only the navbar trigger exists here)
 - [ ] **Multiple Choice / Multiple Choice Item**
 - [ ] **Slider** (`_slider`, `_sliderController` — WIP tokens)
 

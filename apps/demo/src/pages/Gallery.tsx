@@ -2,11 +2,16 @@ import { useState } from "react";
 import {
   Badge,
   Button,
+  Checkbox,
   Dropdown,
   DropdownItem,
   Filter,
   NavigationBar,
+  Radiobutton,
+  Search,
+  Switch,
   Text,
+  TextArea,
   TextInput,
 } from "kobber";
 import * as styles from "../App.css";
@@ -80,6 +85,50 @@ const components: ComponentDemo[] = [
         </Dropdown>
       </>
     ),
+  },
+  {
+    name: "Checkbox",
+    description: "Avkryssing med brand- og success-farger. Native input under panseret.",
+    demo: (
+      <>
+        <Checkbox label="Godta vilkår" defaultChecked />
+        <Checkbox label="Meld meg på nyhetsbrev" />
+        <Checkbox label="Success" color="success" defaultChecked />
+        <Checkbox label="Deaktivert" disabled defaultChecked />
+      </>
+    ),
+  },
+  {
+    name: "Radiobutton",
+    description: "Ett valg fra en gruppe. Grupperes med samme name.",
+    demo: (
+      <>
+        <Radiobutton name="demo-radio" label="Bokmål" defaultChecked />
+        <Radiobutton name="demo-radio" label="Nynorsk" />
+        <Radiobutton name="demo-radio" label="Deaktivert" disabled />
+      </>
+    ),
+  },
+  {
+    name: "Switch",
+    description: "Av/på-bryter med role=switch.",
+    demo: (
+      <>
+        <Switch label="Varsler" defaultChecked />
+        <Switch label="Mørk modus" />
+        <Switch label="Deaktivert" disabled />
+      </>
+    ),
+  },
+  {
+    name: "Search",
+    description: "Fullt søkefelt med hover-, fokus- og aktiv-tilstander fra search-tokens.",
+    demo: <Search onChange={(e) => console.log(e.target.value)} />,
+  },
+  {
+    name: "Text area",
+    description: "Flerlinjet felt, deler stil med Text input.",
+    demo: <TextArea label="Melding" placeholder="Skriv en melding" />,
   },
   {
     name: "Text input",

@@ -35,6 +35,14 @@ export function UserIcon() {
   );
 }
 
+export function CheckIcon() {
+  return (
+    <svg {...iconProps}>
+      <path d="m3.25 8.5 3 3 6.5-7" />
+    </svg>
+  );
+}
+
 /** Chevron in a soft circle, like the Figma dropdown icon asset. */
 export function ChevronCircleIcon() {
   return (
