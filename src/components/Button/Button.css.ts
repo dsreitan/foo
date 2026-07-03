@@ -21,7 +21,7 @@ const base = style({
       cursor: 'not-allowed',
     },
     '&:focus-visible': {
-      outline: `2px solid ${vars.color.brand}`,
+      outline: `2px solid ${vars.color.focus}`,
       outlineOffset: '2px',
     },
   },
