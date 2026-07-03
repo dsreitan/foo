@@ -1,9 +1,27 @@
-import { components, universal } from '@gyldendal/kobber-tokens'
+// import { component, universal, groups } from "@gyldendal/kobber-base/themes/tokens.css-variables.js"; // css variable tokens, ex. "font-size": "--kobber-font-size"
+import {
+  components,
+  groups,
+  primitives,
+  universal,
+} from '@gyldendal/kobber-tokens' // value tokens, ex. "font-size": "14px"
 
-export { components, universal }
+export const tokens = {
+  component: components,
+  universal,
+  groups,
+}
 
-/** Kobber tokens are unitless numbers; CSS needs px. */
-export const px = (value: number) => `${value}px`
+export const fontFamily = primitives.font.family
 
-/** text/ui/font-family token is "pp-mori"; fall back to system fonts until the webfont is added. */
-export const fontFamily = "'PP Mori', system-ui, -apple-system, sans-serif"
+/** CSS variable tokens - wraps tokens in var() */
+// export const val = (value: string | number) => `var(${value})`;
+
+/** Value tokens - converts number to pixel string */
+export const val = (value: string | number, addPx = true) => {
+  if (typeof value === 'number') {
+    return addPx ? `${value}px` : `${value}`
+  }
+
+  return `${value}`
+}

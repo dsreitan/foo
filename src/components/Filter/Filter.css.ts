@@ -1,7 +1,8 @@
 import { style } from '@vanilla-extract/css'
-import { components, universal, px, fontFamily } from '../../styles/tokens'
+import { tokens, val, fontFamily } from '../../styles/tokens'
 
-const { filter, textLabel } = components
+const { filter, textLabel } = tokens.component
+const { focus, disabled } = tokens.universal
 
 // Hover is a translucent overlay on top of the current background,
 // matching the Figma spec (filter/background/color/hover on both states).
@@ -11,15 +12,15 @@ export const root = style({
   display: 'inline-flex',
   alignItems: 'center',
   justifyContent: 'center',
-  gap: px(filter.gap),
-  height: px(filter.size.height),
-  paddingInline: px(filter.padding.inline),
+  gap: val(filter.gap),
+  height: val(filter.size.height),
+  paddingInline: val(filter.padding.inline),
   border: 'none',
-  borderRadius: px(filter.border.radius),
+  borderRadius: val(filter.border.radius),
   backgroundColor: filter.background.color.fallback,
   color: textLabel.text.color.brand.toneA,
-  fontFamily,
-  fontSize: px(textLabel.text.size.medium),
+  fontFamily: `${fontFamily.ppMori}, system-ui, sans-serif`,
+  fontSize: val(textLabel.text.size.medium),
   fontWeight: textLabel.text.weight,
   cursor: 'pointer',
   selectors: {
@@ -31,12 +32,12 @@ export const root = style({
       color: textLabel.text.color.brand.toneB,
     },
     '&:disabled': {
-      opacity: universal.disabled.container.opacity,
+      opacity: disabled.container.opacity,
       cursor: 'not-allowed',
     },
     '&:focus-visible': {
-      outline: `${px(universal.focus.border.width)} solid ${universal.focus.border.color}`,
-      outlineOffset: px(universal.focus.container.padding),
+      outline: `${val(focus.border.width)} solid ${focus.border.color}`,
+      outlineOffset: val(focus.container.padding),
     },
   },
 })
@@ -46,10 +47,10 @@ export const counter = style({
   alignItems: 'center',
   justifyContent: 'center',
   // Stretches for counts above 100, but keeps a square minimum (Figma annotation).
-  minWidth: px(filter.counter.size.height),
-  height: px(filter.counter.size.height),
-  paddingInline: px(filter.counter.padding.inline),
-  borderRadius: px(filter.counter.border.radius),
+  minWidth: val(filter.counter.size.height),
+  height: val(filter.counter.size.height),
+  paddingInline: val(filter.counter.padding.inline),
+  borderRadius: val(filter.counter.border.radius),
   backgroundColor: filter.counter.background.color.fallback,
   color: textLabel.text.color.brand.toneA,
 })

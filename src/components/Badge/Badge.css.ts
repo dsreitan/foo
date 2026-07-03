@@ -1,15 +1,15 @@
 import { createVar, style, styleVariants } from '@vanilla-extract/css'
-import { components, px, fontFamily } from '../../styles/tokens'
+import { tokens, val, fontFamily } from '../../styles/tokens'
 
-const { badge, textLabel } = components
+const { badge, textLabel } = tokens.component
 
 const circleColor = createVar()
 
 export const root = style({
   display: 'inline-flex',
   alignItems: 'center',
-  borderRadius: px(badge.border.radius),
-  fontFamily,
+  borderRadius: val(badge.border.radius),
+  fontFamily: `${fontFamily.ppMori}, system-ui, sans-serif`,
   fontWeight: textLabel.text.weight,
   lineHeight: 1,
   vars: {
@@ -50,15 +50,15 @@ export const colorTone = styleVariants({
 
 export const size = styleVariants({
   medium: {
-    padding: px(badge.padding.medium),
-    gap: px(badge.gap.medium),
-    fontSize: px(textLabel.text.size.medium),
+    padding: val(badge.padding.medium),
+    gap: val(badge.gap.medium),
+    fontSize: val(textLabel.text.size.medium),
   },
   small: {
-    paddingInline: px(badge.padding.inline.small),
-    paddingBlock: px(badge.padding.block.small),
-    gap: px(badge.gap.small),
-    fontSize: px(textLabel.text.size.small),
+    paddingInline: val(badge.padding.inline.small),
+    paddingBlock: val(badge.padding.block.small),
+    gap: val(badge.gap.small),
+    fontSize: val(textLabel.text.size.small),
   },
 })
 
@@ -69,11 +69,11 @@ export const statusCircle = style({
 
 export const statusCircleSize = styleVariants({
   medium: {
-    width: px(badge.statusCircle.size.width.medium),
-    height: px(badge.statusCircle.size.height.medium),
+    width: val(badge.statusCircle.size.width.medium),
+    height: val(badge.statusCircle.size.height.medium),
   },
   small: {
-    width: px(badge.statusCircle.size.width.small),
-    height: px(badge.statusCircle.size.height.small),
+    width: val(badge.statusCircle.size.width.small),
+    height: val(badge.statusCircle.size.height.small),
   },
 })
