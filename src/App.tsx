@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Badge, Button, Filter } from './components'
+import { Badge, Button, Filter, Text } from './components'
 import * as styles from './App.css'
 
 interface ComponentDemo {
@@ -27,6 +27,29 @@ function FilterDemo() {
 }
 
 const components: ComponentDemo[] = [
+  {
+    name: 'Text',
+    description:
+      'Typografi fra tekst-tokens. Interaktive komponenter komponerer stilene direkte; <Text> er for innhold.',
+    demo: (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+        <Text variant="display" size="medium" as="span">
+          Display
+        </Text>
+        <Text variant="heading" size="medium" as="span">
+          Heading medium
+        </Text>
+        <Text variant="title">Title medium</Text>
+        <Text>
+          Body medium – standard brødtekst for løpende innhold, artikler og
+          beskrivelser.
+        </Text>
+        <Text variant="label" size="small">
+          Label small
+        </Text>
+      </div>
+    ),
+  },
   {
     name: 'Filter',
     description:

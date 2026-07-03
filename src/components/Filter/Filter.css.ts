@@ -1,5 +1,6 @@
 import { style } from '@vanilla-extract/css'
-import { tokens, val, fontFamily } from '../../styles/tokens'
+import { tokens, val } from '../../styles/tokens'
+import { label } from '../../styles/typography.css'
 
 const { filter, textLabel } = tokens.component
 const { focus, disabled } = tokens.universal
@@ -8,8 +9,10 @@ const { focus, disabled } = tokens.universal
 // matching the Figma spec (filter/background/color/hover on both states).
 const hoverOverlay = `linear-gradient(${filter.background.color.hover}, ${filter.background.color.hover})`
 
-export const root = style({
-  display: 'inline-flex',
+export const root = style([
+  label.medium,
+  {
+    display: 'inline-flex',
   alignItems: 'center',
   justifyContent: 'center',
   gap: val(filter.gap),
@@ -17,30 +20,28 @@ export const root = style({
   paddingInline: val(filter.padding.inline),
   border: 'none',
   borderRadius: val(filter.border.radius),
-  backgroundColor: filter.background.color.fallback,
-  color: textLabel.text.color.brand.toneA,
-  fontFamily: `${fontFamily.ppMori}, system-ui, sans-serif`,
-  fontSize: val(textLabel.text.size.medium),
-  fontWeight: textLabel.text.weight,
-  cursor: 'pointer',
-  selectors: {
-    '&:hover:not(:disabled)': {
-      backgroundImage: hoverOverlay,
-    },
-    '&[aria-pressed="true"]': {
-      backgroundColor: filter.background.color.active,
-      color: textLabel.text.color.brand.toneB,
-    },
-    '&:disabled': {
-      opacity: disabled.container.opacity,
-      cursor: 'not-allowed',
-    },
-    '&:focus-visible': {
-      outline: `${val(focus.border.width)} solid ${focus.border.color}`,
-      outlineOffset: val(focus.container.padding),
+    backgroundColor: filter.background.color.fallback,
+    color: textLabel.text.color.brand.toneA,
+    cursor: 'pointer',
+    selectors: {
+      '&:hover:not(:disabled)': {
+        backgroundImage: hoverOverlay,
+      },
+      '&[aria-pressed="true"]': {
+        backgroundColor: filter.background.color.active,
+        color: textLabel.text.color.brand.toneB,
+      },
+      '&:disabled': {
+        opacity: disabled.container.opacity,
+        cursor: 'not-allowed',
+      },
+      '&:focus-visible': {
+        outline: `${val(focus.border.width)} solid ${focus.border.color}`,
+        outlineOffset: val(focus.container.padding),
+      },
     },
   },
-})
+])
 
 export const counter = style({
   display: 'inline-flex',

@@ -1,5 +1,6 @@
 import { createVar, style, styleVariants } from '@vanilla-extract/css'
-import { tokens, val, fontFamily } from '../../styles/tokens'
+import { tokens, val } from '../../styles/tokens'
+import { label } from '../../styles/typography.css'
 
 const { badge, textLabel } = tokens.component
 
@@ -9,8 +10,6 @@ export const root = style({
   display: 'inline-flex',
   alignItems: 'center',
   borderRadius: val(badge.border.radius),
-  fontFamily: `${fontFamily.ppMori}, system-ui, sans-serif`,
-  fontWeight: textLabel.text.weight,
   lineHeight: 1,
   vars: {
     // Fallback for color/tone combos without a status-circle token
@@ -49,17 +48,21 @@ export const colorTone = styleVariants({
 })
 
 export const size = styleVariants({
-  medium: {
-    padding: val(badge.padding.medium),
-    gap: val(badge.gap.medium),
-    fontSize: val(textLabel.text.size.medium),
-  },
-  small: {
-    paddingInline: val(badge.padding.inline.small),
-    paddingBlock: val(badge.padding.block.small),
-    gap: val(badge.gap.small),
-    fontSize: val(textLabel.text.size.small),
-  },
+  medium: [
+    label.medium,
+    {
+      padding: val(badge.padding.medium),
+      gap: val(badge.gap.medium),
+    },
+  ],
+  small: [
+    label.small,
+    {
+      paddingInline: val(badge.padding.inline.small),
+      paddingBlock: val(badge.padding.block.small),
+      gap: val(badge.gap.small),
+    },
+  ],
 })
 
 export const statusCircle = style({
