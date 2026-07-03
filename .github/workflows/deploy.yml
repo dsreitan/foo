@@ -24,10 +24,12 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+      - run: npx vp lint
+      - run: npx vp test
       - run: npm run build
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: dist
+          path: apps/demo/dist
 
   deploy:
     needs: build

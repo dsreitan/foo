@@ -1,28 +1,28 @@
 {
-  "name": "kobber-component-library",
+  "name": "kobber-monorepo",
   "private": true,
-  "version": "0.0.0",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
-    "lint": "oxlint",
-    "preview": "vite preview"
-  },
-  "dependencies": {
-    "@gyldendal/kobber-tokens": "^13.0.0",
-    "@vanilla-extract/css": "^1.21.1",
-    "react": "^19.2.7",
-    "react-dom": "^19.2.7"
+    "dev": "vp run --filter demo dev",
+    "build": "vp run --filter demo build",
+    "test": "vp test",
+    "lint": "vp lint",
+    "fmt": "vp fmt",
+    "typecheck": "vp run --recursive typecheck"
   },
   "devDependencies": {
-    "@types/node": "^24.13.2",
-    "@types/react": "^19.2.17",
-    "@types/react-dom": "^19.2.3",
-    "@vanilla-extract/vite-plugin": "^5.2.3",
-    "@vitejs/plugin-react": "^6.0.3",
-    "oxlint": "^1.71.0",
     "typescript": "~6.0.2",
-    "vite": "^8.1.1"
+    "vite-plus": "^0.2.2"
+  },
+  "devEngines": {
+    "packageManager": {
+      "name": "npm",
+      "version": ">=10.9.0",
+      "onFail": "warn"
+    }
   }
 }

@@ -1,0 +1,31 @@
+{
+  "name": "kobber",
+  "version": "0.1.0",
+  "private": true,
+  "description": "React components for Gyldendal's Kobber design system",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./styles": "./src/styles/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@gyldendal/kobber-tokens": "^13.0.0",
+    "@vanilla-extract/css": "^1.21.1"
+  },
+  "devDependencies": {
+    "@testing-library/react": "^16.3.0",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "@vanilla-extract/vite-plugin": "^5.2.3",
+    "jsdom": "^26.1.0",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  }
+}
