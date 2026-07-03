@@ -1,6 +1,6 @@
 import type { HTMLAttributes, MouseEventHandler, ReactNode } from 'react'
 import { Button } from '../Button'
-import { SearchIcon, UserIcon } from './icons'
+import { SearchIcon, UserIcon } from '../icons'
 import * as styles from './NavigationBar.css'
 
 export interface NavigationBarProps extends HTMLAttributes<HTMLElement> {

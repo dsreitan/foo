@@ -1,5 +1,14 @@
 import { useState } from 'react'
-import { Badge, Button, Filter, NavigationBar, Text } from './components'
+import {
+  Badge,
+  Button,
+  Dropdown,
+  DropdownItem,
+  Filter,
+  NavigationBar,
+  Text,
+  TextInput,
+} from './components'
 import * as styles from './App.css'
 
 interface ComponentDemo {
@@ -38,16 +47,50 @@ const components: ComponentDemo[] = [
         onSearchClick={() => console.log('søk')}
         onProfileClick={() => console.log('profil')}
       >
-        <Button variant="brand-tertiary-a" onClick={() => console.log('læremidler')}>
-          Læremidler
-        </Button>
-        <Button variant="brand-tertiary-a" onClick={() => console.log('forfattere')}>
-          Forfattere
-        </Button>
+        <Dropdown label="Læremidler">
+          <DropdownItem onClick={() => console.log('grunnskole')}>Grunnskole</DropdownItem>
+          <DropdownItem onClick={() => console.log('vgs')}>Videregående</DropdownItem>
+        </Dropdown>
+        <Dropdown label="Forfattere">
+          <DropdownItem onClick={() => console.log('skjønnlitteratur')}>
+            Skjønnlitteratur
+          </DropdownItem>
+          <DropdownItem onClick={() => console.log('sakprosa')}>Sakprosa</DropdownItem>
+        </Dropdown>
         <Button variant="brand-tertiary-a" onClick={() => console.log('om oss')}>
           Om oss
         </Button>
       </NavigationBar>
+    ),
+  },
+  {
+    name: 'Dropdown',
+    description:
+      'Utløser med utvidbar meny (som i navigasjonsbaren). Menypunkter er children med egne onClick.',
+    demo: (
+      <>
+        <Dropdown label="Plain">
+          <DropdownItem onClick={() => console.log('a')}>Alternativ A</DropdownItem>
+          <DropdownItem onClick={() => console.log('b')}>Alternativ B</DropdownItem>
+          <DropdownItem onClick={() => console.log('c')}>Alternativ C</DropdownItem>
+        </Dropdown>
+        <Dropdown label="Filled" appearance="filled">
+          <DropdownItem onClick={() => console.log('x')}>Alternativ X</DropdownItem>
+          <DropdownItem onClick={() => console.log('y')}>Alternativ Y</DropdownItem>
+        </Dropdown>
+      </>
+    ),
+  },
+  {
+    name: 'Text input',
+    description:
+      'Basert på _text-input-tokens (under arbeid i Kobber). Native input-props går rett gjennom.',
+    demo: (
+      <>
+        <TextInput label="Navn" placeholder="Skriv navnet ditt" />
+        <TextInput label="E-post" type="email" placeholder="navn@gyldendal.no" />
+        <TextInput label="Deaktivert" disabled placeholder="Ikke tilgjengelig" />
+      </>
     ),
   },
   {

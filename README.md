@@ -47,6 +47,10 @@ wrapper over the same styles for content use.
   profile button get handlers via purpose-named `onSearchClick`/`onProfileClick`
   props. Menu collapses on mobile like the `size=mobile` variant
 - **Text** — polymorphic content typography (`<Text variant="heading" as="h1">`)
+- **Dropdown** — trigger + menu from the dropdown/_dropdown-item tokens; items
+  are children with their own `onClick`, menu closes on select/outside/Escape
+- **TextInput** — underlined field from the WIP `_text-input` tokens; native
+  input props pass straight through, label wired via `htmlFor`
 - **Filter** — toggle chip with counter (states: idle, hover, focus, active, disabled)
 - **Badge** — status/category label (brand/rettsdata/neutral × tone a/b, small/medium, status circle)
 - **Button** — Figma Button + UI Button in one component. Variants are a flat,
