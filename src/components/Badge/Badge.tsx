@@ -1,4 +1,5 @@
 import type { HTMLAttributes, ReactNode } from 'react'
+import { cx } from '../../utils/cx'
 import * as styles from './Badge.css'
 
 export type BadgeColor = 'brand' | 'rettsdata' | 'neutral'
@@ -27,6 +28,7 @@ export function Badge({
   tone = 'b',
   size = 'medium',
   statusCircle = false,
+  className,
   ...props
 }: BadgeProps) {
   // The neutral theme is only defined for tone-b in the tokens.
@@ -34,7 +36,7 @@ export function Badge({
 
   return (
     <span
-      className={`${styles.root} ${styles.colorTone[colorTone]} ${styles.size[size]}`}
+      className={cx(styles.root, styles.colorTone[colorTone], styles.size[size], className)}
       {...props}
     >
       {statusCircle && (

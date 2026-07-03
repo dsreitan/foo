@@ -1,6 +1,7 @@
 import type { HTMLAttributes, MouseEventHandler, ReactNode } from 'react'
 import { Button } from '../Button'
 import { SearchIcon, UserIcon } from '../icons'
+import { cx } from '../../utils/cx'
 import * as styles from './NavigationBar.css'
 
 export interface NavigationBarProps extends HTMLAttributes<HTMLElement> {
@@ -36,10 +37,11 @@ export function NavigationBar({
   onSearchClick,
   searchLabel = 'Søk',
   onProfileClick,
+  className,
   ...props
 }: NavigationBarProps) {
   return (
-    <header className={styles.root} {...props}>
+    <header className={cx(styles.root, className)} {...props}>
       <div className={styles.inner}>
         {logo && <div className={styles.logo}>{logo}</div>}
         {children && <nav className={styles.menu}>{children}</nav>}

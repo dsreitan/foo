@@ -1,9 +1,11 @@
 import { style, styleVariants } from '@vanilla-extract/css'
 import { tokens, val } from '../../styles/tokens'
 import { label } from '../../styles/typography.css'
+import { focusRing } from '../../styles/interaction.css'
+import { elevation } from '../../styles/elevation'
+import { zIndex } from '../../styles/layers'
 
 const { dropdown, _dropdownItem, textLabel } = tokens.component
-const { focus } = tokens.universal
 
 export const wrapper = style({
   position: 'relative',
@@ -12,6 +14,7 @@ export const wrapper = style({
 
 const triggerBase = style([
   label.medium,
+  focusRing,
   {
     display: 'inline-flex',
     alignItems: 'center',
@@ -26,12 +29,6 @@ const triggerBase = style([
     color: textLabel.text.color.brand.toneA,
     whiteSpace: 'nowrap',
     cursor: 'pointer',
-    selectors: {
-      '&:focus-visible': {
-        outline: 'none',
-        boxShadow: `0 0 0 ${val(focus.border.width)} ${focus.border.color}`,
-      },
-    },
   },
 ])
 
@@ -65,7 +62,7 @@ export const menu = style({
   position: 'absolute',
   top: '100%',
   left: 0,
-  zIndex: 1,
+  zIndex: zIndex.dropdown,
   minWidth: '100%',
   marginTop: val(tokens.component._dropdownMenu.gap),
   padding: val(tokens.component._dropdownMenu.gap),
@@ -73,11 +70,12 @@ export const menu = style({
   flexDirection: 'column',
   backgroundColor: tokens.component.navigationBar.background.color,
   borderRadius: val(_dropdownItem.border.radius),
-  boxShadow: '0 4px 16px rgba(40, 0, 14, 0.12)',
+  boxShadow: elevation.menu,
 })
 
 export const item = style([
   label.medium,
+  focusRing,
   {
     display: 'flex',
     alignItems: 'center',
@@ -97,10 +95,6 @@ export const item = style([
       },
       '&:active': {
         backgroundColor: _dropdownItem.background.color.pressed,
-      },
-      '&:focus-visible': {
-        outline: 'none',
-        boxShadow: `0 0 0 ${val(focus.border.width)} ${focus.border.color}`,
       },
     },
   },

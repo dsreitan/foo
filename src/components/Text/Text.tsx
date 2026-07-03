@@ -1,9 +1,11 @@
 import { createElement, type ElementType, type HTMLAttributes } from 'react'
+import { cx } from '../../utils/cx'
 import * as typography from '../../styles/typography.css'
 
 const variants = {
   label: typography.label,
   body: typography.body,
+  lead: typography.lead,
   title: typography.title,
   heading: typography.heading,
   display: typography.display,
@@ -12,6 +14,7 @@ const variants = {
 const defaultTag: Record<keyof typeof variants, ElementType> = {
   label: 'span',
   body: 'p',
+  lead: 'p',
   title: 'h3',
   heading: 'h2',
   display: 'h1',
@@ -45,6 +48,8 @@ export type TextProps = VariantProps & {
 export function Text({ variant = 'body', size, as, className, ...props }: TextProps) {
   const sizes = variants[variant]
   const sizeClass = sizes[(size ?? 'medium') as keyof typeof sizes]
-  const cls = className ? `${sizeClass} ${className}` : sizeClass
-  return createElement(as ?? defaultTag[variant], { className: cls, ...props })
+  return createElement(as ?? defaultTag[variant], {
+    className: cx(sizeClass, className),
+    ...props,
+  })
 }

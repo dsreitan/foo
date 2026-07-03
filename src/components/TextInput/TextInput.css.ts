@@ -1,9 +1,9 @@
 import { style } from '@vanilla-extract/css'
 import { tokens, val } from '../../styles/tokens'
 import { label as labelTypography } from '../../styles/typography.css'
+import { disabledState, focusRing } from '../../styles/interaction.css'
 
 const { _textInput, textLabel } = tokens.component
-const { focus, disabled } = tokens.universal
 
 export const container = style({
   display: 'inline-flex',
@@ -24,6 +24,8 @@ export const label = style([
  */
 export const field = style([
   labelTypography.medium,
+  focusRing,
+  disabledState,
   {
     display: 'flex',
     alignItems: 'center',
@@ -42,13 +44,6 @@ export const field = style([
         outline: 'none',
         backgroundColor: _textInput.background.color.primary.active,
         borderBottomWidth: val(_textInput.topContainer.border.width.active),
-      },
-      '&:focus-visible': {
-        boxShadow: `0 0 0 ${val(focus.border.width)} ${focus.border.color}`,
-      },
-      '&:disabled': {
-        opacity: disabled.container.opacity,
-        cursor: 'not-allowed',
       },
       '&::placeholder': {
         color: textLabel.text.color.subtle.toneA,

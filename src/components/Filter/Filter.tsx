@@ -1,4 +1,5 @@
 import type { ButtonHTMLAttributes, ReactNode } from 'react'
+import { cx } from '../../utils/cx'
 import * as styles from './Filter.css'
 
 export interface FilterProps
@@ -16,9 +17,14 @@ export interface FilterProps
  * grensesnitt." Toggle button with idle/hover/focus/active/disabled states
  * and an optional counter chip.
  */
-export function Filter({ children, selected = false, count, ...props }: FilterProps) {
+export function Filter({ children, selected = false, count, className, ...props }: FilterProps) {
   return (
-    <button type="button" aria-pressed={selected} className={styles.root} {...props}>
+    <button
+      type="button"
+      aria-pressed={selected}
+      className={cx(styles.root, className)}
+      {...props}
+    >
       {children}
       {count !== undefined && <span className={styles.counter}>{count}</span>}
     </button>

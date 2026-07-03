@@ -13,7 +13,7 @@ import { tokens, val, fontFamily } from './tokens'
  * component is a thin veneer over the same styles.
  */
 
-const { textLabel, textBody, textTitle, textHeading, textDisplay } = tokens.component
+const { textLabel, textBody, textTitle, textHeading, textDisplay, textLead } = tokens.component
 
 const brandFont = `${fontFamily.ppMori}, system-ui, sans-serif`
 
@@ -55,6 +55,16 @@ export const body = styleVariants({
     fontSize: val(textBody.text.size.large),
     fontWeight: textBody.text.weight.brand,
     lineHeight: val(textBody.text.lineHeight.brand.large.long),
+  },
+})
+
+/** Intro/ingress text under a heading. One size in the tokens. */
+export const lead = styleVariants({
+  medium: {
+    fontFamily: brandFont,
+    fontSize: val(textLead.text.size),
+    fontWeight: textLead.text.weight.brand,
+    lineHeight: val(textLead.text.lineHeight),
   },
 })
 

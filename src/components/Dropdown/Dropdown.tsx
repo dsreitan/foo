@@ -7,6 +7,7 @@ import {
   type ReactNode,
 } from 'react'
 import { ChevronCircleIcon } from '../icons'
+import { cx } from '../../utils/cx'
 import * as styles from './Dropdown.css'
 
 export interface DropdownProps {
@@ -16,6 +17,7 @@ export interface DropdownProps {
   children: ReactNode
   /** Figma variant: plain (navigation) or filled (select-like) trigger */
   appearance?: keyof typeof styles.trigger
+  className?: string
 }
 
 /**
@@ -25,7 +27,7 @@ export interface DropdownProps {
  * (onClick included), same composition pattern as the rest of the
  * library.
  */
-export function Dropdown({ label, children, appearance = 'plain' }: DropdownProps) {
+export function Dropdown({ label, children, appearance = 'plain', className }: DropdownProps) {
   const [open, setOpen] = useState(false)
   const wrapperRef = useRef<HTMLDivElement>(null)
   const menuId = useId()
@@ -47,7 +49,7 @@ export function Dropdown({ label, children, appearance = 'plain' }: DropdownProp
   }, [open])
 
   return (
-    <div ref={wrapperRef} className={styles.wrapper}>
+    <div ref={wrapperRef} className={cx(styles.wrapper, className)}>
       <button
         type="button"
         className={styles.trigger[appearance]}
@@ -76,6 +78,6 @@ export function Dropdown({ label, children, appearance = 'plain' }: DropdownProp
 export type DropdownItemProps = ButtonHTMLAttributes<HTMLButtonElement>
 
 /** Menu item; a plain button styled by the _dropdown-item tokens. */
-export function DropdownItem(props: DropdownItemProps) {
-  return <button type="button" className={styles.item} {...props} />
+export function DropdownItem({ className, ...props }: DropdownItemProps) {
+  return <button type="button" className={cx(styles.item, className)} {...props} />
 }

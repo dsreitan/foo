@@ -1,6 +1,8 @@
 import { style } from '@vanilla-extract/css'
 import { tokens, val } from '../../styles/tokens'
 import { label } from '../../styles/typography.css'
+import { focusRing } from '../../styles/interaction.css'
+import { media } from '../../styles/breakpoints'
 
 const { navigationBar, search, textLabel, _dropdownMenu } = tokens.component
 const { navigationBars } = tokens.groups
@@ -10,7 +12,7 @@ export const root = style({
   paddingBlock: val(navigationBar.padding.block.mobile),
   paddingInline: val(navigationBars.space.medium),
   '@media': {
-    'screen and (min-width: 768px)': {
+    [media.desktop]: {
       paddingBlock: val(navigationBar.padding.block.desktop),
       paddingInline: val(navigationBars.space.xlarge),
     },
@@ -38,7 +40,7 @@ export const menu = style({
   alignItems: 'center',
   gap: val(_dropdownMenu.gap),
   '@media': {
-    'screen and (min-width: 768px)': {
+    [media.desktop]: {
       display: 'flex',
     },
   },
@@ -54,6 +56,7 @@ export const actions = style({
 /** Search trigger from the search tokens ("Søkefelt som brukes i navigasjonsmenyer"). */
 export const searchTrigger = style([
   label.medium,
+  focusRing,
   {
     display: 'flex',
     alignItems: 'center',
@@ -71,10 +74,6 @@ export const searchTrigger = style([
     selectors: {
       '&:hover': {
         boxShadow: `inset 0 0 0 ${val(search.border.width)} ${search.border.color.hover}`,
-      },
-      '&:focus-visible': {
-        outline: 'none',
-        boxShadow: `0 0 0 ${val(tokens.universal.focus.border.width)} ${tokens.universal.focus.border.color}`,
       },
     },
   },

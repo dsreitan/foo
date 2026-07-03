@@ -1,43 +1,33 @@
 import { style } from '@vanilla-extract/css'
 import { tokens, val } from '../../styles/tokens'
 import { label } from '../../styles/typography.css'
+import { disabledState, focusOutline, hoverOverlay } from '../../styles/interaction.css'
 
 const { filter, textLabel } = tokens.component
-const { focus, disabled } = tokens.universal
-
-// Hover is a translucent overlay on top of the current background,
-// matching the Figma spec (filter/background/color/hover on both states).
-const hoverOverlay = `linear-gradient(${filter.background.color.hover}, ${filter.background.color.hover})`
 
 export const root = style([
   label.medium,
+  focusOutline,
+  disabledState,
   {
     display: 'inline-flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  gap: val(filter.gap),
-  height: val(filter.size.height),
-  paddingInline: val(filter.padding.inline),
-  border: 'none',
-  borderRadius: val(filter.border.radius),
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: val(filter.gap),
+    height: val(filter.size.height),
+    paddingInline: val(filter.padding.inline),
+    border: 'none',
+    borderRadius: val(filter.border.radius),
     backgroundColor: filter.background.color.fallback,
     color: textLabel.text.color.brand.toneA,
     cursor: 'pointer',
     selectors: {
       '&:hover:not(:disabled)': {
-        backgroundImage: hoverOverlay,
+        backgroundImage: hoverOverlay(filter.background.color.hover),
       },
       '&[aria-pressed="true"]': {
         backgroundColor: filter.background.color.active,
         color: textLabel.text.color.brand.toneB,
-      },
-      '&:disabled': {
-        opacity: disabled.container.opacity,
-        cursor: 'not-allowed',
-      },
-      '&:focus-visible': {
-        outline: `${val(focus.border.width)} solid ${focus.border.color}`,
-        outlineOffset: val(focus.container.padding),
       },
     },
   },

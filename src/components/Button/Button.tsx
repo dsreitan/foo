@@ -1,4 +1,5 @@
 import type { ButtonHTMLAttributes } from 'react'
+import { cx } from '../../utils/cx'
 import * as styles from './Button.css'
 
 /**
@@ -21,9 +22,17 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
  * en hendelse". Covers both the Figma Button (brand/neutral x
  * primary/secondary/tertiary) and UI Button (success/warning/informative).
  */
-export function Button({ variant = 'brand-primary-a', iconOnly = false, ...props }: ButtonProps) {
-  const classes = [styles.root, styles.variant[variant], iconOnly && styles.iconOnly]
+export function Button({
+  variant = 'brand-primary-a',
+  iconOnly = false,
+  className,
+  ...props
+}: ButtonProps) {
   return (
-    <button className={classes.filter(Boolean).join(' ')} type="button" {...props} />
+    <button
+      className={cx(styles.root, styles.variant[variant], iconOnly && styles.iconOnly, className)}
+      type="button"
+      {...props}
+    />
   )
 }

@@ -4,80 +4,100 @@ React component library for Gyldendal's [Kobber design system](https://kobber.gy
 implementing the components from the
 [Kobber Komponentbibliotek Figma file](https://www.figma.com/design/zMcbm8ujSMldgS1VB70IMP/Kobber-Komponentbibliotek).
 
-Components currently defined in the Figma file:
-
-- **Text** (page "Text"): text components with size/font variants, plus List and Modell sections
-- **Filter** (page "Filter"): states idle, hover, focus, active, active + hover, disabled
-- **Counter** (page "Filter"): type number/letter × color neutral, brand-a, brand-b, success, fail
-
 ## Stack
 
 - [Vite](https://vite.dev/) + [React](https://react.dev/) + TypeScript
 - [vanilla-extract](https://vanilla-extract.style/) for zero-runtime, type-safe styling
+- [`@gyldendal/kobber-tokens`](https://www.npmjs.com/package/@gyldendal/kobber-tokens) for all design values
 
-## Getting started
+## Viewing
+
+Two views, hash-routed:
+
+- `#/` — gallery with every component and its variants
+- `#/eksempel` — a composed example page using all components together
 
 ```bash
 npm install
-npm run dev      # start the dev server / component gallery
+npm run dev      # local dev server
 npm run build    # type-check and build
 npm run lint     # lint with oxlint
 ```
 
-## Design tokens
+Pushes to `main` deploy to GitHub Pages via `.github/workflows/deploy.yml`
+(enable once under Settings → Pages → Source: **GitHub Actions**).
 
-Component tokens come from
-[`@gyldendal/kobber-tokens`](https://www.npmjs.com/package/@gyldendal/kobber-tokens),
-imported as a typed JS object in the `.css.ts` files (values are inlined at
-build time by vanilla-extract). See `src/styles/tokens.ts` for the shared
-helpers (`px()`, font family fallback).
+## The component pattern
 
-## Typography
+Every component is a folder with a `.tsx` (behavior) and a `.css.ts` (visual
+spec). The `.css.ts` composes shared layers and adds only what is unique to
+the component:
 
-`src/styles/typography.css.ts` holds one style map per Figma text component
-(label/body/title/heading/display), without color. Interactive components
-compose these classes directly; the `<Text>` component is a thin polymorphic
-wrapper over the same styles for content use.
+```ts
+export const root = style([
+  label.medium,     // typography     (styles/typography.css.ts)
+  focusRing,        // interaction    (styles/interaction.css.ts)
+  disabledState,
+  {
+    gap: val(filter.gap),   // component tokens only, via val()
+    ...
+  },
+])
+```
+
+Rules:
+
+- **No raw values in components.** Colors/sizes come from `styles/tokens.ts`
+  (the only module importing `@gyldendal/kobber-tokens`). Breakpoints from
+  `styles/breakpoints.ts`, z-index from `styles/layers.ts`, shadows from
+  `styles/elevation.ts` (until Kobber gets elevation tokens).
+- **Shared states live in `styles/interaction.css.ts`** (focusRing,
+  focusOutline, disabledState, hoverOverlay). Anything two components share
+  belongs in `src/styles/`.
+- **Typography without color** — color belongs to the consuming component and
+  cascades (tones flip with state, e.g. active Filter).
+- **className is always merged** via `utils/cx.ts`, never dropped.
+- **Props propagate by composition**: slots (children) for parts the consumer
+  brings, one purpose-named callback per part the component owns
+  (`onSearchClick`), native passthrough for wrapped elements (TextInput).
+- **Variant maps are flat and token-driven**; prop types derive from them
+  (`ButtonVariant = keyof typeof variant`), so invalid combos don't compile.
 
 ## Implemented components
 
-- **Navigation Bar** — first composite component, matching the Figma set
-  (logo | menu | search + profile). Menu items are a children slot (consumers
-  pass their own `<Button onClick={…}>`); the navbar-owned search trigger and
-  profile button get handlers via purpose-named `onSearchClick`/`onProfileClick`
-  props. Menu collapses on mobile like the `size=mobile` variant
+- **Navigation Bar** — logo | menu slot | search trigger + profile button,
+  matching the Figma set; menu collapses on mobile
+- **Dropdown** — trigger + menu; items are children with their own `onClick`,
+  closes on select/outside/Escape
+- **Button** — Figma Button + UI Button; variants `brand-primary-a` …
+  `informative-b`, `iconOnly` for square icon buttons
+- **Filter** — toggle chip with counter
+- **Badge** — status/category label with tones, sizes, status circle
+- **TextInput** — underlined field from the WIP `_text-input` tokens
 - **Text** — polymorphic content typography (`<Text variant="heading" as="h1">`)
-- **Dropdown** — trigger + menu from the dropdown/_dropdown-item tokens; items
-  are children with their own `onClick`, menu closes on select/outside/Escape
-- **TextInput** — underlined field from the WIP `_text-input` tokens; native
-  input props pass straight through, label wired via `htmlFor`
-- **Filter** — toggle chip with counter (states: idle, hover, focus, active, disabled)
-- **Badge** — status/category label (brand/rettsdata/neutral × tone a/b, small/medium, status circle)
-- **Button** — Figma Button + UI Button in one component. Variants are a flat,
-  token-driven map in `Button.css.ts` (one line per combination that exists in
-  the tokens, e.g. `brand-primary-a`, `success-b`); the `variant` prop type is
-  derived from that map, so invalid combinations are compile errors
 
 ## Project structure
 
 ```
 src/
-  components/          # one folder per component (Component.tsx + Component.css.ts)
-    Button/
-    index.ts           # public exports of the library
+  components/            # one folder per component (X.tsx + X.css.ts + index.ts)
+    icons/               # placeholder icons until the Kobber icon package lands
+    index.ts             # public exports of the library
   styles/
-    theme.css.ts       # design tokens (to be synced with Kobber Figma variables)
-    global.css.ts      # global reset/base styles
-  App.tsx              # component gallery used during development
+    tokens.ts            # THE token entry point (only kobber-tokens importer)
+    typography.css.ts    # text styles per Figma text component
+    interaction.css.ts   # focus/disabled/hover states
+    breakpoints.ts       # media queries
+    layers.ts            # z-index scale
+    elevation.ts         # shadows (no Kobber tokens yet)
+  pages/
+    Gallery.tsx          # component gallery (#/)
+    Example.tsx          # composed example page (#/eksempel)
 ```
 
-## Workflow
+## Theming (later)
 
-1. Pick a component from the Kobber Komponentbibliotek Figma file.
-2. Create `src/components/<Name>/` with a `.tsx` implementation and a `.css.ts`
-   stylesheet using the tokens from `src/styles/theme.css.ts`.
-3. Export it from `src/components/index.ts` and add a demo section in `App.tsx`.
-
-The core token values in `theme.css.ts` (brand color, focus color, font family)
-are seeded from the Figma file's variables; the rest are placeholders until the
-full Kobber token set (Figma variables) is synced.
+Token values are inlined at build time. When theming becomes real, flip
+`styles/tokens.ts` to the CSS-variables build of the token package and let
+`val()` wrap names in `var()` — components won't change because everything
+already goes through that one file.

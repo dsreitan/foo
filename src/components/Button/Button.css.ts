@@ -2,14 +2,16 @@ import { style, styleVariants } from '@vanilla-extract/css'
 import type { ComplexStyleRule } from '@vanilla-extract/css'
 import { tokens, val } from '../../styles/tokens'
 import { label } from '../../styles/typography.css'
+import { disabledState, focusRing, hoverOverlay } from '../../styles/interaction.css'
 
 const { button, uiButton, textLabel } = tokens.component
-const { focus, disabled } = tokens.universal
 
 const text = textLabel.text.color
 
 export const root = style([
   label.medium,
+  focusRing,
+  disabledState,
   {
     position: 'relative',
     display: 'inline-flex',
@@ -23,16 +25,6 @@ export const root = style([
     border: '1px solid transparent',
     borderRadius: val(button.border.radius),
     cursor: 'pointer',
-    selectors: {
-      '&:disabled': {
-        opacity: disabled.container.opacity,
-        cursor: 'auto',
-      },
-      '&:focus-visible': {
-        outline: 'none',
-        boxShadow: `0 0 0 ${val(focus.border.width)} ${focus.border.color}`,
-      },
-    },
   },
 ])
 
@@ -52,7 +44,7 @@ const solid = (
   color: textColor,
   selectors: {
     '&:hover:not(:disabled)': {
-      backgroundImage: `linear-gradient(${background.hover}, ${background.hover})`,
+      backgroundImage: hoverOverlay(background.hover),
     },
   },
 })

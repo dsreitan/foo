@@ -1,46 +1,62 @@
 import { style } from '@vanilla-extract/css'
-import { vars } from './styles/theme.css'
+import { tokens, val } from './styles/tokens'
+import { label } from './styles/typography.css'
+
+const { content } = tokens.layouts
+const text = tokens.component.textLabel.text.color
 
 export const page = style({
-  maxWidth: '48rem',
+  maxWidth: val(content.size.maxWidth.large),
   margin: '0 auto',
-  padding: vars.spacing.xl,
+  padding: val(content.space.padding.medium),
   display: 'flex',
   flexDirection: 'column',
-  gap: vars.spacing.l,
+  gap: val(content.space.gap.medium),
 })
 
+export const nav = style({
+  display: 'flex',
+  gap: val(content.space.gap.small),
+})
+
+export const navLink = style([
+  label.medium,
+  {
+    color: text.brand.toneA,
+    selectors: {
+      '&[aria-current="true"]': {
+        fontWeight: '600',
+      },
+    },
+  },
+])
+
 export const header = style({
-  marginBottom: vars.spacing.m,
+  marginBottom: val(content.space.gap.xsmall),
 })
 
 export const title = style({
-  fontSize: '2rem',
-  fontWeight: vars.typography.fontWeight.bold,
-  color: vars.color.brand,
+  color: text.brand.toneA,
   margin: 0,
 })
 
 export const subtitle = style({
-  fontSize: vars.typography.fontSize.large,
-  margin: `${vars.spacing.s} 0 0`,
+  margin: `${val(content.space.gap.xsmall)} 0 0`,
 })
 
 export const card = style({
-  backgroundColor: vars.color.surface,
-  border: `1px solid ${vars.color.border}`,
-  borderRadius: vars.radius.m,
-  padding: vars.spacing.l,
+  backgroundColor: content.color.background['neutral-25'],
+  borderRadius: val(tokens.groups.cardsAndModules.radius.large),
+  padding: val(content.space.padding.small),
 })
 
 export const componentName = style({
-  margin: `0 0 ${vars.spacing.s}`,
-  fontSize: vars.typography.fontSize.large,
+  margin: `0 0 ${val(content.space.gap.xsmall)}`,
 })
 
 export const demoRow = style({
   display: 'flex',
-  gap: vars.spacing.m,
+  gap: val(content.space.gap.small),
   flexWrap: 'wrap',
   alignItems: 'center',
 })

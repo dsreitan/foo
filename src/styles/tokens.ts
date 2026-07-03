@@ -2,6 +2,7 @@
 import {
   components,
   groups,
+  layouts,
   primitives,
   universal,
 } from '@gyldendal/kobber-tokens' // value tokens, ex. "font-size": "14px"
@@ -10,6 +11,7 @@ export const tokens = {
   component: components,
   universal,
   groups,
+  layouts,
 }
 
 export const fontFamily = primitives.font.family
