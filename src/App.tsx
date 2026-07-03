@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Badge, Button, Filter, Text } from './components'
+import { Badge, Button, Filter, NavigationBar, Text } from './components'
 import * as styles from './App.css'
 
 interface ComponentDemo {
@@ -27,6 +27,25 @@ function FilterDemo() {
 }
 
 const components: ComponentDemo[] = [
+  {
+    name: 'Navigation Bar',
+    description:
+      'Toppbar med logo, meny og andre valg. Handlinger sendes inn som children med egne props; menyknappen eies av navbaren og får onMenuClick.',
+    demo: (
+      <NavigationBar
+        style={{ width: '100%' }}
+        logo={<span>Gyldendal</span>}
+        onMenuClick={() => console.log('meny')}
+      >
+        <Button variant="neutral-tertiary-a" onClick={() => console.log('søk')}>
+          Søk
+        </Button>
+        <Button variant="brand-secondary-b" onClick={() => console.log('logg inn')}>
+          Logg inn
+        </Button>
+      </NavigationBar>
+    ),
+  },
   {
     name: 'Text',
     description:

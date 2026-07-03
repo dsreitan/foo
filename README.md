@@ -32,8 +32,19 @@ imported as a typed JS object in the `.css.ts` files (values are inlined at
 build time by vanilla-extract). See `src/styles/tokens.ts` for the shared
 helpers (`px()`, font family fallback).
 
+## Typography
+
+`src/styles/typography.css.ts` holds one style map per Figma text component
+(label/body/title/heading/display), without color. Interactive components
+compose these classes directly; the `<Text>` component is a thin polymorphic
+wrapper over the same styles for content use.
+
 ## Implemented components
 
+- **Navigation Bar** — first composite component. Actions are a children slot
+  (consumers pass their own `<Button onClick={…}>`); the built-in menu button
+  gets its handler via the purpose-named `onMenuClick` prop
+- **Text** — polymorphic content typography (`<Text variant="heading" as="h1">`)
 - **Filter** — toggle chip with counter (states: idle, hover, focus, active, disabled)
 - **Badge** — status/category label (brand/rettsdata/neutral × tone a/b, small/medium, status circle)
 - **Button** — Figma Button + UI Button in one component. Variants are a flat,
