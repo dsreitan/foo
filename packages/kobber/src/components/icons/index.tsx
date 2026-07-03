@@ -43,6 +43,42 @@ export function CheckIcon() {
   );
 }
 
+export function InfoIcon() {
+  return (
+    <svg {...iconProps}>
+      <circle cx="8" cy="8" r="6.5" />
+      <path d="M8 7.5v3.5" />
+      <path d="M8 5.2v.1" />
+    </svg>
+  );
+}
+
+export function WarningIcon() {
+  return (
+    <svg {...iconProps}>
+      <path d="M8 2.2 14.5 13.5H1.5L8 2.2Z" strokeLinejoin="round" />
+      <path d="M8 6.5v3" />
+      <path d="M8 11.7v.1" />
+    </svg>
+  );
+}
+
+export function CloseIcon() {
+  return (
+    <svg {...iconProps}>
+      <path d="m4 4 8 8M12 4l-8 8" />
+    </svg>
+  );
+}
+
+export function ChevronDownIcon() {
+  return (
+    <svg {...iconProps}>
+      <path d="m4 6.5 4 4 4-4" />
+    </svg>
+  );
+}
+
 /** Chevron in a soft circle, like the Figma dropdown icon asset. */
 export function ChevronCircleIcon() {
   return (

@@ -1,8 +1,12 @@
 import { useState } from "react";
 import {
+  AlertAccordion,
+  AlertBanner,
+  AlertLabel,
   Badge,
   Button,
   Checkbox,
+  Counter,
   Dropdown,
   DropdownItem,
   Filter,
@@ -83,6 +87,39 @@ const components: ComponentDemo[] = [
           <DropdownItem onClick={() => console.log("x")}>Alternativ X</DropdownItem>
           <DropdownItem onClick={() => console.log("y")}>Alternativ Y</DropdownItem>
         </Dropdown>
+      </>
+    ),
+  },
+  {
+    name: "Alert",
+    description:
+      "Tre varsel-varianter: label (inline), banner (toppen av siden, kan lukkes) og accordion (ekspanderbar).",
+    demo: (
+      <div style={{ display: "flex", flexDirection: "column", gap: 12, width: "100%" }}>
+        <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+          <AlertLabel severity="success">Endringene er lagret</AlertLabel>
+          <AlertLabel severity="informative">Ny versjon tilgjengelig</AlertLabel>
+          <AlertLabel severity="warning">Feltet må fylles ut</AlertLabel>
+        </div>
+        <AlertBanner severity="informative" onDismiss={() => console.log("lukk")}>
+          Vedlikehold planlagt søndag 02:00–04:00.
+        </AlertBanner>
+        <AlertAccordion severity="warning" title="3 oppgaver mangler svar">
+          Oppgave 2, 5 og 7 er ikke besvart. Du kan levere likevel, men de teller som feil.
+        </AlertAccordion>
+      </div>
+    ),
+  },
+  {
+    name: "Counter",
+    description: "Frittstående teller/bokstav-chip (samme kvadrat-minimum som i Filter).",
+    demo: (
+      <>
+        <Counter>3</Counter>
+        <Counter color="brand-a">12</Counter>
+        <Counter color="brand-b">B</Counter>
+        <Counter color="success">120</Counter>
+        <Counter color="warning">!</Counter>
       </>
     ),
   },
