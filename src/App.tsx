@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Button, Filter } from './components'
+import { Badge, Button, Filter } from './components'
 import * as styles from './App.css'
 
 interface ComponentDemo {
@@ -32,6 +32,30 @@ const components: ComponentDemo[] = [
     description:
       'Brukes når man endrer hva som vises innenfor samme grensesnitt. Klikk for å veksle aktiv tilstand.',
     demo: <FilterDemo />,
+  },
+  {
+    name: 'Badge',
+    description: 'Liten status-/kategorimerkelapp med fargetema, toner og størrelser.',
+    demo: (
+      <>
+        <Badge color="brand" tone="a" statusCircle>
+          Brand tone-a
+        </Badge>
+        <Badge color="brand" tone="b">
+          Brand tone-b
+        </Badge>
+        <Badge color="rettsdata" tone="a">
+          Rettsdata tone-a
+        </Badge>
+        <Badge color="rettsdata" tone="b" statusCircle>
+          Rettsdata tone-b
+        </Badge>
+        <Badge>Neutral</Badge>
+        <Badge size="small" color="brand" tone="b" statusCircle>
+          Small
+        </Badge>
+      </>
+    ),
   },
   {
     name: 'Button',
