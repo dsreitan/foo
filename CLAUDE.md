@@ -25,8 +25,10 @@ small, verified increments.
   proposals (`docs/proposals/`), `docs/dam.md` for the asset CDN,
   `docs/a11y-audit.md` (audit), `docs/upstream-findings.md` (report to
   the Kobber team: token drift, contrast sweep, token gaps — extend it
-  when new upstream issues surface), and `docs/adoption.md` (the plan
-  for moving this into a consumer monorepo and the usability backlog).
+  when new upstream issues surface), `docs/design-system-review.md`
+  (architecture-level feedback to the Kobber team), and
+  `docs/adoption.md` (the plan for moving this into a consumer monorepo
+  and the usability backlog).
 - `TODO.md` — the roadmap. Work top-down within its "Suggested order",
   tick items off (`- [x]`) in the same commit as the implementation.
 

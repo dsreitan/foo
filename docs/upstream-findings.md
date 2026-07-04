@@ -1,5 +1,10 @@
 # Funn til Kobber-teamet
 
+> Se også `docs/design-system-review.md` — arkitekturnivået: hvordan
+> tokens og Figma er strukturert sammenlignet med Material 3, Carbon,
+> Polaris, Spectrum, Primer og Atlassian, og hvordan en KI-agent helst
+> konsumerer designsystemet. Dette dokumentet er de konkrete funnene.
+
 Funn fra implementasjonen av Kobber som React-bibliotek, klare til å
 sendes/limes inn i en issue. Målt 2026-07-04 mot
 `@gyldendal/kobber-tokens` **13.0.0** (nyeste publiserte) og
