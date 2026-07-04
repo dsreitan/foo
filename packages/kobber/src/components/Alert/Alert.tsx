@@ -41,12 +41,15 @@ export interface AlertBannerProps extends HTMLAttributes<HTMLDivElement> {
   children: ReactNode;
   /** Renders the dismiss button and receives its click. */
   onDismiss?: MouseEventHandler<HTMLButtonElement>;
+  /** Accessible name for the dismiss button */
+  dismissLabel?: string;
 }
 
 /** Page-top alert: "vises i toppen av siden for å informere bruker". */
 export function AlertBanner({
   severity = "informative",
   onDismiss,
+  dismissLabel = "Lukk",
   className,
   children,
   ...props
@@ -64,7 +67,12 @@ export function AlertBanner({
         {children}
       </span>
       {onDismiss && (
-        <button type="button" className={styles.dismiss} aria-label="Lukk" onClick={onDismiss}>
+        <button
+          type="button"
+          className={styles.dismiss}
+          aria-label={dismissLabel}
+          onClick={onDismiss}
+        >
           <CloseIcon />
         </button>
       )}

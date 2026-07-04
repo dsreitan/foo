@@ -20,13 +20,13 @@ Status legend follows Kobber's component lifecycle (from the Figma
 
 ## Foundations
 
-- [ ] **Icon package** — replace placeholder SVGs with the "Kobber Ikoner, grafikk og logoer" library / icon tokens (`universal.iconPackage`)
-- [ ] **PP Mori webfont** — BLOCKED: font files are not distributed via npm (licensed); needs a CDN URL or font files from the Kobber team. Loading belongs in apps/demo, not the package
+- [ ] **Icons from DAM** — replace placeholder SVGs when the DAM CDN has the icon set (npm icon packages are deprecated); URLs via src/assets/dam.ts
+- [ ] **PP Mori webfont from DAM** — @font-face in apps/demo once the DAM CDN serves the font files; URLs via src/assets/dam.ts
 - [ ] **Theming** — flip `styles/tokens.ts` to the CSS-variables token build; theme = redefining the semantic layer (`brand`, `rettsdata`, themes nature/fantasy/thriller/romance/vacation/nostalgia)
 - [ ] **Reading vs brand typography** — body/title/lead have `reading` (Inter) variants for long-form content
 - [ ] **Elevation tokens** — missing in Kobber; `styles/elevation.ts` carries a placeholder
 - [ ] **Code Connect** — map the code components to their Figma counterparts
-- [ ] **Logo component** — Gyldendal/product logos (used by Navigation Bar; Rettsdata variant exists in Figma)
+- [x] **Logo component** — placeholder wordmark; swap to DAM image when asset IDs exist
 
 ## Actions
 
@@ -48,8 +48,8 @@ Status legend follows Kobber's component lifecycle (from the Figma
 ## Navigation
 
 - [x] **Breadcrumb / Breadcrumb Item**
-- [ ] **Menu Item / Menu Item Groups**
-- [ ] **Contextual Navigation Bar** (`_contextualNavigationBar` — WIP, own Figma section)
+- [x] **Menu Item / Menu Item Groups**
+- [x] **Contextual Navigation Bar** (`_contextualNavigationBar` — WIP, own Figma section)
 
 ## Feedback
 
@@ -57,15 +57,15 @@ Status legend follows Kobber's component lifecycle (from the Figma
 - [x] **Alert Banner** — page-top alerts (success/informative/warning)
 - [x] **Alert Accordion** — expandable secondary alerts
 - [x] **Counter** — standalone (number/letter × neutral/brand/success/warning); Filter's counter is a starting point
-- [ ] **Popover**
+- [x] **Popover**
 
 ## Cards & modules
 
 - [x] **Content Card** — article entry with title, ingress, badge, tags
 - [x] **Product Card** — books/digital products
-- [ ] **Navigation Card** — entry point to a content area
+- [x] **Navigation Card** — entry point to a content area
 - [ ] **Feature Card** — image with text overlay (overlay-light/dark)
-- [ ] **Info Card** — person/entity presentation
+- [x] **Info Card** — person/entity presentation
 - [ ] **Profile Card**
 - [ ] **Event Item**
 - [ ] **Corner Box**

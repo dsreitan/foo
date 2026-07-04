@@ -22,6 +22,8 @@ export interface NavigationBarProps extends HTMLAttributes<HTMLElement> {
   /** Placeholder text in the search trigger */
   searchLabel?: string;
   onProfileClick?: MouseEventHandler<HTMLButtonElement>;
+  /** Accessible name for the profile button */
+  profileLabel?: string;
 }
 
 /**
@@ -37,6 +39,7 @@ export function NavigationBar({
   onSearchClick,
   searchLabel = "Søk",
   onProfileClick,
+  profileLabel = "Profil",
   className,
   ...props
 }: NavigationBarProps) {
@@ -58,7 +61,7 @@ export function NavigationBar({
             <Button
               variant="brand-secondary-b"
               iconOnly
-              aria-label="Profil"
+              aria-label={profileLabel}
               onClick={onProfileClick}
             >
               <UserIcon />

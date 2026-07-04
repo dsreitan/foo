@@ -8,8 +8,14 @@ import {
   ButtonGroup,
   Collapsible,
   Divider,
+  ContextualNavigationBar,
+  InfoCard,
+  Logo,
+  MenuItem,
+  NavigationCard,
   NavLink,
   NavLinkGroup,
+  Popover,
   Badge,
   Breadcrumb,
   BreadcrumbItem,
@@ -66,7 +72,7 @@ const components: ComponentDemo[] = [
     demo: (
       <NavigationBar
         style={{ width: "100%" }}
-        logo={<span>Gyldendal</span>}
+        logo={<Logo />}
         onSearchClick={() => console.log("søk")}
         onProfileClick={() => console.log("profil")}
       >
@@ -102,6 +108,114 @@ const components: ComponentDemo[] = [
           <DropdownItem onClick={() => console.log("y")}>Alternativ Y</DropdownItem>
         </Dropdown>
       </>
+    ),
+  },
+  {
+    name: "Contextual navigation bar",
+    description:
+      "Sekundær bar under hovednavigasjonen for seksjonsnivå. Basert på WIP-tokens. MenuItems som children, handlinger i actions.",
+    demo: (
+      <ContextualNavigationBar
+        style={{ width: "100%" }}
+        actions={<Button variant="brand-secondary-b">Ny oppgave</Button>}
+      >
+        <MenuItem href="#/" active>
+          Oversikt
+        </MenuItem>
+        <MenuItem href="#/">Oppgaver</MenuItem>
+        <MenuItem href="#/">Resultater</MenuItem>
+      </ContextualNavigationBar>
+    ),
+  },
+  {
+    name: "Menu item",
+    description:
+      "Rad i menyer og sidenavigasjon. Lenke med href, ellers knapp; active gir aria-current og understrek.",
+    demo: (
+      <nav aria-label="Eksempelmeny" style={{ width: 280 }}>
+        <MenuItem href="#/" active>
+          Norsk
+        </MenuItem>
+        <MenuItem href="#/">Matematikk</MenuItem>
+        <MenuItem href="#/" nested>
+          Geometri
+        </MenuItem>
+        <MenuItem onClick={() => console.log("logg ut")}>Logg ut</MenuItem>
+      </nav>
+    ),
+  },
+  {
+    name: "Popover",
+    description:
+      "Flytende flate forankret i utløseren; lukker på Escape (med fokus tilbake) og klikk utenfor.",
+    demo: (
+      <Popover trigger={<Button variant="brand-secondary-b">Vis detaljer</Button>}>
+        <Text variant="label" size="medium" as="p">
+          Sist endret 3. juli av Dagfinn. Delt med 4 personer.
+        </Text>
+      </Popover>
+    ),
+  },
+  {
+    name: "Logo",
+    description: "Plassholder-ordmerke til logoen kommer fra DAM-CDN-en (se docs/dam.md).",
+    demo: <Logo alt="Gyldendal" />,
+  },
+  {
+    name: "Navigation card",
+    description: "Bildekort som er én lenke inn til et område; overlay-tone etter bildets lyshet.",
+    demo: (
+      <div style={{ display: "flex", gap: 24, width: "100%" }}>
+        <div style={{ width: 280 }}>
+          <NavigationCard
+            href="#/"
+            title="Grunnskole"
+            image={
+              <div
+                style={{ height: "100%", background: "linear-gradient(160deg, #f5c9d3, #f9eaed)" }}
+              />
+            }
+          />
+        </div>
+        <div style={{ width: 280 }}>
+          <NavigationCard
+            href="#/"
+            title="Videregående"
+            overlay="overlay-light"
+            image={
+              <div
+                style={{ height: "100%", background: "linear-gradient(160deg, #481125, #8a224a)" }}
+              />
+            }
+          />
+        </div>
+      </div>
+    ),
+  },
+  {
+    name: "Info card",
+    description:
+      "Presentasjon av person eller enhet; portrettbilder skal ha meningsfull alt-tekst.",
+    demo: (
+      <InfoCard
+        title="Sigrid Undset"
+        image={
+          <div
+            role="img"
+            aria-label="Portrett av Sigrid Undset"
+            style={{
+              width: "100%",
+              height: "100%",
+              background: "linear-gradient(160deg, #884d5d, #691837)",
+            }}
+          />
+        }
+      >
+        <Text as="p" variant="label" size="medium">
+          Forfatter · Nobelprisen i litteratur 1928
+        </Text>
+        <TextLink href="#/">Se forfatterside</TextLink>
+      </InfoCard>
     ),
   },
   {

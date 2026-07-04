@@ -11,20 +11,26 @@ small, verified increments.
   `src/styles/`, tests in `tests/`.
 - `apps/demo` — gallery (`#/`) + composed example page (`#/eksempel`).
   Imports from `"kobber"` like a real consumer.
+- `docs/` — per-component usage & a11y docs (`docs/components/<name>.md`)
+  and `docs/dam.md` for the asset CDN.
 - `TODO.md` — the roadmap. Work top-down within its "Suggested order",
   tick items off (`- [x]`) in the same commit as the implementation.
 
-## Commands (Vite+ / `vp`)
+## Commands (pnpm + Vite+ / `vp`)
 
 ```bash
-npm install
-npm run test        # vitest via vp — must pass before every commit
-npm run lint        # oxlint
-npm run fmt         # oxfmt — run before committing
-npm run build       # builds the demo app
-npm run typecheck
-npm run dev         # demo dev server
+pnpm install
+pnpm exec vp test   # vitest — must pass before every commit
+pnpm exec vp lint   # oxlint
+pnpm exec vp fmt    # oxfmt — run before committing
+pnpm run build      # builds the demo app
+pnpm run typecheck  # tsgo (TypeScript 7 native preview)
+pnpm run dev        # demo dev server
 ```
+
+pnpm is strict: every package declares what it imports (no hoisting).
+Test-infra deps (vitest, jsdom, testing-library, vanilla-extract plugin)
+live in the ROOT package.json because vitest.config.ts is at the root.
 
 ## Git rules
 
@@ -96,6 +102,10 @@ export const root = style([
   label-wrapped, so checked/onChange/disabled just work.
 - Icons come from `src/components/icons/index.tsx` (16px placeholders,
   currentColor). Add missing icons there; do NOT add an icon library.
+  Logos/fonts/icons will eventually come from the DAM CDN — ALL asset
+  URLs go through `src/assets/dam.ts` (`createDam`); never hand-build
+  CDN URLs. The old @gyldendal kobber-components/icons/base packages are
+  DEPRECATED — use them only as read-only references, never as deps.
 
 ## Workflow for a new component
 
@@ -119,7 +129,10 @@ export const root = style([
    with a one-line Norwegian description.
 6. Add tests in `packages/kobber/tests/` — testing-library, behavior-first
    (roles, labels, keyboard), 2–4 per component.
-7. `npm run fmt && npm run lint && npm run test && npm run build` — all
+   6b. Write `docs/components/<name>.md`: built-in behavior + "Usage
+   responsibilities" (a11y duties the consumer keeps). Exemplify correct
+   usage in the gallery demo.
+7. `pnpm exec vp fmt && pnpm exec vp lint && pnpm exec vp test && pnpm run typecheck && pnpm run build` — all
    must be clean.
 8. Tick the TODO.md item, commit everything together, push to main.
 
@@ -131,6 +144,15 @@ export const root = style([
 - Alerts: `role="alert"` for warning, `role="status"` otherwise.
 - Labels: real `<label htmlFor>` via `useId`, or label-wrapped inputs.
 - Icon-only buttons require `aria-label`.
+- Every visible or aria string a component owns is an overridable prop
+  with a Norwegian default (`dismissLabel = "Lukk"`, `searchLabel`,
+  `profileLabel`, Breadcrumb `label`...). `lang` passes through
+  everywhere via native attributes; image slots must document alt-text
+  expectations (meaningful alt for content images, alt="" decorative).
+- For each new component, check the matching WAI-ARIA APG pattern
+  (https://www.w3.org/WAI/ARIA/apg/patterns/) and implement its keyboard
+  behavior (see Dropdown: menu-button pattern). Behavior the component
+  can't own goes in its doc under "Usage responsibilities".
 
 ## Known quirks
 
@@ -140,7 +162,8 @@ export const root = style([
 - Don't set `fontFamily` as an array in vanilla-extract — arrays mean
   fallback _declarations_, not font stacks. Use the string from
   `` `${fontFamily.ppMori}, system-ui, sans-serif` ``.
-- `devEngines` in root package.json is relaxed to npm >=10.9 on purpose;
-  don't tighten it.
+- typecheck uses tsgo (TS 7 native preview) — stricter than tsc 6 on
+  attribute collisions (e.g. a `title: ReactNode` prop needs
+  `Omit<..., "title">`).
 - The Figma file (`zMcbm8ujSMldgS1VB70IMP`) hides most pages from the API;
   component sets are reachable only via node links or library search.
