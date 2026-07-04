@@ -22,7 +22,10 @@ small, verified increments.
   and a demo on the Lab page. When Kobber adopts one, implement it in
   `packages/kobber` and delete it here.
 - `docs/` — per-component usage & a11y docs (`docs/components/<name>.md`),
-  proposals (`docs/proposals/`), and `docs/dam.md` for the asset CDN.
+  proposals (`docs/proposals/`), `docs/dam.md` for the asset CDN,
+  `docs/a11y-audit.md` (audit + upstream findings), and
+  `docs/adoption.md` (the plan for moving this into a consumer monorepo
+  and the usability backlog).
 - `TODO.md` — the roadmap. Work top-down within its "Suggested order",
   tick items off (`- [x]`) in the same commit as the implementation.
 

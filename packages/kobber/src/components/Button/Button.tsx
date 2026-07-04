@@ -1,4 +1,4 @@
-import type { ButtonHTMLAttributes } from "react";
+import { forwardRef, type ButtonHTMLAttributes } from "react";
 import { cx } from "../../utils/cx";
 import * as styles from "./Button.css";
 
@@ -21,18 +21,20 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
  * Kobber Button — "brukes for å utføre en bestemt handling eller trigge
  * en hendelse". Covers both the Figma Button (brand/neutral x
  * primary/secondary/tertiary) and UI Button (success/warning/informative).
+ *
+ * forwardRef so it works as a Popover/Dropdown trigger on React 18,
+ * where refs don't pass to function components as props.
  */
-export function Button({
-  variant = "brand-primary-a",
-  iconOnly = false,
-  className,
-  ...props
-}: ButtonProps) {
+export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
+  { variant = "brand-primary-a", iconOnly = false, className, ...props },
+  ref,
+) {
   return (
     <button
+      ref={ref}
       className={cx(styles.root, styles.variant[variant], iconOnly && styles.iconOnly, className)}
       type="button"
       {...props}
     />
   );
-}
+});
