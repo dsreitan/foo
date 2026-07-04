@@ -66,13 +66,13 @@ Status legend follows Kobber's component lifecycle (from the Figma
 - [x] **Navigation Card** — entry point to a content area
 - [ ] **Feature Card** — image with text overlay (overlay-light/dark)
 - [x] **Info Card** — person/entity presentation
-- [ ] **Profile Card**
+- [x] **Profile Card**
 - [ ] **Event Item**
 - [ ] **Corner Box**
 - [ ] **Media Box / Media / Media Brand**
 - [ ] **Content Island**
-- [ ] **Quote Module**
-- [ ] **Text Module**
+- [x] **Quote Module**
+- [x] **Text Module**
 - [ ] **Review**
 - [ ] **Feature Item Prominent**
 

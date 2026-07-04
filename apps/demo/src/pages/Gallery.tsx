@@ -31,8 +31,11 @@ import {
   DropdownItem,
   Filter,
   NavigationBar,
+  ProfileCard,
+  QuoteModule,
   Radiobutton,
   Search,
+  TextModule,
   Switch,
   Text,
   TextArea,
@@ -45,6 +48,8 @@ interface ComponentDemo {
   description: string;
   demo: React.ReactNode;
 }
+
+const slug = (name: string) => name.toLowerCase().replace(/\s+/g, "-");
 
 function FilterDemo() {
   const [selected, setSelected] = useState(false);
@@ -216,6 +221,68 @@ const components: ComponentDemo[] = [
         </Text>
         <TextLink href="#/">Se forfatterside</TextLink>
       </InfoCard>
+    ),
+  },
+  {
+    name: "Quote module",
+    description:
+      "Sitatmodul med figure/blockquote-semantikk, valgfritt rundt bilde og attribusjon.",
+    demo: (
+      <QuoteModule
+        attribution="Sigrid Undset, forfatter"
+        image={
+          <div
+            role="img"
+            aria-label="Portrett av Sigrid Undset"
+            style={{
+              width: "100%",
+              height: "100%",
+              background: "linear-gradient(160deg, #884d5d, #691837)",
+            }}
+          />
+        }
+      >
+        Å lese er å leve dobbelt.
+      </QuoteModule>
+    ),
+  },
+  {
+    name: "Text module",
+    description:
+      "Farget tekstseksjon; tekstfargen arves fra flaten slik at Text/List/TextLink følger tonen.",
+    demo: (
+      <div style={{ display: "flex", flexDirection: "column", gap: 16, width: "100%" }}>
+        <TextModule color="brand-b" aria-label="Om læremidlene">
+          <Text variant="title">Om læremidlene</Text>
+          <Text>Alle læremidler følger fagfornyelsen og er universelt utformet.</Text>
+        </TextModule>
+        <TextModule color="brand-a" aria-label="Kontakt">
+          <Text variant="title">Kontakt oss</Text>
+          <Text>Kundeservice svarer alle hverdager 08–16.</Text>
+        </TextModule>
+      </div>
+    ),
+  },
+  {
+    name: "Profile card",
+    description: "Stablet personkort: portrett over navn og detaljer.",
+    demo: (
+      <div style={{ width: 240 }}>
+        <ProfileCard
+          title="Ola Nordmann"
+          image={
+            <div
+              role="img"
+              aria-label="Portrett av Ola Nordmann"
+              style={{ height: 180, background: "linear-gradient(160deg, #cfd5dd, #697684)" }}
+            />
+          }
+        >
+          <Text as="p" variant="label" size="medium">
+            Redaktør, norsk skjønnlitteratur
+          </Text>
+        </ProfileCard>
+      </div>
     ),
   },
   {
@@ -587,16 +654,31 @@ const components: ComponentDemo[] = [
   },
 ];
 
-export function Gallery() {
+export function Gallery({ hash }: { hash?: string }) {
   return (
-    <>
-      {components.map((component) => (
-        <section key={component.name} className={styles.card}>
-          <h2 className={styles.componentName}>{component.name}</h2>
-          <p>{component.description}</p>
-          <div className={styles.demoRow}>{component.demo}</div>
-        </section>
-      ))}
-    </>
+    <div className={styles.galleryLayout}>
+      <aside className={styles.aside}>
+        <nav aria-label="Komponentoversikt">
+          {components.map((component) => (
+            <MenuItem
+              key={component.name}
+              href={`#${slug(component.name)}`}
+              active={hash === `#${slug(component.name)}`}
+            >
+              {component.name}
+            </MenuItem>
+          ))}
+        </nav>
+      </aside>
+      <div className={styles.sections}>
+        {components.map((component) => (
+          <section key={component.name} id={slug(component.name)} className={styles.card}>
+            <h2 className={styles.componentName}>{component.name}</h2>
+            <p>{component.description}</p>
+            <div className={styles.demoRow}>{component.demo}</div>
+          </section>
+        ))}
+      </div>
+    </div>
   );
 }

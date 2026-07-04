@@ -63,7 +63,7 @@ function App() {
         </p>
       </header>
 
-      <Gallery />
+      <Gallery hash={hash} />
     </main>
   );
 }
