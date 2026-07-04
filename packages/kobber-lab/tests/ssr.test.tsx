@@ -6,7 +6,19 @@ import { act, type ReactElement } from "react";
 import { renderToString } from "react-dom/server";
 import { hydrateRoot } from "react-dom/client";
 import { describe, expect, it, vi } from "vitest";
-import { Dialog, ProgressBar, Skeleton, StatCard, Toast } from "../src";
+import {
+  Avatar,
+  Dialog,
+  ProgressBar,
+  Skeleton,
+  StatCard,
+  Tab,
+  TabList,
+  TabPanel,
+  Tabs,
+  Toast,
+  Tooltip,
+} from "../src";
 
 const noop = () => {};
 
@@ -30,6 +42,24 @@ const cases: [string, ReactElement][] = [
     </Toast>,
   ],
   ["Skeleton", <Skeleton variant="circle" width={40} height={40} />],
+  ["Avatar", <Avatar name="Maja Nilsen" />],
+  [
+    "Tabs",
+    <Tabs defaultValue="a">
+      <TabList label="Innhold">
+        <Tab value="a">Oversikt</Tab>
+        <Tab value="b">Kommentarer</Tab>
+      </TabList>
+      <TabPanel value="a">Innhold A</TabPanel>
+      <TabPanel value="b">Innhold B</TabPanel>
+    </Tabs>,
+  ],
+  [
+    "Tooltip",
+    <Tooltip content="Slett innlevering">
+      <button>Slett</button>
+    </Tooltip>,
+  ],
   ["ProgressBar", <ProgressBar value={63} label="Maja Nilsen" />],
   ["StatCard", <StatCard label="Aktive elever" value={128} />],
 ];

@@ -1,6 +1,18 @@
 import { describe, expect, it, vi } from "vitest";
 import { fireEvent, render, screen } from "@testing-library/react";
-import { Dialog, ProgressBar, Skeleton, StatCard, Toast } from "../src";
+import {
+  Avatar,
+  Dialog,
+  ProgressBar,
+  Skeleton,
+  StatCard,
+  Tab,
+  TabList,
+  TabPanel,
+  Tabs,
+  Toast,
+  Tooltip,
+} from "../src";
 
 describe("Dialog", () => {
   it("opens as a modal and closes via the close button", () => {
@@ -45,5 +57,65 @@ describe("StatCard", () => {
     render(<StatCard label="Aktive elever" value={5} />);
     expect(screen.getByText("Aktive elever")).toBeDefined();
     expect(screen.getByText("5")).toBeDefined();
+  });
+});
+
+function DemoTabs() {
+  return (
+    <Tabs defaultValue="a">
+      <TabList label="Innhold">
+        <Tab value="a">Oversikt</Tab>
+        <Tab value="b">Kommentarer</Tab>
+      </TabList>
+      <TabPanel value="a">Innhold A</TabPanel>
+      <TabPanel value="b">Innhold B</TabPanel>
+    </Tabs>
+  );
+}
+
+describe("Tabs", () => {
+  it("switches panel on click and wires aria", () => {
+    render(<DemoTabs />);
+    const tabB = screen.getByRole("tab", { name: "Kommentarer" });
+    expect(tabB.getAttribute("aria-selected")).toBe("false");
+    fireEvent.click(tabB);
+    expect(tabB.getAttribute("aria-selected")).toBe("true");
+    const panel = screen.getByRole("tabpanel");
+    expect(panel.textContent).toBe("Innhold B");
+    expect(panel.getAttribute("aria-labelledby")).toBe(tabB.id);
+  });
+
+  it("moves selection with arrow keys (automatic activation)", () => {
+    render(<DemoTabs />);
+    const tabA = screen.getByRole("tab", { name: "Oversikt" });
+    tabA.focus();
+    fireEvent.keyDown(tabA, { key: "ArrowRight" });
+    expect(screen.getByRole("tab", { name: "Kommentarer" }).getAttribute("aria-selected")).toBe(
+      "true",
+    );
+    expect(screen.getByRole("tabpanel").textContent).toBe("Innhold B");
+  });
+});
+
+describe("Avatar", () => {
+  it("falls back to initials with the name as accessible label", () => {
+    render(<Avatar name="Maja Nilsen" />);
+    const avatar = screen.getByRole("img", { name: "Maja Nilsen" });
+    expect(avatar.textContent).toBe("MN");
+  });
+});
+
+describe("Tooltip", () => {
+  it("describes the trigger and dismisses on Escape", () => {
+    render(
+      <Tooltip content="Slett innlevering">
+        <button>Slett</button>
+      </Tooltip>,
+    );
+    const trigger = screen.getByRole("button", { name: "Slett" });
+    const tip = screen.getByRole("tooltip");
+    expect(trigger.getAttribute("aria-describedby")).toBe(tip.id);
+    fireEvent.keyDown(trigger, { key: "Escape" });
+    expect(tip.parentElement?.hasAttribute("data-dismissed")).toBe(true);
   });
 });

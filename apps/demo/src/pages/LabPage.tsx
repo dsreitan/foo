@@ -1,6 +1,19 @@
 import { useState } from "react";
 import { AlertLabel, Badge, Button, Text, TextLink } from "kobber";
-import { Dialog, ProgressBar, Skeleton, StatCard, Toast } from "kobber-lab";
+import {
+  Avatar,
+  Dialog,
+  ProgressBar,
+  Skeleton,
+  StatCard,
+  Tab,
+  TabList,
+  TabPanel,
+  Tabs,
+  Toast,
+  Tooltip,
+} from "kobber-lab";
+import { img } from "../lib";
 import * as styles from "./pages.css";
 
 const REPO_DOCS = "https://github.com/dsreitan/foo/blob/main/docs/proposals";
@@ -78,6 +91,54 @@ const proposals: Proposal[] = [
         <ProgressBar value={63} label="Maja Nilsen" />
         <ProgressBar value={100} label="Noah Johansen" />
       </div>
+    ),
+  },
+  {
+    name: "Tabs",
+    doc: "tabs.md",
+    description:
+      "WAI-ARIA-faner med automatisk aktivering (piltaster, Home/End). Animasjon: kryssfade 120 ms.",
+    demo: (
+      <Tabs defaultValue="oversikt" style={{ width: "100%", maxWidth: 480 }}>
+        <TabList label="Om videoen">
+          <Tab value="oversikt">Oversikt</Tab>
+          <Tab value="kommentarer">Kommentarer</Tab>
+          <Tab value="transkript">Transkript</Tab>
+        </TabList>
+        <TabPanel value="oversikt">
+          <Text as="p">Introduksjon til brøk for 5. trinn, 12 minutter.</Text>
+        </TabPanel>
+        <TabPanel value="kommentarer">
+          <Text as="p">2 kommentarer fra elever.</Text>
+        </TabPanel>
+        <TabPanel value="transkript">
+          <Text as="p">Automatisk transkript kommer fra medietjenesten.</Text>
+        </TabPanel>
+      </Tabs>
+    ),
+  },
+  {
+    name: "Avatar",
+    doc: "avatar.md",
+    description: "Rundt portrett med initial-fallback; badge-flaten som bakgrunn.",
+    demo: (
+      <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
+        <Avatar name="Maja Nilsen" size="large" src={img("maja", 96, 96)} />
+        <Avatar name="Noah Johansen" size="large" />
+        <Avatar name="Emma Hansen" />
+        <Avatar name="Oliver Berg" size="small" />
+      </div>
+    ),
+  },
+  {
+    name: "Tooltip",
+    doc: "tooltip.md",
+    description:
+      "Tilleggstekst på hover/fokus, Escape lukker (WCAG 1.4.13). Animasjon: fade etter 600 ms hover-forsinkelse.",
+    demo: (
+      <Tooltip content="Sender påminnelse til alle som ikke har levert">
+        <Button variant="brand-secondary-b">Purr på innlevering</Button>
+      </Tooltip>
     ),
   },
   {
