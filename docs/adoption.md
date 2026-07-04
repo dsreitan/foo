@@ -2,7 +2,8 @@
 
 The agreed first step: **one consumer team transplants the library
 source into their monorepo, keeps developing it there, and adopts it
-gradually in their own product.** This repo is then archived with a
+gradually in their own product.** Until that move happens, development
+continues in this repo. After the move, this repo is archived with a
 pointer — one source of truth, no sync problem.
 
 Source transplant (not npm publish) is the right first move because the
@@ -91,8 +92,9 @@ In priority order; none of it blocks the first consumer:
    (16px placeholders today), real Logo — all through `createDam`.
 5. **Theming**: flip `styles/tokens.ts` to a CSS-variables build to
    unlock the kobber-base dark theme without touching components.
-6. **Report upstream**: the brand primary button contrast (4.24:1, see
-   docs/a11y-audit.md finding #4) belongs with the Kobber team.
+6. **Report upstream**: docs/upstream-findings.md is a ready-to-send
+   report (token drift breaking WCAG on the primary button, focus-ring
+   observation, token gaps).
 7. **Contribution guide**: when something goes in kobber vs kobber-lab
    vs app code, definition of done, who reviews.
 8. **CI hardening**: run the axe sweep (apps/demo/scripts/axe-audit.mjs)

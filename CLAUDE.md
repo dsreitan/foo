@@ -23,9 +23,10 @@ small, verified increments.
   `packages/kobber` and delete it here.
 - `docs/` — per-component usage & a11y docs (`docs/components/<name>.md`),
   proposals (`docs/proposals/`), `docs/dam.md` for the asset CDN,
-  `docs/a11y-audit.md` (audit + upstream findings), and
-  `docs/adoption.md` (the plan for moving this into a consumer monorepo
-  and the usability backlog).
+  `docs/a11y-audit.md` (audit), `docs/upstream-findings.md` (report to
+  the Kobber team: token drift, contrast sweep, token gaps — extend it
+  when new upstream issues surface), and `docs/adoption.md` (the plan
+  for moving this into a consumer monorepo and the usability backlog).
 - `TODO.md` — the roadmap. Work top-down within its "Suggested order",
   tick items off (`- [x]`) in the same commit as the implementation.
 

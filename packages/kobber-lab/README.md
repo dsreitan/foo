@@ -12,6 +12,9 @@ Ingenting her er offisielt Kobber — pakken er et prioriteringsunderlag.
 Når Kobber-teamet designer komponenten i Figma, implementeres den i
 `packages/kobber` og fjernes herfra.
 
+Se også `docs/upstream-findings.md` — funn i tokens/Figma (kontrast,
+drift, hull) klare til å meldes til Kobber-teamet.
+
 ## Flere kandidater (fra MUI og shadcn/ui)
 
 Komponenter begge de store bibliotekene har, som Kobber mangler og
