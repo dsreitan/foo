@@ -17,9 +17,6 @@ Når Kobber-teamet designer komponenten i Figma, implementeres den i
 Komponenter begge de store bibliotekene har, som Kobber mangler og
 produktene våre kommer til å trenge — ikke implementert her ennå:
 
-- **Select** — stylet nedtrekksvalg for skjema (Dropdown er en meny,
-  ikke et skjemafelt).
-- **Pagination** — sidenavigasjon for søkeresultater og lange lister.
 - **Data table** — sorterbar tabell med Kobber-typografi; i dag styler
   hver app sin egen (se elevoversikten i demoen).
 - **Drawer/Sheet** — skuff fra sidekanten for filtre og detaljer på
@@ -27,5 +24,7 @@ produktene våre kommer til å trenge — ikke implementert her ennå:
 - **Stepper** — flytstegindikator for innleverings- og kjøpsløp.
 - **Command palette** — hurtigsøk på tvers (jf. VS Code Ctrl+K); bygger
   på Dialog + Search.
-- **Empty state** — standardisert tom-tilstand med illustrasjonsslot
-  fra DAM.
+- **Combobox/autocomplete** — søkefelt med forslag (APG combobox);
+  bygger videre på Search.
+- **Date picker** — frister og planlegging; start med native
+  `<input type="date">` + Kobber-styling.

@@ -9,7 +9,10 @@ import { describe, expect, it, vi } from "vitest";
 import {
   Avatar,
   Dialog,
+  EmptyState,
+  Pagination,
   ProgressBar,
+  Select,
   Skeleton,
   StatCard,
   Tab,
@@ -43,6 +46,14 @@ const cases: [string, ReactElement][] = [
   ],
   ["Skeleton", <Skeleton variant="circle" width={40} height={40} />],
   ["Avatar", <Avatar name="Maja Nilsen" />],
+  [
+    "Select",
+    <Select label="Klasse" defaultValue="8A">
+      <option value="8A">8A</option>
+    </Select>,
+  ],
+  ["Pagination", <Pagination page={5} count={12} onPageChange={() => {}} />],
+  ["EmptyState", <EmptyState title="Ingen treff">Prøv et annet søkeord.</EmptyState>],
   [
     "Tabs",
     <Tabs defaultValue="a">

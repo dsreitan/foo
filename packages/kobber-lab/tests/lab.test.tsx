@@ -3,7 +3,10 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import {
   Avatar,
   Dialog,
+  EmptyState,
+  Pagination,
   ProgressBar,
+  Select,
   Skeleton,
   StatCard,
   Tab,
@@ -102,6 +105,47 @@ describe("Avatar", () => {
     render(<Avatar name="Maja Nilsen" />);
     const avatar = screen.getByRole("img", { name: "Maja Nilsen" });
     expect(avatar.textContent).toBe("MN");
+  });
+});
+
+describe("Select", () => {
+  it("is a labelled native select", () => {
+    render(
+      <Select label="Klasse" defaultValue="8B">
+        <option value="8A">8A</option>
+        <option value="8B">8B</option>
+      </Select>,
+    );
+    const select = screen.getByRole("combobox", { name: "Klasse" });
+    expect((select as HTMLSelectElement).value).toBe("8B");
+  });
+});
+
+describe("Pagination", () => {
+  it("marks the current page and pages with full names", () => {
+    const onPageChange = vi.fn();
+    render(<Pagination page={5} count={12} onPageChange={onPageChange} />);
+    expect(screen.getByRole("navigation", { name: "Sidenavigasjon" })).toBeDefined();
+    const current = screen.getByRole("button", { name: "Side 5" });
+    expect(current.getAttribute("aria-current")).toBe("page");
+    fireEvent.click(screen.getByRole("button", { name: "Neste side" }));
+    expect(onPageChange).toHaveBeenCalledWith(6);
+    // windowed: first and last always reachable
+    expect(screen.getByRole("button", { name: "Side 1" })).toBeDefined();
+    expect(screen.getByRole("button", { name: "Side 12" })).toBeDefined();
+    expect(screen.queryByRole("button", { name: "Side 9" })).toBeNull();
+  });
+});
+
+describe("EmptyState", () => {
+  it("renders heading, description and action", () => {
+    render(
+      <EmptyState title="Ingen innleveringer ennå" action={<button>Opprett lekse</button>}>
+        Elevene har ikke levert noe i dette faget.
+      </EmptyState>,
+    );
+    expect(screen.getByRole("heading", { name: "Ingen innleveringer ennå" })).toBeDefined();
+    expect(screen.getByRole("button", { name: "Opprett lekse" })).toBeDefined();
   });
 });
 

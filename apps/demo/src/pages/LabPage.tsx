@@ -3,7 +3,10 @@ import { AlertLabel, Badge, Button, Text, TextLink } from "kobber";
 import {
   Avatar,
   Dialog,
+  EmptyState,
+  Pagination,
   ProgressBar,
+  Select,
   Skeleton,
   StatCard,
   Tab,
@@ -38,6 +41,11 @@ function DialogDemo() {
       </Dialog>
     </>
   );
+}
+
+function PaginationDemo() {
+  const [page, setPage] = useState(5);
+  return <Pagination page={page} count={12} onPageChange={setPage} />;
 }
 
 function ToastDemo() {
@@ -139,6 +147,40 @@ const proposals: Proposal[] = [
       <Tooltip content="Sender påminnelse til alle som ikke har levert">
         <Button variant="brand-secondary-b">Purr på innlevering</Button>
       </Tooltip>
+    ),
+  },
+  {
+    name: "Select",
+    doc: "select.md",
+    description:
+      "Skjemavalg på native <select> — plattformens tastatur og mobil-picker; TextInput-anatomi.",
+    demo: (
+      <Select label="Klasse" defaultValue="8B">
+        <option value="8A">8A</option>
+        <option value="8B">8B</option>
+        <option value="8C">8C</option>
+      </Select>
+    ),
+  },
+  {
+    name: "Pagination",
+    doc: "pagination.md",
+    description:
+      "Sidenavigasjon med vindu + ellipsis; aria-current på gjeldende side, fulle knappenavn.",
+    demo: <PaginationDemo />,
+  },
+  {
+    name: "EmptyState",
+    doc: "empty-state.md",
+    description: "Standardisert tom-tilstand: hva som er tomt, hvorfor, og neste steg.",
+    demo: (
+      <EmptyState
+        title="Ingen innleveringer ennå"
+        action={<Button variant="brand-secondary-b">Opprett lekse</Button>}
+        style={{ width: "100%", maxWidth: 480 }}
+      >
+        Når elevene leverer, dukker innleveringene opp her.
+      </EmptyState>
     ),
   },
   {
