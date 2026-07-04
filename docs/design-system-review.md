@@ -144,9 +144,17 @@ Først honnør der den hører hjemme, for her er dere lenger fremme enn vi
 først antok: bygget er **Style Dictionary**, det finnes
 valideringsskript (`validate-references`, `find-unused-tokens`), og
 `dist/CHANGELOG.txt` genereres per versjon med semver-klassifisering og
-ADDED/REMOVED-lister. Dessuten **bevarer CSS-buildene alias-kjeden** —
-`tokens.css` sier `--kobber-groups-…: var(--kobber-primitives-…)`, så
-referansegrafen er faktisk publisert.
+ADDED/REMOVED-lister. Dessuten **bevarer CSS-buildene hele
+referansegrafen**: i `tokens.css` er 938 av 939 komponent-deklarasjoner
+`var()`-referanser (763 → groups, 175 → semantics), groups og semantics
+refererer videre nedover, og kun primitives-laget inneholder literale
+hex-verdier (96 stk). Lagdelingen er altså reelt publisert — i CSS.
+
+En detalj kjeden avslører: `text-label/…/brand/tone-b` peker i 13.0.0 på
+`semantics/typography/color/brand/aubergine-50`. Driften mot Figma
+(`#fdf9f9` = aubergine-25) er altså en _ompeking av den semantiske
+referansen_ — nok et argument for at referansene, ikke bare verdiene,
+bør være synlige for alle konsumenter.
 
 To ting gjenstår:
 
