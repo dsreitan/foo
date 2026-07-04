@@ -114,7 +114,14 @@ export const root = style([
   passthrough for wrapped elements (`<input>` components spread `...props`
   onto the input).
 - Form controls wrap a real native input (visually hidden if styled),
-  label-wrapped, so checked/onChange/disabled just work.
+  label-wrapped, so checked/onChange/disabled just work — and are
+  `forwardRef` to that native element (React 18 support; refs don't
+  reach function components as props there). Same for Button/Filter.
+- Link components (TextLink, MenuItem, NavLink, BreadcrumbItem,
+  NavigationCard, ProductCard) are polymorphic: `as` prop via
+  `utils/polymorphic.ts` renders a router link (react-router/TanStack/
+  Next) instead of `<a>`, with the router's props typed from `as`.
+  New link-like components must follow (see docs/components/router-links.md).
 - **Every component must work with prerendered static HTML** (SSR/SSG):
   no `window`/`document`/browser APIs at module scope or during render —
   only inside effects and event handlers, with feature detection when the

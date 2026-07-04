@@ -99,5 +99,9 @@ In priority order; none of it blocks the first consumer:
    vs app code, definition of done, who reviews.
 8. **CI hardening**: run the axe sweep (apps/demo/scripts/axe-audit.mjs)
    in CI; add visual regression screenshots when the look stabilizes.
-9. **Ref story**: `forwardRef` across all components (or drop when the
-   monorepo moves to React 19, where ref-as-prop makes it moot).
+9. **Ref story**: done for the interactive set — Button, Filter and all
+   form controls (incl. lab Select) are `forwardRef` to their native
+   element; link components take router links via `as`
+   (docs/components/router-links.md). Extend to remaining components
+   only on demand (moot on React 19, where ref-as-prop flows through
+   `...props`).

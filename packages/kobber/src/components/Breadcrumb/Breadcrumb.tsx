@@ -1,5 +1,6 @@
-import type { AnchorHTMLAttributes, HTMLAttributes, ReactNode } from "react";
+import type { AnchorHTMLAttributes, ElementType, HTMLAttributes, ReactNode } from "react";
 import { cx } from "../../utils/cx";
+import type { PolymorphicProps } from "../../utils/polymorphic";
 import * as styles from "./Breadcrumb.css";
 
 export interface BreadcrumbProps extends HTMLAttributes<HTMLElement> {
@@ -26,20 +27,37 @@ export function Breadcrumb({
   );
 }
 
-export interface BreadcrumbItemProps extends AnchorHTMLAttributes<HTMLAnchorElement> {
-  children: ReactNode;
-}
+export type BreadcrumbItemProps<C extends ElementType = "a"> = PolymorphicProps<
+  C,
+  {
+    children: ReactNode;
+  }
+>;
 
-/** With href: a link up the hierarchy. Without: the current page. */
-export function BreadcrumbItem({ href, children, className, ...props }: BreadcrumbItemProps) {
+/**
+ * With href (or a router link via `as`): a link up the hierarchy.
+ * Without: the current page.
+ */
+export function BreadcrumbItem<C extends ElementType = "a">({
+  as,
+  children,
+  className,
+  ...props
+}: BreadcrumbItemProps<C>) {
+  const isLink = as !== undefined || ("href" in props && props.href !== undefined);
+  const Component: ElementType = as ?? "a";
   return (
     <li className={styles.item}>
-      {href ? (
-        <a href={href} className={cx(styles.link, className)} {...props}>
+      {isLink ? (
+        <Component className={cx(styles.link, className)} {...props}>
           {children}
-        </a>
+        </Component>
       ) : (
-        <span aria-current="page" className={cx(styles.current, className)}>
+        <span
+          aria-current="page"
+          className={cx(styles.current, className)}
+          {...(props as AnchorHTMLAttributes<HTMLAnchorElement>)}
+        >
           {children}
         </span>
       )}

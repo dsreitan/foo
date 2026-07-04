@@ -1,4 +1,4 @@
-import { useId, type ReactNode, type SelectHTMLAttributes } from "react";
+import { forwardRef, useId, type ReactNode, type SelectHTMLAttributes } from "react";
 import { ChevronDownIcon, cx } from "kobber";
 import * as styles from "./Select.css";
 
@@ -15,7 +15,10 @@ export interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
  * anatomy as TextInput. Dropdown is a menu, not a form control — this
  * fills that gap. See docs/proposals/select.md.
  */
-export function Select({ label, id, className, children, ...props }: SelectProps) {
+export const Select = forwardRef<HTMLSelectElement, SelectProps>(function Select(
+  { label, id, className, children, ...props },
+  ref,
+) {
   const autoId = useId();
   const selectId = id ?? autoId;
   return (
@@ -24,7 +27,7 @@ export function Select({ label, id, className, children, ...props }: SelectProps
         {label}
       </label>
       <span className={styles.fieldWrapper}>
-        <select className={styles.field} id={selectId} {...props}>
+        <select ref={ref} className={styles.field} id={selectId} {...props}>
           {children}
         </select>
         <span className={styles.icon} aria-hidden>
@@ -33,4 +36,4 @@ export function Select({ label, id, className, children, ...props }: SelectProps
       </span>
     </div>
   );
-}
+});

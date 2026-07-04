@@ -1,4 +1,4 @@
-import type { InputHTMLAttributes } from "react";
+import { forwardRef, type InputHTMLAttributes } from "react";
 import { SearchIcon } from "../icons";
 import { cx } from "../../utils/cx";
 import * as styles from "./Search.css";
@@ -13,10 +13,14 @@ export interface SearchProps extends Omit<
  * navigasjonsmenyer"). Native input props pass straight through;
  * wire up onChange/onKeyDown for the actual searching.
  */
-export function Search({ className, "aria-label": ariaLabel = "Søk", ...props }: SearchProps) {
+export const Search = forwardRef<HTMLInputElement, SearchProps>(function Search(
+  { className, "aria-label": ariaLabel = "Søk", ...props },
+  ref,
+) {
   return (
     <span className={cx(styles.root, className)}>
       <input
+        ref={ref}
         type="search"
         className={styles.input}
         placeholder="Søk"
@@ -28,4 +32,4 @@ export function Search({ className, "aria-label": ariaLabel = "Søk", ...props }
       </span>
     </span>
   );
-}
+});

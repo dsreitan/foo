@@ -1,4 +1,4 @@
-import { useId, type InputHTMLAttributes } from "react";
+import { forwardRef, useId, type InputHTMLAttributes } from "react";
 import { cx } from "../../utils/cx";
 import * as styles from "./TextInput.css";
 
@@ -17,7 +17,10 @@ export interface TextInputProps extends InputHTMLAttributes<HTMLInputElement> {
  * All native input props (value, onChange, placeholder, type, disabled,
  * ...) pass straight through to the <input> element.
  */
-export function TextInput({ label, id, className, ...props }: TextInputProps) {
+export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(function TextInput(
+  { label, id, className, ...props },
+  ref,
+) {
   const autoId = useId();
   const inputId = id ?? autoId;
   return (
@@ -25,7 +28,7 @@ export function TextInput({ label, id, className, ...props }: TextInputProps) {
       <label className={styles.label} htmlFor={inputId}>
         {label}
       </label>
-      <input className={styles.field} id={inputId} {...props} />
+      <input ref={ref} className={styles.field} id={inputId} {...props} />
     </div>
   );
-}
+});

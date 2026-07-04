@@ -1,4 +1,4 @@
-import type { InputHTMLAttributes, ReactNode } from "react";
+import { forwardRef, type InputHTMLAttributes, type ReactNode } from "react";
 import { CheckIcon } from "../icons";
 import { cx } from "../../utils/cx";
 import * as styles from "./Checkbox.css";
@@ -19,10 +19,13 @@ export interface CheckboxProps extends Omit<
  * hover/active. All native input props (checked, onChange, disabled,
  * name, value, ...) pass straight through.
  */
-export function Checkbox({ label, color = "brand", className, ...props }: CheckboxProps) {
+export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(function Checkbox(
+  { label, color = "brand", className, ...props },
+  ref,
+) {
   return (
     <label className={cx(styles.root, className)}>
-      <input type="checkbox" className={styles.input} {...props} />
+      <input ref={ref} type="checkbox" className={styles.input} {...props} />
       <span className={styles.control[color]} aria-hidden>
         <span className={styles.check}>
           <CheckIcon />
@@ -31,4 +34,4 @@ export function Checkbox({ label, color = "brand", className, ...props }: Checkb
       {label}
     </label>
   );
-}
+});
