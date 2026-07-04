@@ -1,0 +1,61 @@
+/**
+ * Prerender smoke test for the lab proposals — same contract as
+ * packages/kobber/tests/ssr.test.tsx: server-render + clean hydration.
+ */
+import { act, type ReactElement } from "react";
+import { renderToString } from "react-dom/server";
+import { hydrateRoot } from "react-dom/client";
+import { describe, expect, it, vi } from "vitest";
+import { Dialog, ProgressBar, Skeleton, StatCard, Toast } from "../src";
+
+const noop = () => {};
+
+const cases: [string, ReactElement][] = [
+  [
+    "Dialog (closed)",
+    <Dialog open={false} onClose={noop} title="Slett innlevering?">
+      Dette kan ikke angres.
+    </Dialog>,
+  ],
+  [
+    "Dialog (open)",
+    <Dialog open onClose={noop} title="Slett innlevering?">
+      Dette kan ikke angres.
+    </Dialog>,
+  ],
+  [
+    "Toast",
+    <Toast severity="success" onDismiss={noop}>
+      Lagret
+    </Toast>,
+  ],
+  ["Skeleton", <Skeleton variant="circle" width={40} height={40} />],
+  ["ProgressBar", <ProgressBar value={63} label="Maja Nilsen" />],
+  ["StatCard", <StatCard label="Aktive elever" value={128} />],
+];
+
+declare global {
+  var IS_REACT_ACT_ENVIRONMENT: boolean;
+}
+globalThis.IS_REACT_ACT_ENVIRONMENT = true;
+
+describe("prerendered static HTML (lab)", () => {
+  it.each(cases)("%s server-renders and hydrates without mismatch", async (_name, element) => {
+    const html = renderToString(element);
+    expect(html.length).toBeGreaterThan(0);
+
+    const container = document.createElement("div");
+    container.innerHTML = html;
+    document.body.appendChild(container);
+    const errors: unknown[][] = [];
+    const spy = vi.spyOn(console, "error").mockImplementation((...args) => errors.push(args));
+    let root: ReturnType<typeof hydrateRoot>;
+    await act(async () => {
+      root = hydrateRoot(container, element);
+    });
+    await act(async () => root.unmount());
+    spy.mockRestore();
+    container.remove();
+    expect(errors).toEqual([]);
+  });
+});

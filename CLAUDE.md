@@ -108,6 +108,15 @@ export const root = style([
   onto the input).
 - Form controls wrap a real native input (visually hidden if styled),
   label-wrapped, so checked/onChange/disabled just work.
+- **Every component must work with prerendered static HTML** (SSR/SSG):
+  no `window`/`document`/browser APIs at module scope or during render —
+  only inside effects and event handlers, with feature detection when the
+  API can be missing (see kobber-lab `Dialog`'s `showModal` fallback).
+  The initial client render must equal the server render (no `useId`
+  hacks, no `Math.random`, no `typeof window` branching in JSX).
+  Enforced by `tests/ssr.test.tsx` in each package: renderToString +
+  hydrateRoot with zero console errors — add every new component to its
+  case matrix.
 - Icons come from `src/components/icons/index.tsx` (16px placeholders,
   currentColor). Add missing icons there; do NOT add an icon library.
   Logos/fonts/icons will eventually come from the DAM CDN — ALL asset
@@ -136,7 +145,8 @@ export const root = style([
    (alphabetical), add a demo section in `apps/demo/src/pages/Gallery.tsx`
    with a one-line Norwegian description.
 6. Add tests in `packages/kobber/tests/` — testing-library, behavior-first
-   (roles, labels, keyboard), 2–4 per component.
+   (roles, labels, keyboard), 2–4 per component — and add the component
+   to the SSR matrix in `tests/ssr.test.tsx`.
    6b. Write `docs/components/<name>.md`: built-in behavior + "Usage
    responsibilities" (a11y duties the consumer keeps). Exemplify correct
    usage in the gallery demo.
