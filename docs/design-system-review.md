@@ -11,7 +11,9 @@ designsystemene i verden gjør annerledes, og hva som ville gjort Kobber
 til et system både mennesker og maskiner kan bygge feilfritt på.
 
 Konkrete bugs/funn ligger i `docs/upstream-findings.md` (token-drift som
-bryter WCAG, fokusfargen, hull i skalaene). Dette dokumentet er
+bryter WCAG, fokusfargen, hull i skalaene). Anbefalingene for
+variabel-modes (mørk modus, barnemodus, temaer) er utdypet i
+`docs/token-modes.md`. Dette dokumentet er
 arkitektur- og strukturnivået. Tall og målinger er fra
 `@gyldendal/kobber-tokens` 13.0.0 og Figma-filen per 2026-07-04;
 analysene kan kjøres på nytt (se «Metode» nederst).
