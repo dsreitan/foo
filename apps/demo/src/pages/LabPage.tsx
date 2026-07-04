@@ -5,6 +5,8 @@ import {
   Dialog,
   EmptyState,
   Pagination,
+  Pane,
+  PaneGroup,
   ProgressBar,
   Select,
   Skeleton,
@@ -147,6 +149,26 @@ const proposals: Proposal[] = [
       <Tooltip content="Sender påminnelse til alle som ikke har levert">
         <Button variant="brand-secondary-b">Purr på innlevering</Button>
       </Tooltip>
+    ),
+  },
+  {
+    name: "Pane",
+    doc: "pane.md",
+    description:
+      "Panellayout etter Material 3 sine panes: dra i skillelinjen (eller piltaster på den) for å endre bredde; stables på smale vinduer.",
+    demo: (
+      <PaneGroup style={{ width: "100%" }}>
+        <Pane defaultSize={200} minSize={160} maxSize={320} handle="end" label="Sidepanel" surface>
+          <Text as="p" variant="label" size="medium">
+            Fast panel — dra i kanten →
+          </Text>
+        </Pane>
+        <Pane label="Innhold" surface>
+          <Text as="p" variant="label" size="medium">
+            Fleksibelt panel som fyller resten.
+          </Text>
+        </Pane>
+      </PaneGroup>
     ),
   },
   {

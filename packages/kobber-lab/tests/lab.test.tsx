@@ -5,6 +5,8 @@ import {
   Dialog,
   EmptyState,
   Pagination,
+  Pane,
+  PaneGroup,
   ProgressBar,
   Select,
   Skeleton,
@@ -146,6 +148,41 @@ describe("EmptyState", () => {
     );
     expect(screen.getByRole("heading", { name: "Ingen innleveringer ennå" })).toBeDefined();
     expect(screen.getByRole("button", { name: "Opprett lekse" })).toBeDefined();
+  });
+});
+
+describe("Pane", () => {
+  function Workspace() {
+    return (
+      <PaneGroup>
+        <Pane defaultSize={240} minSize={200} maxSize={320} handle="end" label="Utforsker">
+          venstre
+        </Pane>
+        <Pane label="Dokument">midten</Pane>
+      </PaneGroup>
+    );
+  }
+
+  it("exposes an APG window splitter", () => {
+    render(<Workspace />);
+    const splitter = screen.getByRole("separator", { name: "Endre bredde på Utforsker" });
+    expect(splitter.getAttribute("aria-orientation")).toBe("vertical");
+    expect(splitter.getAttribute("aria-valuenow")).toBe("240");
+    expect(splitter.getAttribute("aria-valuemin")).toBe("200");
+    expect(splitter.getAttribute("aria-valuemax")).toBe("320");
+  });
+
+  it("resizes with arrow keys, clamped to min/max", () => {
+    render(<Workspace />);
+    const splitter = screen.getByRole("separator", { name: "Endre bredde på Utforsker" });
+    fireEvent.keyDown(splitter, { key: "ArrowRight" });
+    expect(splitter.getAttribute("aria-valuenow")).toBe("256");
+    fireEvent.keyDown(splitter, { key: "End" });
+    expect(splitter.getAttribute("aria-valuenow")).toBe("320");
+    fireEvent.keyDown(splitter, { key: "ArrowRight" });
+    expect(splitter.getAttribute("aria-valuenow")).toBe("320");
+    fireEvent.keyDown(splitter, { key: "Home" });
+    expect(splitter.getAttribute("aria-valuenow")).toBe("200");
   });
 });
 

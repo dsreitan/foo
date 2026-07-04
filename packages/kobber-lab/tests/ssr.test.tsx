@@ -11,6 +11,8 @@ import {
   Dialog,
   EmptyState,
   Pagination,
+  Pane,
+  PaneGroup,
   ProgressBar,
   Select,
   Skeleton,
@@ -53,6 +55,15 @@ const cases: [string, ReactElement][] = [
     </Select>,
   ],
   ["Pagination", <Pagination page={5} count={12} onPageChange={() => {}} />],
+  [
+    "PaneGroup",
+    <PaneGroup>
+      <Pane defaultSize={240} handle="end" label="Utforsker" surface>
+        venstre
+      </Pane>
+      <Pane label="Dokument">midten</Pane>
+    </PaneGroup>,
+  ],
   ["EmptyState", <EmptyState title="Ingen treff">Prøv et annet søkeord.</EmptyState>],
   [
     "Tabs",

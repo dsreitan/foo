@@ -1,6 +1,16 @@
 import { useState } from "react";
 import { Badge, Divider, Filter, NavLink, NavLinkGroup, Text } from "kobber";
-import { Avatar, ProgressBar, StatCard, Tab, TabList, TabPanel, Tabs } from "kobber-lab";
+import {
+  Avatar,
+  Pane,
+  PaneGroup,
+  ProgressBar,
+  StatCard,
+  Tab,
+  TabList,
+  TabPanel,
+  Tabs,
+} from "kobber-lab";
 import { students } from "../lib";
 import * as styles from "./pages.css";
 
@@ -28,8 +38,11 @@ const activity = [
   { name: "Olivia Olsen", what: "startet på oppgave 2" },
 ];
 
-/** Workspace with toggleable panels on both sides of an editor, VS Code-style:
- * explorer on the left, tabbed documents in the middle, info widgets on the right. */
+/**
+ * Workspace after Material 3's canonical layouts: fixed panes (explorer,
+ * details) around a flexible document pane. Drag the boundaries — or use
+ * arrow keys on them — to resize; panes stack on compact windows.
+ */
 export function WorkspacePage() {
   const [showExplorer, setShowExplorer] = useState(true);
   const [showDetails, setShowDetails] = useState(true);
@@ -51,31 +64,36 @@ export function WorkspacePage() {
         </div>
       </div>
 
-      <div className={styles.workspace}>
+      <PaneGroup aria-label="Arbeidsflate">
         {showExplorer && (
-          <div className={styles.workspacePanel}>
-            <div className={styles.widget}>
-              <NavLinkGroup label="Utforsker" className={styles.explorer}>
-                <NavLink href="#/arbeidsflate" active>
-                  Ukeplan.md
-                </NavLink>
-                <NavLink href="#/arbeidsflate">Oppgaver.md</NavLink>
-                <NavLink href="#/arbeidsflate">Prøve.md</NavLink>
-                <NavLink href="#/arbeidsflate" color="subtle">
-                  Vedlegg
-                </NavLink>
-              </NavLinkGroup>
-              <Divider />
-              <NavLinkGroup label="Snarveier" className={styles.explorer}>
-                <NavLink href="#/lekser">Lekseoversikt</NavLink>
-                <NavLink href="#/innhold">Innholdsbibliotek</NavLink>
-                <NavLink href="#/video">Videoer</NavLink>
-              </NavLinkGroup>
-            </div>
-          </div>
+          <Pane
+            defaultSize={240}
+            minSize={190}
+            maxSize={360}
+            handle="end"
+            label="Utforsker"
+            surface
+          >
+            <NavLinkGroup label="Utforsker" className={styles.explorer}>
+              <NavLink href="#/arbeidsflate" active>
+                Ukeplan.md
+              </NavLink>
+              <NavLink href="#/arbeidsflate">Oppgaver.md</NavLink>
+              <NavLink href="#/arbeidsflate">Prøve.md</NavLink>
+              <NavLink href="#/arbeidsflate" color="subtle">
+                Vedlegg
+              </NavLink>
+            </NavLinkGroup>
+            <Divider />
+            <NavLinkGroup label="Snarveier" className={styles.explorer}>
+              <NavLink href="#/lekser">Lekseoversikt</NavLink>
+              <NavLink href="#/innhold">Innholdsbibliotek</NavLink>
+              <NavLink href="#/video">Videoer</NavLink>
+            </NavLinkGroup>
+          </Pane>
         )}
 
-        <div className={styles.workspaceCenter}>
+        <Pane label="Dokumenter">
           <Tabs defaultValue="plan">
             <TabList label="Åpne dokumenter">
               {documents.map((doc) => (
@@ -96,45 +114,48 @@ export function WorkspacePage() {
               </TabPanel>
             ))}
           </Tabs>
-        </div>
+        </Pane>
 
         {showDetails && (
-          <div className={styles.workspacePanel}>
-            <div className={styles.widget}>
-              <Text variant="title" size="small" as="h2">
-                Nøkkeltall
-              </Text>
-              <StatCard label="Aktive elever" value={inProgress.length + 1} />
-              <StatCard label="Ubesvarte spørsmål" value={2} />
-            </div>
-            <div className={styles.widget}>
-              <Text variant="title" size="small" as="h2">
-                Fremdrift
-              </Text>
-              {inProgress.slice(0, 3).map((student) => (
-                <ProgressBar
-                  key={student.id}
-                  value={student.progress}
-                  label={`Fremdrift ${student.name}`}
-                />
-              ))}
-            </div>
-            <div className={styles.widget}>
-              <Text variant="title" size="small" as="h2">
-                Siste aktivitet
-              </Text>
-              {activity.map((item) => (
-                <div key={item.name} className={styles.row}>
-                  <Avatar name={item.name} size="small" />
-                  <Text as="p" variant="label" size="small">
-                    {item.name} {item.what}
-                  </Text>
-                </div>
-              ))}
-            </div>
-          </div>
+          <Pane
+            defaultSize={280}
+            minSize={230}
+            maxSize={420}
+            handle="start"
+            label="Detaljer"
+            surface
+          >
+            <Text variant="title" size="small" as="h2">
+              Nøkkeltall
+            </Text>
+            <StatCard label="Aktive elever" value={inProgress.length + 1} />
+            <StatCard label="Ubesvarte spørsmål" value={2} />
+            <Divider />
+            <Text variant="title" size="small" as="h2">
+              Fremdrift
+            </Text>
+            {inProgress.slice(0, 3).map((student) => (
+              <ProgressBar
+                key={student.id}
+                value={student.progress}
+                label={`Fremdrift ${student.name}`}
+              />
+            ))}
+            <Divider />
+            <Text variant="title" size="small" as="h2">
+              Siste aktivitet
+            </Text>
+            {activity.map((item) => (
+              <div key={item.name} className={styles.row}>
+                <Avatar name={item.name} size="small" />
+                <Text as="p" variant="label" size="small">
+                  {item.name} {item.what}
+                </Text>
+              </div>
+            ))}
+          </Pane>
         )}
-      </div>
+      </PaneGroup>
     </main>
   );
 }
