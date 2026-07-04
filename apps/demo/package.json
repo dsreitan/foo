@@ -7,10 +7,11 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsgo --noEmit"
   },
   "dependencies": {
-    "kobber": "*",
+    "@vanilla-extract/css": "^1.21.1",
+    "kobber": "workspace:*",
     "react": "^19.2.7",
     "react-dom": "^19.2.7"
   },

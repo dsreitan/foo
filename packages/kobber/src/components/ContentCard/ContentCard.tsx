@@ -2,7 +2,7 @@ import type { HTMLAttributes, ReactNode } from "react";
 import { cx } from "../../utils/cx";
 import * as styles from "./ContentCard.css";
 
-export interface ContentCardProps extends HTMLAttributes<HTMLElement> {
+export interface ContentCardProps extends Omit<HTMLAttributes<HTMLElement>, "title"> {
   /** prominent = stacked with large image; subtle = compact row */
   variant?: keyof typeof styles.root;
   /** Image slot (an <img>, gradient, illustration...) */

@@ -2,7 +2,7 @@ import type { AnchorHTMLAttributes, ReactNode } from "react";
 import { cx } from "../../utils/cx";
 import * as styles from "./ProductCard.css";
 
-export interface ProductCardProps extends AnchorHTMLAttributes<HTMLAnchorElement> {
+export interface ProductCardProps extends Omit<AnchorHTMLAttributes<HTMLAnchorElement>, "title"> {
   /** Product/cover image slot */
   image?: ReactNode;
   title: ReactNode;

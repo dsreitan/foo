@@ -19,14 +19,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: npm
-      - run: npm ci
-      - run: npx vp lint
-      - run: npx vp test
-      - run: npm run build
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec vp lint
+      - run: pnpm exec vp test
+      - run: pnpm run typecheck
+      - run: pnpm run build
       - uses: actions/upload-pages-artifact@v3
         with:
           path: apps/demo/dist
