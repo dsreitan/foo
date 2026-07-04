@@ -92,3 +92,10 @@ export const sections = style({
   minWidth: 0,
   flexGrow: 1,
 });
+
+export const sectionHeader = style({
+  display: "flex",
+  alignItems: "baseline",
+  justifyContent: "space-between",
+  gap: val(content.space.gap.small),
+});

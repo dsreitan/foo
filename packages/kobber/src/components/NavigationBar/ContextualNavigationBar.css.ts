@@ -5,6 +5,7 @@ const bar = tokens.component._contextualNavigationBar;
 
 export const root = style({
   display: "flex",
+  flexWrap: "wrap",
   alignItems: "center",
   justifyContent: "space-between",
   paddingBlock: val(bar.padding.block),
@@ -14,6 +15,7 @@ export const root = style({
 
 export const left = style({
   display: "flex",
+  flexWrap: "wrap",
   alignItems: "center",
   gap: val(bar.leftContainer.gap),
 });

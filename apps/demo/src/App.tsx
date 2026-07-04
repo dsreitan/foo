@@ -1,17 +1,30 @@
 import { useEffect, useState } from "react";
+import { ContextualNavigationBar, Logo, MenuItem, NavigationBar } from "kobber";
 import { Gallery } from "./pages/Gallery";
-import { Example } from "./pages/Example";
-import * as styles from "./App.css";
+import { Landing } from "./pages/Landing";
+import { SearchPage } from "./pages/SearchPage";
+import { ShopPage } from "./pages/ShopPage";
+import { DashboardPage } from "./pages/DashboardPage";
+import { SlideshowPage } from "./pages/SlideshowPage";
+import { StudentsPage } from "./pages/StudentsPage";
 
 const routes = [
-  { hash: "#/", title: "Komponenter" },
-  { hash: "#/eksempel", title: "Eksempelside" },
+  { hash: "#/", title: "Hjem", page: <Landing /> },
+  { hash: "#/komponenter", title: "Komponenter", page: <Gallery /> },
+  { hash: "#/sok", title: "Søk", page: <SearchPage /> },
+  { hash: "#/butikk", title: "Nettbutikk", page: <ShopPage /> },
+  { hash: "#/dashbord", title: "Dashbord", page: <DashboardPage /> },
+  { hash: "#/presentasjon", title: "Presentasjon", page: <SlideshowPage /> },
+  { hash: "#/elever", title: "Elever", page: <StudentsPage /> },
 ];
 
 function useHashRoute() {
   const [hash, setHash] = useState(window.location.hash || "#/");
   useEffect(() => {
-    const onChange = () => setHash(window.location.hash || "#/");
+    const onChange = () => {
+      setHash(window.location.hash || "#/");
+      window.scrollTo(0, 0);
+    };
     window.addEventListener("hashchange", onChange);
     return () => window.removeEventListener("hashchange", onChange);
   }, []);
@@ -20,51 +33,24 @@ function useHashRoute() {
 
 function App() {
   const hash = useHashRoute();
-
-  if (hash === "#/eksempel") {
-    return (
-      <>
-        <nav className={styles.nav} style={{ padding: "8px 16px" }}>
-          {routes.map((route) => (
-            <a
-              key={route.hash}
-              href={route.hash}
-              className={styles.navLink}
-              aria-current={hash === route.hash}
-            >
-              {route.title}
-            </a>
-          ))}
-        </nav>
-        <Example />
-      </>
-    );
-  }
+  const route = routes.find((r) => r.hash === hash) ?? routes[0];
 
   return (
-    <main className={styles.page}>
-      <header className={styles.header}>
-        <nav className={styles.nav}>
-          {routes.map((route) => (
-            <a
-              key={route.hash}
-              href={route.hash}
-              className={styles.navLink}
-              aria-current={hash === route.hash}
-            >
-              {route.title}
-            </a>
-          ))}
-        </nav>
-        <h1 className={styles.title}>Kobber komponenter</h1>
-        <p className={styles.subtitle}>
-          React-komponentbibliotek basert på Kobber-designsystemet i Figma. Bygget med Vite og
-          vanilla-extract.
-        </p>
-      </header>
-
-      <Gallery hash={hash} />
-    </main>
+    <>
+      <NavigationBar
+        logo={<Logo />}
+        onSearchClick={() => (location.hash = "#/sok")}
+        onProfileClick={() => (location.hash = "#/elever")}
+      />
+      <ContextualNavigationBar label="Hovedmeny">
+        {routes.map((r) => (
+          <MenuItem key={r.hash} href={r.hash} active={r.hash === route.hash}>
+            {r.title}
+          </MenuItem>
+        ))}
+      </ContextualNavigationBar>
+      {route.page}
+    </>
   );
 }
 

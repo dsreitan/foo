@@ -42,12 +42,25 @@ import {
   TextInput,
 } from "kobber";
 import * as styles from "../App.css";
+import { FIGMA_FILE, figmaNode } from "../lib";
 
 interface ComponentDemo {
   name: string;
   description: string;
   demo: React.ReactNode;
 }
+
+/** Figma node per component where the node id is known; file root otherwise. */
+const figmaLinks: Record<string, string> = {
+  "Navigation Bar": figmaNode("11008:674"),
+  "Contextual navigation bar": figmaNode("21784:24833"),
+  Filter: figmaNode("3601:10313"),
+  Counter: figmaNode("19792:14807"),
+  Button: figmaNode("1321:2319"),
+  Text: figmaNode("12347:3940"),
+  Search: figmaNode("10080:270"),
+  List: figmaNode("13382:13356"),
+};
 
 const slug = (name: string) => name.toLowerCase().replace(/\s+/g, "-");
 
@@ -654,31 +667,53 @@ const components: ComponentDemo[] = [
   },
 ];
 
-export function Gallery({ hash }: { hash?: string }) {
+export function Gallery() {
+  const [activeId, setActiveId] = useState<string>();
+  const scrollTo = (id: string) => {
+    document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+    setActiveId(id);
+  };
   return (
-    <div className={styles.galleryLayout}>
-      <aside className={styles.aside}>
-        <nav aria-label="Komponentoversikt">
+    <main className={styles.page}>
+      <header className={styles.header}>
+        <h1 className={styles.title}>Komponenter</h1>
+        <p className={styles.subtitle}>
+          Alle komponentene i biblioteket, med lenke til komponenten i Figma.
+        </p>
+      </header>
+      <div className={styles.galleryLayout}>
+        <aside className={styles.aside}>
+          <nav aria-label="Komponentoversikt">
+            {components.map((component) => (
+              <MenuItem
+                key={component.name}
+                active={activeId === slug(component.name)}
+                onClick={() => scrollTo(slug(component.name))}
+              >
+                {component.name}
+              </MenuItem>
+            ))}
+          </nav>
+        </aside>
+        <div className={styles.sections}>
           {components.map((component) => (
-            <MenuItem
-              key={component.name}
-              href={`#${slug(component.name)}`}
-              active={hash === `#${slug(component.name)}`}
-            >
-              {component.name}
-            </MenuItem>
+            <section key={component.name} id={slug(component.name)} className={styles.card}>
+              <div className={styles.sectionHeader}>
+                <h2 className={styles.componentName}>{component.name}</h2>
+                <TextLink
+                  href={figmaLinks[component.name] ?? FIGMA_FILE}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Figma ↗
+                </TextLink>
+              </div>
+              <p>{component.description}</p>
+              <div className={styles.demoRow}>{component.demo}</div>
+            </section>
           ))}
-        </nav>
-      </aside>
-      <div className={styles.sections}>
-        {components.map((component) => (
-          <section key={component.name} id={slug(component.name)} className={styles.card}>
-            <h2 className={styles.componentName}>{component.name}</h2>
-            <p>{component.description}</p>
-            <div className={styles.demoRow}>{component.demo}</div>
-          </section>
-        ))}
+        </div>
       </div>
-    </div>
+    </main>
   );
 }

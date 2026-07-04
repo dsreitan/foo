@@ -20,7 +20,6 @@ export const root = style([
     color: textLabel.text.color.brand.toneA,
     textDecoration: "none",
     textAlign: "left",
-    width: "100%",
     cursor: "pointer",
     selectors: {
       "&:hover": {
