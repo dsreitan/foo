@@ -35,7 +35,7 @@ Først det som fortjener honnør, fordi det er reelt og uvanlig:
 - **Tokens publiseres på npm med semver.** Selvfølgelig for de store,
   sjeldent i praksis ellers.
 - **Figma-variablene har god navnehygiene** (`button/background/color/
-  brand/primary/tone-a/fallback`) og komponent-props i Figma
+brand/primary/tone-a/fallback`) og komponent-props i Figma
   (color × level × tone) mapper 1:1 til kode-varianter. Vår Button-API
   er bokstavelig talt Figma-propene — det beste enkelttrekket ved å
   konsumere Kobber.
@@ -54,15 +54,15 @@ Referansepunkter: Material 3 (Google), Carbon (IBM), Polaris (Shopify),
 Spectrum (Adobe), Primer (GitHub), Atlassian Design System. Ulike
 selskaper, påfallende likt fasit på fem punkter:
 
-| Prinsipp | Hvordan det ser ut hos de store | Kobber i dag |
-| -------- | ------------------------------- | ------------ |
-| **Rollebaserte semantiske tokens** | M3: `md.sys.color.on-primary`; Carbon: `text-primary`, `layer-01`; Polaris: `color-bg-surface`; Primer: `fgColor.default` | Semantikklaget navngir *opphav*: `identity/base/aubergine-25` |
-| **Par-tokens («on-farger»)** | M3s `primary` + `on-primary` gjør tekst-på-flate til ett oppslag og kontrast verifiserbar | Paringen er konvensjon («motsatt tone») som hver konsument må gjette |
-| **Én tilstandsgrammatikk** | Atlassian: alt har `.hovered`/`.pressed`-suffiks; Carbon: `-hover`-suffiks overalt | Tre mekanismer om hverandre (se funn 3) |
-| **Temaer som modes** | Carbon: white/g10/g90/g100 som token-sett; Primer/Atlassian: Figma variable modes → CSS-vars | Temaer (nature, fantasy…) er parallelle fargegrener i hvert komponent-token |
-| **Maskinformat med bevart intensjon** | Spectrum/Primer: DTCG-aktig JSON der aliaser står som `{color.text.primary}`; Style Dictionary-pipeline | npm-pakken er flatede verdier — alias-kjeden er slettet |
+| Prinsipp                              | Hvordan det ser ut hos de store                                                                                           | Kobber i dag                                                                                                               |
+| ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| **Rollebaserte semantiske tokens**    | M3: `md.sys.color.on-primary`; Carbon: `text-primary`, `layer-01`; Polaris: `color-bg-surface`; Primer: `fgColor.default` | Semantikklaget navngir _opphav_: `identity/base/aubergine-25`                                                              |
+| **Par-tokens («on-farger»)**          | M3s `primary` + `on-primary` gjør tekst-på-flate til ett oppslag og kontrast verifiserbar                                 | Paringen er konvensjon («motsatt tone») som hver konsument må gjette                                                       |
+| **Én tilstandsgrammatikk**            | Atlassian: alt har `.hovered`/`.pressed`-suffiks; Carbon: `-hover`-suffiks overalt                                        | Tre mekanismer om hverandre (se funn 3)                                                                                    |
+| **Temaer som modes**                  | Carbon: white/g10/g90/g100 som token-sett; Primer/Atlassian: Figma variable modes → CSS-vars                              | Temaer (nature, fantasy…) er parallelle fargegrener i hvert komponent-token                                                |
+| **Maskinformat med bevart intensjon** | Spectrum/Primer: DTCG-aktig JSON der aliaser står som `{color.text.primary}`; Style Dictionary-pipeline                   | Style Dictionary-pipeline finnes; CSS-buildene bevarer referansene, men JS-builden er flatet og kilde-JSON publiseres ikke |
 
-I tillegg er alle fem *åpne*: dokumentasjonssidene genereres fra
+I tillegg er alle fem _åpne_: dokumentasjonssidene genereres fra
 tokens, Figma-bibliotekene er publiserte og navigerbare, og endringer
 har changelog med deprecation-løp. Det er kontrakten som gjør at
 hundrevis av team tør å bygge på dem.
@@ -74,7 +74,7 @@ hundrevis av team tør å bygge på dem.
 ### 1. Semantikklaget navngir opphav, ikke rolle
 
 `semantics/color` er organisert som `identity/{brand,base,extended}/
-aubergine-25` — altså *hvor fargen kommer fra*, ikke *hva den er til*.
+aubergine-25` — altså _hvor fargen kommer fra_, ikke _hva den er til_.
 En konsument kan ikke spørre systemet «hva er standard tekstfarge på en
 brand-flate?»; man må kunne paletten utenat eller reverse-engineere
 komponent-tokens.
@@ -110,7 +110,7 @@ I dag uttrykkes hover/aktiv på tre måter:
 2. **Søsken-token**: `filter/background/color/hover` ved siden av
    `fallback` og `active` — 982 rene strengverdier.
 3. **Universal overlegg**: `universal/hover/container/{lighten, darken,
-   opacity}` som males over flaten.
+opacity}` som males over flaten.
 
 Alle tre er gyldige designvalg — men én ad gangen. For en konsument (og
 især en maskin) betyr blandingen at hvert token må inspiseres for form
@@ -138,25 +138,38 @@ forbilledlig: `--p-color-{property}-{role}-{variant}-{state}`) og lint
 token-bygget mot den. Grammatikk + lint koster en dag og stopper all
 fremtidig drift av dette slaget.
 
-### 5. Publiseringen sletter intensjonen — og drifter
+### 5. Publiseringen: god pipeline, men JS-konsumenter mister intensjonen — og utgivelsen er manuell
 
-npm-pakken er ferdig flatede JS-objekter. Det er *lettvint* å konsumere
-(ett import-statement — oppriktig takk), men to ting går tapt:
+Først honnør der den hører hjemme, for her er dere lenger fremme enn vi
+først antok: bygget er **Style Dictionary**, det finnes
+valideringsskript (`validate-references`, `find-unused-tokens`), og
+`dist/CHANGELOG.txt` genereres per versjon med semver-klassifisering og
+ADDED/REMOVED-lister. Dessuten **bevarer CSS-buildene alias-kjeden** —
+`tokens.css` sier `--kobber-groups-…: var(--kobber-primitives-…)`, så
+referansegrafen er faktisk publisert.
 
-- **Alias-kjeden.** Om `button/background` peker på
-  `semantics/surface/brand` er usynlig i output; alle referanser er
-  erstattet med hex. Ingen verktøy kan lenger resonnere om intensjon,
-  og punkt 1–2 blir umulige å verifisere nedstrøms.
-- **Synkroniteten.** Vi har dokumentert at Figma i dag sier `#fdf9f9`
-  der npm 13.0.0 sier `#f9eaed` — driften er årsaken til WCAG-bruddet
-  (`docs/upstream-findings.md` funn 1).
+To ting gjenstår:
 
-**Anbefaling:** publiser i tillegg W3C **DTCG-format** (`$value`,
-`$type`, aliaser som `{semantics.color.text.on-brand}`) generert direkte
-fra Figma Variables-APIet, med Style Dictionary/Terrazzo som pipeline —
-samme kilde kan da bygge dagens JS-objekter uendret. Legg en CI-diff
-mellom Figma og publisert pakke, og en CHANGELOG per versjon. Da er
-drift umulig å publisere ubemerket.
+- **JS-builden flater ut.** `dist/tokens.js` — det formatet
+  React/TypeScript-konsumenter (og agenter) bruker — har bare literale
+  hex-verdier; om `button/background` peker på et semantisk token er
+  usynlig. Kilde-JSON-en (design-token-eksporten som CSS og JS bygges
+  fra) ligger ikke i `dist`. Konsekvens: CSS-konsumenter kan spore
+  intensjon, JS-konsumenter kan ikke.
+- **Utgivelsen er et manuelt steg.** Figma sier i dag `#fdf9f9` der
+  siste publiserte npm (13.0.0) sier `#f9eaed` — driften som er årsaken
+  til WCAG-bruddet (`docs/upstream-findings.md` funn 1) er altså ikke
+  en datamodellfeil, men et release-etterslep.
+
+**Anbefaling:** (a) legg kilde-JSON-en (gjerne i W3C DTCG-format med
+`$value`/`$type` og aliaser) i `dist` — eller bygg JS-varianten med
+`outputReferences` — slik at JS/agent-konsumenter får samme sporbarhet
+som CSS-konsumentene allerede har; med Style Dictionary på plass er
+dette konfigurasjon, ikke ny pipeline. (b) Automatiser publiseringen
+(eller minst en CI-diff Figma ↔ siste npm) slik at endringer i Figma
+ikke kan bli liggende upublisert ubemerket. Changelog-genereringen dere
+har er forbilledlig — gjør den gjerne maskinlesbar (JSON ved siden av
+txt) med deprecation-markører.
 
 ### 6. Fundamenter som mangler (og ett som var gjemt)
 
@@ -221,10 +234,12 @@ rangert etter hva som faktisk kostet og reddet tid:
 6. **Bevarte aliaser = sporbar intensjon.** DTCG-referanser lar en
    agent svare «hvorfor er denne knappen mørkerød?» med en kjede
    (`button/bg → surface/brand → aubergine-750`) i stedet for en gjetning.
-7. **Changelog + deprecations = automatiske migrasjoner.** Med
-   maskinlesbare deprecations kan agenter skrive codemods for
-   konsumentene ved major-versjoner. I dag måtte vi diffe hex-verdier
-   for å oppdage at 13.0.0 var ute av synk.
+7. **Changelog + deprecations = automatiske migrasjoner.**
+   `CHANGELOG.txt`-genereringen deres er allerede bedre enn hos mange —
+   gjør den maskinlesbar (JSON) med deprecation-markører, så kan
+   agenter skrive codemods for konsumentene ved major-versjoner.
+   (Driften i 13.0.0 måtte vi likevel finne ved å diffe hex mot Figma —
+   en publisert «bygget fra Figma-versjon X»-stämpel hadde avslørt den.)
 8. **Kontraktstester bør følge tokens.** Kontrast på alle par, monotone
    skalaer, komplette par, navnegrammatikk — alt er noen titalls linjer
    (våre ligger i `packages/kobber/scripts/contrast-report.mjs` og er
@@ -234,9 +249,10 @@ rangert etter hva som faktisk kostet og reddet tid:
 
 ## Fem prioriterte anbefalinger
 
-1. **Republiser tokens fra gjeldende Figma + CI-diff mot Figma
-   Variables-APIet** — retter dagens WCAG-brudd uten kodeendringer hos
-   noen konsument, og gjør drift upubliserbar. (Detaljer:
+1. **Publiser ny tokens-versjon fra gjeldende Figma, og automatiser
+   utgivelsen** (eller minst en CI-diff Figma ↔ siste npm) — retter
+   dagens WCAG-brudd uten kodeendringer hos noen konsument, og gjør at
+   release-etterslep ikke kan bli usynlig drift. (Detaljer:
    `docs/upstream-findings.md` funn 1.)
 2. **Rollebaserte semantiske tokens med on-par** (`surface/brand` +
    `text/on-brand`), og la komponent-tokens referere dem. Størst
@@ -244,8 +260,10 @@ rangert etter hva som faktisk kostet og reddet tid:
 3. **Én navne- og tilstandsgrammatikk, lintet i token-bygget.**
    En side dokumentasjon + en lint-regel; stopper kategori 3 og 4 for
    alltid.
-4. **Publiser DTCG-format ved siden av dagens JS** (Style Dictionary/
-   Terrazzo fra Variables-APIet), med CHANGELOG og deprecations.
+4. **Gi JS-konsumentene referansene CSS-buildene allerede har**: legg
+   kilde-JSON (gjerne DTCG) i `dist`, eller bygg JS med
+   `outputReferences` — konfigurasjon i Style Dictionary-oppsettet dere
+   allerede kjører. Maskinlesbar changelog med deprecations på kjøpet.
 5. **Åpne Figma-strukturen** (synlige sider, publisert bibliotek,
    beskrivelser overalt, Code Connect når koden er hjemme hos et team).
 
