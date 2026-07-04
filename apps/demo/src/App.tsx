@@ -7,6 +7,7 @@ import { ShopPage } from "./pages/ShopPage";
 import { DashboardPage } from "./pages/DashboardPage";
 import { SlideshowPage } from "./pages/SlideshowPage";
 import { StudentsPage } from "./pages/StudentsPage";
+import { LabPage } from "./pages/LabPage";
 
 const routes = [
   { hash: "#/", title: "Hjem", page: <Landing /> },
@@ -16,6 +17,7 @@ const routes = [
   { hash: "#/dashbord", title: "Dashbord", page: <DashboardPage /> },
   { hash: "#/presentasjon", title: "Presentasjon", page: <SlideshowPage /> },
   { hash: "#/elever", title: "Elever", page: <StudentsPage /> },
+  { hash: "#/lab", title: "Lab", page: <LabPage /> },
 ];
 
 function useHashRoute() {

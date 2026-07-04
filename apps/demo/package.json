@@ -12,6 +12,7 @@
   "dependencies": {
     "@vanilla-extract/css": "^1.21.1",
     "kobber": "workspace:*",
+    "kobber-lab": "workspace:*",
     "react": "^19.2.7",
     "react-dom": "^19.2.7"
   },

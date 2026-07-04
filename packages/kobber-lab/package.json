@@ -1,0 +1,26 @@
+{
+  "name": "kobber-lab",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Component proposals for the Kobber team - built on Kobber tokens, not yet in the design system",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsgo --noEmit"
+  },
+  "dependencies": {
+    "@vanilla-extract/css": "^1.21.1",
+    "kobber": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.17",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  }
+}

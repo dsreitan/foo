@@ -11,8 +11,15 @@ small, verified increments.
   `src/styles/`, tests in `tests/`.
 - `apps/demo` — gallery (`#/`) + composed example page (`#/eksempel`).
   Imports from `"kobber"` like a real consumer.
-- `docs/` — per-component usage & a11y docs (`docs/components/<name>.md`)
-  and `docs/dam.md` for the asset CDN.
+- `packages/kobber-lab` — component PROPOSALS for the Kobber team:
+  things our products need that aren't in the Kobber Figma yet. Built on
+  `kobber/styles` tokens, same recipe, plus proposed motion tokens
+  (`src/styles/motion.ts`). Every component has a pitch in
+  `docs/proposals/<name>.md` (motivation, tokens, a11y, animation spec)
+  and a demo on the Lab page. When Kobber adopts one, implement it in
+  `packages/kobber` and delete it here.
+- `docs/` — per-component usage & a11y docs (`docs/components/<name>.md`),
+  proposals (`docs/proposals/`), and `docs/dam.md` for the asset CDN.
 - `TODO.md` — the roadmap. Work top-down within its "Suggested order",
   tick items off (`- [x]`) in the same commit as the implementation.
 
@@ -66,7 +73,8 @@ live in the ROOT package.json because vitest.config.ts is at the root.
 6. **The kobber package mirrors Figma — nothing else goes in it.** If a
    component doesn't exist in the Kobber Figma library/tokens, it doesn't
    belong in `packages/kobber` (no Stack/Grid/Center utility components,
-   no demo helpers). Layout and presentation code for the demo lives in
+   no demo helpers). Components we NEED but Kobber lacks go in
+   `packages/kobber-lab` as documented proposals. Layout and presentation code for the demo lives in
    `apps/demo` (`App.css.ts`, page-level `.css.ts` files). App-level
    concerns like @font-face loading also live in the app.
 
