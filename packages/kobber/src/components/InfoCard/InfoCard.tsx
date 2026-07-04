@@ -9,18 +9,28 @@ export interface InfoCardProps extends Omit<HTMLAttributes<HTMLElement>, "title"
   image?: ReactNode;
   /** Body: role, bio, contact links... */
   children?: ReactNode;
+  /** Heading level of the title; match the page outline (default h3) */
+  headingLevel?: 2 | 3 | 4;
 }
 
 /**
  * Kobber Info Card — presentation of a person or entity: 120px image
  * beside a text column. Not interactive by itself.
  */
-export function InfoCard({ title, image, className, children, ...props }: InfoCardProps) {
+export function InfoCard({
+  title,
+  image,
+  headingLevel = 3,
+  className,
+  children,
+  ...props
+}: InfoCardProps) {
+  const Heading = `h${headingLevel}` as const;
   return (
     <article className={cx(styles.root, className)} {...props}>
       {image && <div className={styles.image}>{image}</div>}
       <div className={styles.inner}>
-        <h3 className={styles.title}>{title}</h3>
+        <Heading className={styles.title}>{title}</Heading>
         {children}
       </div>
     </article>

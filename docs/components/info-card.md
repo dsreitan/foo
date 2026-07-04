@@ -14,3 +14,8 @@ Presentation of a person or entity: image beside a text column.
   structure — heading order must not skip levels (WCAG 1.3.1).
 - For non-Norwegian names/bios inside a Norwegian page, set `lang` on the
   element: `<InfoCard lang="en" …>`.
+
+## Overskriftsnivå
+
+Tittelen rendres som `<h3>` som standard. Sett `headingLevel={2}` (eller 4) slik at kortet passer inn i sidens overskriftshierarki — aldri hopp
+over nivåer.

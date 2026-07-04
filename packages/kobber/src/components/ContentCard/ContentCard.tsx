@@ -13,6 +13,8 @@ export interface ContentCardProps extends Omit<HTMLAttributes<HTMLElement>, "tit
   meta?: ReactNode;
   /** Body/ingress and anything else (TextLink, ...) */
   children?: ReactNode;
+  /** Heading level of the title; match the page outline (default h3) */
+  headingLevel?: 2 | 3 | 4;
 }
 
 /**
@@ -23,18 +25,20 @@ export interface ContentCardProps extends Omit<HTMLAttributes<HTMLElement>, "tit
 export function ContentCard({
   variant = "prominent",
   image,
+  headingLevel = 3,
   title,
   meta,
   className,
   children,
   ...props
 }: ContentCardProps) {
+  const Heading = `h${headingLevel}` as const;
   return (
     <article className={cx(styles.root[variant], className)} {...props}>
       {image && <div className={styles.image[variant]}>{image}</div>}
       <div className={styles.text}>
         {meta}
-        <h3 className={styles.title}>{title}</h3>
+        <Heading className={styles.title}>{title}</Heading>
         {children}
       </div>
     </article>

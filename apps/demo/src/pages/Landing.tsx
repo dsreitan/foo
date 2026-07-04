@@ -60,6 +60,7 @@ export function Landing() {
 
       <div className={styles.grid.three}>
         <ContentCard
+          headingLevel={2}
           title="Slik bidrar du"
           image={<img src={img("bidra", 560, 300)} alt="" className={styles.coverImage} />}
         >
@@ -67,12 +68,14 @@ export function Landing() {
           <TextLink href="#/komponenter">Se status</TextLink>
         </ContentCard>
         <ContentCard
+          headingLevel={2}
           title="Tokens først"
           image={<img src={img("tokens", 560, 300)} alt="" className={styles.coverImage} />}
         >
           All stil kommer fra designtokens — ingen rå verdier i komponentkode.
         </ContentCard>
         <ContentCard
+          headingLevel={2}
           title="Universell utforming"
           image={<img src={img("uu", 560, 300)} alt="" className={styles.coverImage} />}
         >

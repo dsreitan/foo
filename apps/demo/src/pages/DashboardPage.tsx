@@ -52,7 +52,7 @@ export function DashboardPage() {
         <div className={styles.grid.three}>
           {stats.map((stat) => (
             <TextModule key={stat.label} color="neutral-b" aria-label={stat.label}>
-              <Text variant="title" size="small">
+              <Text variant="title" size="small" as="h2">
                 {stat.label}
               </Text>
               <Counter color={stat.color}>{stat.value}</Counter>

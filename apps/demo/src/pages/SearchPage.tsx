@@ -49,6 +49,7 @@ export function SearchPage() {
       <div className={styles.grid.three}>
         {hits.map((book) => (
           <ContentCard
+            headingLevel={2}
             key={book.id}
             variant="subtle"
             title={book.title}
