@@ -1,6 +1,12 @@
-import type { HTMLAttributes, MouseEventHandler, ReactNode } from "react";
+import {
+  useId,
+  useState,
+  type HTMLAttributes,
+  type MouseEventHandler,
+  type ReactNode,
+} from "react";
 import { Button } from "../Button";
-import { SearchIcon, UserIcon } from "../icons";
+import { CloseIcon, MenuIcon, SearchIcon, UserIcon } from "../icons";
 import { cx } from "../../utils/cx";
 import * as styles from "./NavigationBar.css";
 
@@ -8,9 +14,10 @@ export interface NavigationBarProps extends HTMLAttributes<HTMLElement> {
   /** Brand/logo area on the left, e.g. a link or an <img> */
   logo?: ReactNode;
   /**
-   * Center menu slot (dropdowns/links in Figma; hidden on mobile).
-   * Pass your own components — their props, including onClick, stay on
-   * the component you render, nothing is forwarded or renamed.
+   * Center menu slot (dropdowns/links in Figma; behind a hamburger
+   * toggle on mobile). Pass your own components — their props,
+   * including onClick, stay on the component you render, nothing is
+   * forwarded or renamed.
    */
   children?: ReactNode;
   /**
@@ -24,6 +31,8 @@ export interface NavigationBarProps extends HTMLAttributes<HTMLElement> {
   onProfileClick?: MouseEventHandler<HTMLButtonElement>;
   /** Accessible name for the profile button */
   profileLabel?: string;
+  /** Accessible name for the menu landmark and its mobile hamburger toggle */
+  menuLabel?: string;
 }
 
 /**
@@ -32,6 +41,8 @@ export interface NavigationBarProps extends HTMLAttributes<HTMLElement> {
  *
  * Anatomy from the Figma component set (product x size variants):
  * logo | menu items | search trigger + icon-only profile button.
+ * On mobile the menu collapses behind a hamburger (disclosure pattern:
+ * aria-expanded + aria-controls), like gyldendal.no does in production.
  */
 export function NavigationBar({
   logo,
@@ -40,14 +51,25 @@ export function NavigationBar({
   searchLabel = "Søk",
   onProfileClick,
   profileLabel = "Profil",
+  menuLabel = "Meny",
   className,
   ...props
 }: NavigationBarProps) {
+  const menuId = useId();
+  const [menuOpen, setMenuOpen] = useState(false);
   return (
     <header className={cx(styles.root, className)} {...props}>
       <div className={styles.inner}>
         {logo && <div className={styles.logo}>{logo}</div>}
-        {children && <nav className={styles.menu}>{children}</nav>}
+        {children && (
+          <nav
+            id={menuId}
+            aria-label={menuLabel}
+            className={cx(styles.menu, menuOpen && styles.menuOpen)}
+          >
+            {children}
+          </nav>
+        )}
         <div className={styles.actions}>
           {onSearchClick && (
             <button type="button" className={styles.searchTrigger} onClick={onSearchClick}>
@@ -65,6 +87,19 @@ export function NavigationBar({
               onClick={onProfileClick}
             >
               <UserIcon />
+            </Button>
+          )}
+          {children && (
+            <Button
+              variant="brand-secondary-b"
+              iconOnly
+              className={styles.menuToggle}
+              aria-label={menuLabel}
+              aria-expanded={menuOpen}
+              aria-controls={menuId}
+              onClick={() => setMenuOpen(!menuOpen)}
+            >
+              {menuOpen ? <CloseIcon /> : <MenuIcon />}
             </Button>
           )}
         </div>

@@ -21,6 +21,7 @@ export const root = style({
 
 export const inner = style({
   display: "flex",
+  flexWrap: "wrap",
   alignItems: "center",
   justifyContent: "space-between",
   gap: val(navigationBar.innerContainer.gap),
@@ -34,7 +35,8 @@ export const logo = style([
   },
 ]);
 
-/** Center menu slot; collapses on mobile like the Figma size=mobile variant. */
+/** Center menu slot; behind the hamburger on mobile like the Figma
+ * size=mobile variant. */
 export const menu = style({
   display: "none",
   alignItems: "center",
@@ -46,11 +48,39 @@ export const menu = style({
   },
 });
 
+/** Hamburger open: the menu becomes a full-width column under the bar. */
+export const menuOpen = style({
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "flex-start",
+  order: 3,
+  width: "100%",
+  paddingBlock: val(navigationBar.padding.block.mobile),
+  "@media": {
+    [media.desktop]: {
+      flexDirection: "row",
+      alignItems: "center",
+      order: "initial",
+      width: "auto",
+      paddingBlock: 0,
+    },
+  },
+});
+
 export const actions = style({
   display: "flex",
   alignItems: "center",
   justifyContent: "flex-end",
   gap: val(navigationBar.innerContainer.gap),
+});
+
+/** The hamburger toggle exists only below the desktop breakpoint. */
+export const menuToggle = style({
+  "@media": {
+    [media.desktop]: {
+      display: "none",
+    },
+  },
 });
 
 /** Search trigger from the search tokens ("Søkefelt som brukes i navigasjonsmenyer"). */

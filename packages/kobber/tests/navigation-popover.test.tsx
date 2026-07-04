@@ -8,6 +8,7 @@ import {
   InfoCard,
   Logo,
   MenuItem,
+  NavigationBar,
   NavigationCard,
   Popover,
   createDam,
@@ -101,6 +102,35 @@ describe("ContextualNavigationBar", () => {
       </ContextualNavigationBar>,
     );
     expect(screen.getByRole("navigation", { name: "Seksjonsmeny" })).toBeDefined();
+  });
+
+  it("has a disclosure toggle wired to the menu container", () => {
+    render(
+      <ContextualNavigationBar menuLabel="Sidemeny">
+        <MenuItem href="/a">Oversikt</MenuItem>
+      </ContextualNavigationBar>,
+    );
+    const toggle = screen.getByRole("button", { name: "Sidemeny" });
+    expect(toggle.getAttribute("aria-expanded")).toBe("false");
+    fireEvent.click(toggle);
+    expect(toggle.getAttribute("aria-expanded")).toBe("true");
+    expect(document.getElementById(toggle.getAttribute("aria-controls")!)).not.toBeNull();
+  });
+});
+
+describe("NavigationBar", () => {
+  it("hamburger toggles the labelled menu landmark", () => {
+    render(
+      <NavigationBar logo={<Logo />} menuLabel="Hovedmeny">
+        <MenuItem href="/a">Læremidler</MenuItem>
+      </NavigationBar>,
+    );
+    const nav = screen.getByRole("navigation", { name: "Hovedmeny" });
+    const toggle = screen.getByRole("button", { name: "Hovedmeny" });
+    expect(toggle.getAttribute("aria-controls")).toBe(nav.id);
+    expect(toggle.getAttribute("aria-expanded")).toBe("false");
+    fireEvent.click(toggle);
+    expect(toggle.getAttribute("aria-expanded")).toBe("true");
   });
 });
 
