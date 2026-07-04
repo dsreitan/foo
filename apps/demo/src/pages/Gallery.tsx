@@ -1,8 +1,15 @@
 import { useState } from "react";
 import {
+  AccordionGroup,
+  AccordionItem,
   AlertAccordion,
   AlertBanner,
   AlertLabel,
+  ButtonGroup,
+  Collapsible,
+  Divider,
+  NavLink,
+  NavLinkGroup,
   Badge,
   Breadcrumb,
   BreadcrumbItem,
@@ -95,6 +102,80 @@ const components: ComponentDemo[] = [
           <DropdownItem onClick={() => console.log("y")}>Alternativ Y</DropdownItem>
         </Dropdown>
       </>
+    ),
+  },
+  {
+    name: "Nav link",
+    description:
+      "Navigasjonslenke med understrek på hover og aktiv side; grupperes i NavLinkGroup.",
+    demo: (
+      <NavLinkGroup label="Demo-meny">
+        <NavLink href="#/" active>
+          Læremidler
+        </NavLink>
+        <NavLink href="#/">Forfattere</NavLink>
+        <NavLink href="#/" color="subtle">
+          Om oss
+        </NavLink>
+        <NavLink href="#/" color="accent">
+          Kampanje
+        </NavLink>
+      </NavLinkGroup>
+    ),
+  },
+  {
+    name: "Button group",
+    description: "Rad med relaterte handlinger.",
+    demo: (
+      <ButtonGroup>
+        <Button>Lagre</Button>
+        <Button variant="brand-secondary-b">Forhåndsvis</Button>
+        <Button variant="brand-tertiary-a">Avbryt</Button>
+      </ButtonGroup>
+    ),
+  },
+  {
+    name: "Divider",
+    description: "1px skillelinje, horisontal eller vertikal, i brand- og neutral-toner.",
+    demo: (
+      <div style={{ display: "flex", flexDirection: "column", gap: 16, width: 320 }}>
+        <Divider />
+        <Divider color="brand-a" />
+        <Divider color="neutral-b" />
+      </div>
+    ),
+  },
+  {
+    name: "Accordion",
+    description: "Ekspanderbare rader på native <details>; grupperes i AccordionGroup.",
+    demo: (
+      <div style={{ width: "100%" }}>
+        <AccordionGroup>
+          <AccordionItem title="Hva er Kobber?">
+            Gyldendals verktøykasse for design og merkevare.
+          </AccordionItem>
+          <AccordionItem title="Hvordan tas det i bruk?">
+            Komponenter importeres fra kobber-pakken; tokens styrer all stil.
+          </AccordionItem>
+        </AccordionGroup>
+      </div>
+    ),
+  },
+  {
+    name: "Collapsible",
+    description: "«Vis mer»-klamme for langt innhold med gradient mot bakgrunnen.",
+    demo: (
+      <div style={{ width: 480 }}>
+        <Collapsible collapsedHeight={72}>
+          <Text>
+            Kobber er Gyldendals verktøykasse for design og merkevare. Den består av gjenbrukbare,
+            fleksible ressurser som digitale komponenter, maler, retningslinjer og kode.
+            Byggeklossene brukes til å skape solide, sammenhengende og universelt tilgjengelige
+            produkter, og videreutvikles fortløpende av Kobber-teamet i samarbeid med
+            produktteamene.
+          </Text>
+        </Collapsible>
+      </div>
     ),
   },
   {

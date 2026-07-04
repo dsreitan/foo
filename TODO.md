@@ -21,7 +21,7 @@ Status legend follows Kobber's component lifecycle (from the Figma
 ## Foundations
 
 - [ ] **Icon package** — replace placeholder SVGs with the "Kobber Ikoner, grafikk og logoer" library / icon tokens (`universal.iconPackage`)
-- [ ] **PP Mori webfont** — load the brand font (system-font fallback today); also Lyon Display (`textDisplay` alt) and Inter ("reading" text flavor)
+- [ ] **PP Mori webfont** — BLOCKED: font files are not distributed via npm (licensed); needs a CDN URL or font files from the Kobber team. Loading belongs in apps/demo, not the package
 - [ ] **Theming** — flip `styles/tokens.ts` to the CSS-variables token build; theme = redefining the semantic layer (`brand`, `rettsdata`, themes nature/fantasy/thriller/romance/vacation/nostalgia)
 - [ ] **Reading vs brand typography** — body/title/lead have `reading` (Inter) variants for long-form content
 - [ ] **Elevation tokens** — missing in Kobber; `styles/elevation.ts` carries a placeholder
@@ -31,9 +31,9 @@ Status legend follows Kobber's component lifecycle (from the Figma
 ## Actions
 
 - [ ] **Theme Button** — mood variants for larger modules (nature/fantasy/thriller/…)
-- [ ] **Button Group**
+- [x] **Button Group**
 - [x] **Text Link** (`textLink` tokens, `.kobber-text-link`)
-- [ ] **Nav Link / Nav Link Group** (`navLink`, `navLinkGroup`)
+- [x] **Nav Link / Nav Link Group** (`navLink`, `navLinkGroup`)
 
 ## Forms
 
@@ -79,9 +79,9 @@ Status legend follows Kobber's component lifecycle (from the Figma
 ## Content & layout
 
 - [x] **List / list elements** (`list`, `_listElements`, LIST section on the Text page)
-- [ ] **Collapsible**
-- [ ] **Accordion Item / Accordion Group**
-- [ ] **Divider**
+- [x] **Collapsible**
+- [x] **Accordion Item / Accordion Group**
+- [x] **Divider**
 - [ ] **Content Controls** (Figma set exists)
 - [ ] **Content Wrapper / Content Top Block** — layout primitives on the `layouts` tokens
 - [ ] **Media Player / Media Player Item** — video/audio playback (subtitles, speed, fullscreen)

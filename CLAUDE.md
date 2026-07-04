@@ -43,7 +43,7 @@ npm run dev         # demo dev server
    `thriller`, `romance`, `vacation`, and `rettsdata` variants even though
    they exist in the tokens. Don't remove existing ones, just never add more.
 2. **Never nest the `<Text>` component (or any component) inside another
-   component for typography.** Compose the *style* instead:
+   component for typography.** Compose the _style_ instead:
    `style([label.medium, { ... }])` from `styles/typography.css.ts`. Text
    color is never set in typography styles — the consuming component sets
    `color` and lets it cascade.
@@ -57,6 +57,12 @@ npm run dev         # demo dev server
    spans more than the component folder + barrel + gallery + TODO, stop and
    ask the user.
 5. **Figma is read-only.** Never create/edit/comment on anything in Figma.
+6. **The kobber package mirrors Figma — nothing else goes in it.** If a
+   component doesn't exist in the Kobber Figma library/tokens, it doesn't
+   belong in `packages/kobber` (no Stack/Grid/Center utility components,
+   no demo helpers). Layout and presentation code for the demo lives in
+   `apps/demo` (`App.css.ts`, page-level `.css.ts` files). App-level
+   concerns like @font-face loading also live in the app.
 
 ## The component recipe
 
@@ -65,8 +71,8 @@ Every `.css.ts` composes the shared layers and adds only what is unique:
 ```ts
 export const root = style([
   label.medium, // typography    (styles/typography.css.ts)
-  focusRing,    // interaction   (styles/interaction.css.ts: focusRing,
-  disabledState,//                focusOutline, disabledState, hoverOverlay)
+  focusRing, // interaction   (styles/interaction.css.ts: focusRing,
+  disabledState, //                focusOutline, disabledState, hoverOverlay)
   {
     gap: val(filter.gap), // component tokens only, via val() (number -> px)
   },
@@ -132,7 +138,7 @@ export const root = style([
   plugin + jsdom + `globals: true` for testing-library cleanup). Per-package
   vitest configs are ignored.
 - Don't set `fontFamily` as an array in vanilla-extract — arrays mean
-  fallback *declarations*, not font stacks. Use the string from
+  fallback _declarations_, not font stacks. Use the string from
   `` `${fontFamily.ppMori}, system-ui, sans-serif` ``.
 - `devEngines` in root package.json is relaxed to npm >=10.9 on purpose;
   don't tighten it.
