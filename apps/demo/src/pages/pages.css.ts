@@ -105,3 +105,74 @@ export const coverImage = style({
   objectFit: "cover",
   display: "block",
 });
+
+/** Main column + sidebar (video page); stacks on mobile. */
+export const withSidebar = style({
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "stretch",
+  gap: val(content.space.gap.medium),
+  "@media": {
+    [media.desktop]: {
+      flexDirection: "row",
+      alignItems: "flex-start",
+    },
+  },
+});
+
+export const sidebar = style({
+  display: "flex",
+  flexDirection: "column",
+  gap: val(content.space.gap.small),
+  "@media": {
+    [media.desktop]: {
+      width: "300px",
+      flexShrink: 0,
+    },
+  },
+});
+
+export const videoFrame = style({
+  width: "100%",
+  aspectRatio: "16 / 9",
+  objectFit: "cover",
+  display: "block",
+  borderRadius: val(tokens.groups.cardsAndModules.radius.large),
+});
+
+/** VS Code-like workspace: collapsible panels around a center editor. */
+export const workspace = style({
+  display: "flex",
+  alignItems: "stretch",
+  gap: val(content.space.gap.small),
+});
+
+export const workspacePanel = style({
+  flexShrink: 0,
+  width: "240px",
+  display: "flex",
+  flexDirection: "column",
+  gap: val(content.space.gap.small),
+});
+
+export const workspaceCenter = style({
+  flexGrow: 1,
+  minWidth: 0,
+});
+
+/** Column layout for NavLinkGroups used as a file explorer. */
+export const explorer = style({
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "flex-start",
+  gap: val(tokens.groups.inputs.space.small),
+});
+
+export const widget = style({
+  display: "flex",
+  flexDirection: "column",
+  gap: val(tokens.groups.inputs.space.medium),
+  padding: val(tokens.groups.cardsAndModules.space.large),
+  border: `1px solid ${tokens.component.divider.background.color.brand.toneB}`,
+  borderRadius: val(tokens.groups.cardsAndModules.radius.small),
+});

@@ -7,6 +7,10 @@ import { ShopPage } from "./pages/ShopPage";
 import { DashboardPage } from "./pages/DashboardPage";
 import { SlideshowPage } from "./pages/SlideshowPage";
 import { StudentsPage } from "./pages/StudentsPage";
+import { HomeworkPage } from "./pages/HomeworkPage";
+import { ContentPage } from "./pages/ContentPage";
+import { VideoPage } from "./pages/VideoPage";
+import { WorkspacePage } from "./pages/WorkspacePage";
 import { LabPage } from "./pages/LabPage";
 
 const routes = [
@@ -17,6 +21,10 @@ const routes = [
   { hash: "#/dashbord", title: "Dashbord", page: <DashboardPage /> },
   { hash: "#/presentasjon", title: "Presentasjon", page: <SlideshowPage /> },
   { hash: "#/elever", title: "Elever", page: <StudentsPage /> },
+  { hash: "#/lekser", title: "Lekser", page: <HomeworkPage /> },
+  { hash: "#/innhold", title: "Innhold", page: <ContentPage /> },
+  { hash: "#/video", title: "Video", page: <VideoPage /> },
+  { hash: "#/arbeidsflate", title: "Arbeidsflate", page: <WorkspacePage /> },
   { hash: "#/lab", title: "Lab", page: <LabPage /> },
 ];
 
@@ -50,6 +58,7 @@ function App() {
             {r.title}
           </MenuItem>
         ))}
+        <MenuItem href="statisk.html">Statisk</MenuItem>
       </ContextualNavigationBar>
       {route.page}
     </>

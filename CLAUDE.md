@@ -9,8 +9,11 @@ small, verified increments.
 - `packages/kobber` — the library. Components in `src/components/<Name>/`
   (`<Name>.tsx` + `<Name>.css.ts` + `index.ts`), shared styles in
   `src/styles/`, tests in `tests/`.
-- `apps/demo` — gallery (`#/`) + composed example page (`#/eksempel`).
-  Imports from `"kobber"` like a real consumer.
+- `apps/demo` — gallery (`#/komponenter`) + composed example pages
+  (shop, dashboard, homework, workspace...). Imports from `"kobber"`
+  like a real consumer. The build also prerenders the components page
+  to static HTML (`statisk.html`, see `scripts/prerender.mjs`) — both
+  scenarios (SPA and SSG) must keep working.
 - `packages/kobber-lab` — component PROPOSALS for the Kobber team:
   things our products need that aren't in the Kobber Figma yet. Built on
   `kobber/styles` tokens, same recipe, plus proposed motion tokens
