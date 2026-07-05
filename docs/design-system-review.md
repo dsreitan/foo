@@ -103,22 +103,58 @@ M3 løser dette med `on-primary`/`on-surface`; Atlassian med
 par ved hver publisering (vårt skript gjør dette på 41 par i dag —
 gjerne stjel det).
 
-### 3. Tre tilstandsmekanismer om hverandre
+### 3. Tilstandsmodellen: «fallback», sparsomme matriser og to hover-mekanismer
 
-I dag uttrykkes hover/aktiv på tre måter:
+Dette er funnet med flest lag, så vi tar det grundig.
 
-1. **Objekt**: `button/background/color/…/toneA = { fallback, hover }`
-   — 42 slike objekter.
-2. **Søsken-token**: `filter/background/color/hover` ved siden av
-   `fallback` og `active` — 982 rene strengverdier.
-3. **Universal overlegg**: `universal/hover/container/{lighten, darken,
-opacity}` som males over flaten.
+**a) Navnet `fallback`.** Hviletilstanden heter `fallback` — et navn som
+beskriver _oppslagsmekanikken_ («bruk denne hvis tilstanden mangler»),
+ikke designintensjonen. Industrikonvensjonen er `default`/`rest` eller
+intet suffiks (Atlassian: `color.background.brand.bold` +
+`…bold.hovered`; Carbon: `background` + `background-hover`). For en
+leser signaliserer «fallback» feilhåndtering; vi har målt at det også
+smitter («search/background/color/fallback» er i praksis feltets
+_eneste_ normalfarge). Ren omdøping — behold gjerne `fallback` som
+deprecated alias én major.
 
-Alle tre er gyldige designvalg — men én ad gangen. For en konsument (og
-især en maskin) betyr blandingen at hvert token må inspiseres for form
-før bruk; vi har hatt reelle bugs av at et «fargetoken» viste seg å være
-et objekt. **Anbefaling:** velg én grammatikk (suffiks-modellen à la
-Atlassian er enklest å lint'e) og migrer over tid.
+**b) Sparsom tilstandsmatrise gjør fravær tvetydig.** Regelen «en
+tilstand får bare token når den avviker» høres økonomisk ut, men fravær
+betyr i dag tre ulike ting:
+
+- `button/…/toneA = { fallback, hover }` — pressed mangler = «samme som
+  fallback»?
+- `menu-item/background/color = { hover, pressed }` — _hvile_ mangler =
+  «transparent» (implisitt!).
+- Andre grupper mangler hover helt = «ikke designet ennå»?
+
+En konsument (menneske eller maskin) kan ikke skille intensjon fra
+glemsel. Løsningen er ikke å duplisere verdier — det er **eksplisitte
+aliaser**: full matrise `default/hovered/pressed/disabled` der
+identiske tilstander _refererer_ default. Samme vedlikeholdskostnad
+(én verdi), men komplett og lintbar: manglende tilstand blir byggefeil,
+og maskiner kan generere komponentkode mekanisk. Det er nøyaktig det
+referansegrafen deres allerede kan uttrykke.
+
+**c) Samme slot, to komposisjonsmodeller.** I
+`filter/background/color` er `hover = #1d00011a` — en _gjennomsiktig
+overleggsfarge_ som skal males oppå flaten — mens `active = #dc134f` er
+en _erstatningsfarge_. Søskenverdier i samme gruppe krever altså to
+ulike renderingsteknikker, og ingenting i tokenet sier hvilken.
+Overleggs-ideen er i seg selv smart (én hover som virker over alle
+temafarger — M3 kaller det _state layers_), men den bør være et eget,
+navngitt konsept (`state-layer/hover`, jf. `universal/hover` som
+allerede halvveis finnes) — ikke en utypet farge i samme slot som
+erstatningsfarger. I dag finnes dessuten tre mekanismer parallelt:
+{fallback,hover}-objekter (42), søsken-tokens (982 rene strenger) og
+universal-overlegget.
+
+**d) Tilstandsvokabularet varierer**: `active` (filter, search) vs
+`pressed` (menu-item) for samme tilstand.
+
+**Anbefaling samlet:** `fallback` → `default`; komplett tilstandsmatrise
+via aliaser; skill `state-layer` fra erstatningsfarger som to typede
+konsepter; ett vokabular (`hovered/pressed/…`) — og lint alt i
+token-bygget.
 
 ### 4. Navne- og skala-grammatikken spriker
 
@@ -211,6 +247,32 @@ Connect**-mappinger fra komponentsett til kode når referanse-
 implementasjonen(e) stabiliserer seg. Beskrivelsesfeltene bør fylles på
 alle komponenter (bruk + UU-noter) — de dere har skrevet er allerede
 sitert ordrett i vår kodedokumentasjon.
+
+### 8. Trengs både `groups` og `semantics`?
+
+Referansekjeden er i dag fire hopp: komponenter → groups (763 av 938
+referanser) → semantics → primitives. De store systemene klarer seg med
+tre (primitiv → semantisk → komponent). `groups`-laget ser ut til å
+være kategori-bekvemmelighet («fargene knapper bruker»), men det er
+også laget der paletten re-eksponeres rått — 305 palettnøkler à la
+`groups/buttons/color/aubergine-50` — og hvert ekstra hopp er et sted
+drift og navnespriket kan oppstå. Når semantikklaget får rollenavn
+(funn 1), blir spørsmålet konkret: hva sier `groups/buttons/color` som
+ikke `surface/brand` + `text/on-brand` sier bedre? **Anbefaling:**
+vurder å la groups-laget pensjoneres inn i semantikken som del av
+rolle-omdøpingen — færre lag å holde konsistente, kortere kjeder å
+resonnere om.
+
+### 9. Alfakanal bakes inn i hex
+
+**132 verdier** er 8-sifrede hexer (`#1d00011a`) — farge og opasitet
+limt sammen. Intensjonen («aubergine-1000 på 10 %») går tapt, og
+verdien kan ikke følge en fargerolle i mørk modus. `primitives/opacity`
+finnes allerede — la overlegg og skygger være _par_ (fargereferanse +
+opasitetsreferanse) eller egne typede tokens, så overlever intensjonen
+både modes og verktøy. (Samme gjelder vår side: vi har måttet lime
+`${farge}66` for skygger — en skygge-/elevation-skala hadde fjernet
+behovet, jf. funn 6.)
 
 ---
 
