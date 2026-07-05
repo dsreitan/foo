@@ -26,9 +26,10 @@ small, verified increments.
   `docs/a11y-audit.md` (audit), `docs/upstream-findings.md` (report to
   the Kobber team: token drift, contrast sweep, token gaps — extend it
   when new upstream issues surface), `docs/design-system-review.md`
-  (architecture-level feedback to the Kobber team), and
-  `docs/adoption.md` (the plan for moving this into a consumer monorepo
-  and the usability backlog).
+  (architecture-level feedback to the Kobber team, with
+  `docs/token-modes.md` and `docs/responsive-tokens.md` as deep-dives),
+  and `docs/adoption.md` (the plan for moving this into a consumer
+  monorepo and the usability backlog).
 - `TODO.md` — the roadmap. Work top-down within its "Suggested order",
   tick items off (`- [x]`) in the same commit as the implementation.
 

@@ -1,100 +1,101 @@
-# Kobber komponenter – monorepo
+# Kobber i React — komponentbibliotek, demo og designsystem-feedback
 
-React component library for Gyldendal's [Kobber design system](https://kobber.gyldendal.no/),
-implementing the components from the
-[Kobber Komponentbibliotek Figma file](https://www.figma.com/design/zMcbm8ujSMldgS1VB70IMP/Kobber-Komponentbibliotek).
+React-implementasjon av Gyldendals [Kobber-designsystem](https://kobber.gyldendal.no/),
+bygget utelukkende fra [`@gyldendal/kobber-tokens`](https://www.npmjs.com/package/@gyldendal/kobber-tokens)
+og [Figma-filen](https://www.figma.com/design/zMcbm8ujSMldgS1VB70IMP/Kobber-Komponentbibliotek)
+(kun lesing). PoC med produksjonsambisjoner: 33 komponenter, 12
+dokumenterte komponentforslag, 112 tester, WCAG-feiet, SSR-verifisert.
+
+**Live demo:** <https://dsreitan.github.io/foo/> — galleri med alle
+komponenter (`#/komponenter`), åtte komposerte eksempelsider (nettbutikk,
+dashbord, lekseoversikt, arbeidsflate …), Lab-siden med forslagene
+(`#/lab`), og en prerendret utgave av komponentsiden (`statisk.html`).
+
+## Til Kobber-teamet: start her
+
+Vi har konsumert hvert eneste token programmatisk og lest Figma-filen
+via API — funnene er skrevet som vennlig, tallfestet feedback:
+
+1. **[`docs/design-system-review.md`](docs/design-system-review.md)** —
+   hoveddokumentet: arkitekturnivået, sammenlignet med Material 3,
+   Carbon, Polaris, Spectrum, Primer og Atlassian, pluss hvordan en
+   KI-agent helst konsumerer et designsystem. Ni funn, fem prioriterte
+   anbefalinger.
+2. [`docs/upstream-findings.md`](docs/upstream-findings.md) — de
+   konkrete funnene, klare til å limes inn i issues (token-drift som
+   bryter WCAG på primærknappen, fokusfargen, kontrastfeiing av 41 par).
+3. [`docs/token-modes.md`](docs/token-modes.md) — anbefalinger for
+   variabel-modes (mørk modus, barnemodus, temaer).
+4. [`docs/responsive-tokens.md`](docs/responsive-tokens.md) — hvordan
+   uttrykke flytende `clamp()`-verdier i tokens og Figma.
+5. [`docs/proposals/`](docs/proposals/) — 12 komponentforslag
+   (motivasjon, anatomi, foreslåtte tokens, UU, animasjonsspek) med
+   kjørbare demoer under «Lab» i demoen.
+
+Måleskriptene er i repoet og kan kjøres på nytt:
+`packages/kobber/scripts/contrast-report.mjs` (WCAG-kontrast på alle
+fargepar) og `apps/demo/scripts/axe-audit.mjs` (axe over alle sider).
 
 ## Layout
 
 ```
 packages/
-  kobber/          # the component library — components, styles, tests. Nothing else.
+  kobber/        # biblioteket — speiler Kobber-Figmaen, ingenting annet
+  kobber-lab/    # komponentFORSLAG til Kobber-teamet (bygget på Kobber-tokens)
 apps/
-  demo/            # demo app: gallery (#/) + composed example page (#/eksempel)
+  demo/          # galleri + eksempelsider; bygger også prerendret statisk.html
+docs/
+  components/    # per-komponent bruk & UU-ansvar
+  proposals/     # forslagsdokumentene bak kobber-lab
+  *.md           # feedback-dokumentene over + adoption.md + a11y-audit.md
+CLAUDE.md        # arbeidsregler og guardrails (også for KI-agenter)
+TODO.md          # gjenstående roadmap
 ```
 
-`kobber` is consumed as a source package (its `exports` point at `src/`), so
-the demo app and tests always run against the latest code with no build step.
-
-- `kobber` — components (`import { Button } from "kobber"`)
-- `kobber/styles` — tokens, typography, interaction states, breakpoints,
-  z-index, elevation (`import { tokens, typography } from "kobber/styles"`)
-
-## Toolchain: Vite+ (alpha)
-
-Everything runs through the [`vite-plus`](https://www.npmjs.com/package/vite-plus) `vp` CLI:
-
-```bash
-npm install
-npm run dev         # vp run --filter demo dev
-npm run build       # vp run --filter demo build
-npm run test        # vp test (Vitest, jsdom + testing-library)
-npm run lint        # vp lint (oxlint)
-npm run fmt         # vp fmt  (oxfmt)
-npm run typecheck   # vp run --recursive typecheck
-```
-
-Tests live in `packages/kobber/tests/`; the root `vitest.config.ts` wires up
-the vanilla-extract plugin and jsdom.
-
-## The component pattern
-
-Every component is a folder with a `.tsx` (behavior) and a `.css.ts` (visual
-spec). The `.css.ts` composes shared layers and adds only what is unique to
-the component:
+`kobber` konsumeres som kildepakke (`exports` peker på `src/`) — demoen
+og testene kjører alltid mot siste kode uten byggesteg. Import:
 
 ```ts
-export const root = style([
-  label.medium,     // typography     (styles/typography.css.ts)
-  focusRing,        // interaction    (styles/interaction.css.ts)
-  disabledState,
-  {
-    gap: val(filter.gap),   // component tokens only, via val()
-    ...
-  },
-])
+import { Button, Filter } from "kobber"; // forslag fra "kobber-lab"
+import { tokens, typography } from "kobber/styles";
 ```
 
-Rules:
+## Kom i gang (pnpm + Vite+ `vp`)
 
-- **No raw values in components.** Colors/sizes come from `styles/tokens.ts`
-  (the only module importing `@gyldendal/kobber-tokens`). Breakpoints from
-  `styles/breakpoints.ts`, z-index from `styles/layers.ts`, shadows from
-  `styles/elevation.ts` (until Kobber gets elevation tokens).
-- **Shared states live in `styles/interaction.css.ts`** (focusRing,
-  focusOutline, disabledState, hoverOverlay). Anything two components share
-  belongs in `src/styles/`.
-- **Typography without color** — color belongs to the consuming component and
-  cascades (tones flip with state, e.g. active Filter).
-- **className is always merged** via `cx`, never dropped.
-- **Props propagate by composition**: slots (children) for parts the consumer
-  brings, one purpose-named callback per part the component owns
-  (`onSearchClick`), native passthrough for wrapped elements (TextInput).
-- **Variant maps are flat and token-driven**; prop types derive from them
-  (`ButtonVariant = keyof typeof variant`), so invalid combos don't compile.
+```bash
+pnpm install
+pnpm run dev        # demo på localhost
+pnpm exec vp test   # vitest — 112 tester, inkl. SSR + hydrering
+pnpm exec vp lint   # oxlint
+pnpm exec vp fmt    # oxfmt
+pnpm run typecheck  # tsgo (TypeScript 7 native preview)
+pnpm run build      # demo + prerender av statisk.html
+```
 
-## Implemented components
+Verifisert på **React 18.3 og 19** (peer deps `^18.3 || ^19`). Hver push
+til `main` kjører lint/test/typecheck/build og deployer demoen til
+GitHub Pages.
 
-- **Navigation Bar** — logo | menu slot | search trigger + profile button,
-  matching the Figma set; menu collapses on mobile
-- **Dropdown** — trigger + menu; items are children with their own `onClick`,
-  closes on select/outside/Escape
-- **Button** — Figma Button + UI Button; variants `brand-primary-a` …
-  `informative-b`, `iconOnly` for square icon buttons
-- **Filter** — toggle chip with counter
-- **Badge** — status/category label with tones, sizes, status circle
-- **TextInput** — underlined field from the WIP `_text-input` tokens
-- **Text** — polymorphic content typography (`<Text variant="heading" as="h1">`)
+## Kvalitetsgarantier
 
-## Deploy
+- **Tokens-only**: ingen råverdier i komponentfiler; alt går gjennom
+  `styles/tokens.ts` (eneste importør av `@gyldendal/kobber-tokens`).
+- **UU**: WAI-ARIA APG-mønstre per komponent (test-låst), axe-feiet på
+  alle sider i desktop + mobil, kontrastmålt (se `docs/a11y-audit.md`;
+  eneste gjenstående funn er upstream token-drift).
+- **SSR/SSG**: hver komponent renderToString + hydreres uten feil
+  (`tests/ssr.test.tsx` i begge pakker); demoen prerendrer
+  komponentsiden som bevis.
+- **Router-vennlig**: lenkekomponenter tar `as={Link}`
+  (react-router/TanStack/Next), skjemakontroller er `forwardRef`
+  (se `docs/components/router-links.md`).
 
-Pushes to `main` lint, test, build and deploy the demo app to GitHub Pages
-via `.github/workflows/deploy.yml` (enable once under Settings → Pages →
-Source: **GitHub Actions**).
+## Videre
 
-## Theming (later)
-
-Token values are inlined at build time. When theming becomes real, flip
-`packages/kobber/src/styles/tokens.ts` to the CSS-variables build of the token
-package and let `val()` wrap names in `var()` — components won't change
-because everything already goes through that one file.
+- [`CLAUDE.md`](CLAUDE.md) — arbeidsreglene: guardrails, komponent-
+  oppskriften, workflow for nye komponenter. Les denne før du endrer noe.
+- [`docs/adoption.md`](docs/adoption.md) — planen for flytting inn i et
+  konsument-monorepo + backloggen for bred gjenbruk (publiseringsbygg,
+  kodesnutter i galleriet, komplette komponentdocs).
+- [`TODO.md`](TODO.md) — gjenstående komponenter og fundamenter
+  (DAM-fonter/-ikoner, theming, Slider …).

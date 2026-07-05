@@ -9,7 +9,7 @@ prerendered `statisk.html`.
 - **Automated**: axe-core 4.12 via Playwright against every route, at
   desktop (1280px) and mobile (390px, hamburger menus open), plus
   interactive states (dialog open). Re-run until clean.
-- **Behavioral**: the vitest suite (105 tests) locks the keyboard and
+- **Behavioral**: the vitest suite (112 tests as of the Pane addition) locks the keyboard and
   ARIA contracts per component — roles, names, `aria-expanded/controls`,
   arrow-key patterns, focus return, SSR + hydration.
 - **Manual spot-checks**: keyboard traversal of menus, tabs, dialog and
@@ -67,19 +67,20 @@ Legend: pattern = the APG/ARIA contract implemented and test-locked.
 
 ### packages/kobber-lab (proposals)
 
-| Component   | Pattern / a11y contract                                                              | Usefulness verdict                                    |
-| ----------- | ------------------------------------------------------------------------------------ | ----------------------------------------------------- |
-| Avatar      | `role="img"` + name when initials; alt duties documented                             | Keep — lists/comments need it                         |
-| Dialog      | native `<dialog>` + `showModal`: platform focus trap, Escape                         | Keep                                                  |
-| EmptyState  | `<h2>` title so the state appears in heading navigation; illustration `aria-hidden`  | Keep                                                  |
-| Pagination  | `<nav aria-label>`, `aria-current="page"`, full button names, `aria-hidden` ellipsis | Keep                                                  |
-| ProgressBar | `role="progressbar"` with clamped `aria-valuenow`                                    | Keep                                                  |
-| Select      | native `<select>` + real label — platform semantics                                  | Keep — fills the Dropdown-vs-form gap                 |
-| Skeleton    | `aria-hidden`; app must pair with a `role="status"` announcement                     | Keep, with the documented duty                        |
-| StatCard    | plain text pairs, no fake semantics                                                  | Keep                                                  |
-| Tabs        | APG tabs, automatic activation, roving tabindex                                      | Keep                                                  |
-| Toast       | `role="status"`/`alert`; stacking & timing owned by the app                          | Keep                                                  |
-| Tooltip     | `aria-describedby`, hover _and_ focus, Escape dismiss (WCAG 1.4.13)                  | Keep — but never for content that exists nowhere else |
+| Component   | Pattern / a11y contract                                                                                                   | Usefulness verdict                                    |
+| ----------- | ------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------- |
+| Avatar      | `role="img"` + name when initials; alt duties documented                                                                  | Keep — lists/comments need it                         |
+| Dialog      | native `<dialog>` + `showModal`: platform focus trap, Escape                                                              | Keep                                                  |
+| EmptyState  | `<h2>` title so the state appears in heading navigation; illustration `aria-hidden`                                       | Keep                                                  |
+| Pagination  | `<nav aria-label>`, `aria-current="page"`, full button names, `aria-hidden` ellipsis                                      | Keep                                                  |
+| Pane(Group) | APG window splitter: `role="separator"`, `aria-value*`, arrows/Home/End; handles gone when panes stack on compact windows | Keep — workspaces need it                             |
+| ProgressBar | `role="progressbar"` with clamped `aria-valuenow`                                                                         | Keep                                                  |
+| Select      | native `<select>` + real label — platform semantics                                                                       | Keep — fills the Dropdown-vs-form gap                 |
+| Skeleton    | `aria-hidden`; app must pair with a `role="status"` announcement                                                          | Keep, with the documented duty                        |
+| StatCard    | plain text pairs, no fake semantics                                                                                       | Keep                                                  |
+| Tabs        | APG tabs, automatic activation, roving tabindex                                                                           | Keep                                                  |
+| Toast       | `role="status"`/`alert`; stacking & timing owned by the app                                                               | Keep                                                  |
+| Tooltip     | `aria-describedby`, hover _and_ focus, Escape dismiss (WCAG 1.4.13)                                                       | Keep — but never for content that exists nowhere else |
 
 ## Re-audit checklist for new components
 

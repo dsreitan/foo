@@ -1,13 +1,23 @@
 // Accessibility sweep: axe-core against every demo route + statisk.html,
 // at desktop and mobile (hamburger menus open). See docs/a11y-audit.md.
 //
-// axe-core is not a project dependency (kept out of the tree on purpose);
-// fetch it once and point the script at it:
+// Neither axe-core nor playwright are project dependencies (kept out of
+// the tree on purpose). One-time setup:
 //   npm pack axe-core && tar xzf axe-core-*.tgz package/axe.min.js
+//   npm i -g playwright && playwright install chromium   # or PLAYWRIGHT_MODULE=<path to its index.mjs>
 //   vite preview --port 4173 &
 //   node scripts/axe-audit.mjs package/axe.min.js
 import { readFileSync } from "node:fs";
-import { chromium } from "playwright";
+
+const playwright = await import(process.env.PLAYWRIGHT_MODULE ?? "playwright").catch(() => null);
+if (!playwright) {
+  console.error(
+    "playwright is not resolvable. Install it (npm i -g playwright && playwright install chromium)",
+    "or set PLAYWRIGHT_MODULE to the path of playwright's index.mjs.",
+  );
+  process.exit(1);
+}
+const { chromium } = playwright;
 
 const axePath = process.argv[2];
 if (!axePath) {
