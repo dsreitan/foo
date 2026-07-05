@@ -80,6 +80,16 @@ designsystemer gjør for å være uavhengig av underlaget.
 
 Ikke feil, men hull vi har måttet jobbe rundt — nyttige å kjenne til:
 
+- **Tilstandsmodellen («fallback»)**: navnet beskriver oppslagsmekanikk,
+  ikke design (`default`/`rest` er konvensjonen); sparsomme
+  tilstandsmatriser gjør fravær tvetydig (button mangler pressed,
+  menu-item mangler hvile, vokabularet veksler active/pressed); og
+  samme slot blander overleggsfarger (`filter/…/hover = #1d00011a`)
+  med erstatningsfarger (`…/active = #dc134f`). Full analyse og
+  anbefaling (eksplisitte aliaser + typet «state layer»):
+  `docs/design-system-review.md` funn 3, samt funn 8 (groups-laget) og
+  9 (132 hexer med innbakt alfa).
+
 - **Badge har ingen tekstfarge-tokens** — bare bakgrunner. Vi utleder
   teksten fra `text-label` i motsatt tone (mørk flate → lys tekst).
   Dokumenter gjerne paringen som tokens, så den ikke må gjettes.

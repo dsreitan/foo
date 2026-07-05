@@ -4,30 +4,31 @@ import { tokens, val, typography, media } from "kobber/styles";
 const { content } = tokens.layouts;
 const text = tokens.component.textLabel.text.color;
 
+/**
+ * Fluid page rhythm between two layout-token endpoints (min at 360px
+ * viewport, max at 1440px) — the clamp() a token pipeline would emit
+ * from min/max pair tokens. See docs/responsive-tokens.md. Page-level
+ * spacing only; component-internal spacing stays static.
+ */
+const fluidSpace = (min: number, max: number, vwMin = 360, vwMax = 1440) => {
+  const slope = (max - min) / (vwMax - vwMin);
+  const intercept = min - vwMin * slope;
+  return `clamp(${min}px, ${intercept.toFixed(2)}px + ${(slope * 100).toFixed(3)}vw, ${max}px)`;
+};
+
 export const main = style({
   maxWidth: val(content.size.maxWidth.xxlarge),
   margin: "0 auto",
-  padding: val(content.space.padding.small),
+  padding: fluidSpace(content.space.padding.small, content.space.padding.xlarge),
   display: "flex",
   flexDirection: "column",
-  gap: val(content.space.gap.medium),
-  "@media": {
-    [media.desktop]: {
-      padding: val(content.space.padding.medium),
-      gap: val(content.space.gap.large),
-    },
-  },
+  gap: fluidSpace(content.space.gap.medium, content.space.gap.large),
 });
 
 export const grid = styleVariants({ two: "220px", three: "260px", four: "200px" }, (min) => ({
   display: "grid",
   gridTemplateColumns: `repeat(auto-fill, minmax(${min}, 1fr))`,
-  gap: val(content.space.gap.small),
-  "@media": {
-    [media.desktop]: {
-      gap: val(content.space.gap.medium),
-    },
-  },
+  gap: fluidSpace(content.space.gap.small, content.space.gap.medium),
 }));
 
 export const row = style({
