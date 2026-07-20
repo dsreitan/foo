@@ -65,10 +65,11 @@ selskaper, påfallende likt fasit på fem punkter:
 | **Temaer som modes**                  | Carbon: white/g10/g90/g100 som token-sett; Primer/Atlassian: Figma variable modes → CSS-vars                              | Temaer (nature, fantasy…) er parallelle fargegrener i hvert komponent-token                                                |
 | **Maskinformat med bevart intensjon** | Spectrum/Primer: DTCG-aktig JSON der aliaser står som `{color.text.primary}`; Style Dictionary-pipeline                   | Style Dictionary-pipeline finnes; CSS-buildene bevarer referansene, men JS-builden er flatet og kilde-JSON publiseres ikke |
 
-I tillegg er alle fem _åpne_: dokumentasjonssidene genereres fra
-tokens, Figma-bibliotekene er publiserte og navigerbare, og endringer
-har changelog med deprecation-løp. Det er kontrakten som gjør at
-hundrevis av team tør å bygge på dem.
+På tvers av de seks referansesystemene finnes flere av de samme
+modenhetstrekkene: offentlig maskinlesbar dokumentasjon, navigerbare
+designressurser og planlagte deprecation-løp. Implementasjonen varierer
+mellom systemene; poenget er den eksplisitte konsumentkontrakten, ikke
+at alle seks løser hvert punkt likt.
 
 ---
 
@@ -91,20 +92,22 @@ de sier ikke alene hvor mange kildedefinisjoner som er duplisert.
 
 **Anbefaling:** Gi semantikklaget rollenavn — `text/primary`,
 `text/on-brand`, `surface/default`, `surface/brand`, `border/subtle` —
-og la komponent-tokens peke på dem. Da blir 56 deklarasjoner til én,
-tema-arbeid blir å bytte hva rollene peker på, og dokumentasjonen
-skriver seg selv.
+og la komponent-tokens peke på dem. De offentlige aliasdeklarasjonene
+består, men mange dupliserte verdiavgjørelser kan bli én kildeverdi med
+referanser. Tema-arbeid blir å bytte hva rollene peker på.
 
 ### 2. Tekst-på-flate-par er ikke tokens
 
 Badge har bakgrunnsfarger men ingen tekstfarger. Button-teksten er
 «text-label i motsatt tone» — en muntlig regel vi måtte utlede. Det er
-nettopp her det eneste WCAG-bruddet oppsto, og hvorfor det ikke ble
-fanget: **paringen finnes ikke som data, så den kan ikke testes**.
+nettopp her det eneste unike kontrastparet under kravet oppsto; samme
+par ga to failures, i Button og valgt Filter. Det ble ikke fanget
+upstream fordi **paringen ikke finnes som data og derfor ikke kan
+oppdages og testes automatisk**.
 M3 løser dette med `on-primary`/`on-surface`; Atlassian med
 `color.text.inverse`. Med par-tokens kunne en pipeline-test målt alle
-par ved hver publisering (vårt skript gjør dette på 41 par i dag —
-gjerne stjel det).
+par ved hver publisering. PoC-en målte 41 manuelt kuraterte kandidatpar;
+upstream bør eie et uttømmende pair-manifest.
 
 ### 3. Tilstandsmodellen: «fallback», sparsomme matriser og to hover-mekanismer
 
@@ -299,7 +302,7 @@ tokens-pakken og Figma-APIet som eneste sannhetskilder. Erfaringen,
 rangert etter hva som faktisk kostet og reddet tid:
 
 1. **Ett maskinlesbart kontaktpunkt reddet prosjektet.** At hele
-   systemet kan importeres som JSON gjorde at agenten kunne bygge 33
+   systemet kan importeres som et ESM-objekt gjorde at agenten kunne validere 33
    komponenter uten å forstyrre en designer. Dette er Kobbers største
    styrke i dag — behold den for enhver pris.
 2. **Alt som krever et menneske i loopen, stopper en agent.** Skjulte
@@ -312,8 +315,9 @@ rangert etter hva som faktisk kostet og reddet tid:
    `text/subtle/on-brand` krever ingenting.
 4. **Eksplisitte par gjør kvalitet automatisk verifiserbar.** Vårt
    kontrastskript fant WCAG-bruddet på minutter — men bare fordi vi
-   hadde håndkodet paringene. Med on-tokens hadde pipelinen deres
-   fanget det før publisering.
+   hadde håndkodet paringene. Lesbare on-token-navn må suppleres med et
+   eksplisitt pair-manifest før pipelinen kan finne og teste alle
+   foreskrevne kombinasjoner.
 5. **Én tilstandsgrammatikk gjør komponenter genererbare.** Når
    hover/pressed/disabled alltid uttrykkes likt, kan en maskin skrive
    (og verifisere) styleVariants mekanisk. I dag må hver komponent
@@ -327,10 +331,10 @@ rangert etter hva som faktisk kostet og reddet tid:
    agenter skrive codemods for konsumentene ved major-versjoner.
    (Driften i 13.0.0 måtte vi likevel finne ved å diffe hex mot Figma —
    en publisert «bygget fra Figma-versjon X»-stämpel hadde avslørt den.)
-8. **Kontraktstester bør følge tokens.** Kontrast på alle par, monotone
-   skalaer, komplette par, navnegrammatikk — alt er noen titalls linjer
-   (våre ligger i `packages/kobber/scripts/contrast-report.mjs` og er
-   fritt vilt). Kjør dem i token-pipelinen, ikke hos konsumentene.
+8. **Kontraktstester bør følge tokens.** Kontrast på alle foreskrevne
+   par, monotone skalaer, komplette par og navnegrammatikk hører hjemme
+   i token-pipelinen. PoC-skriptet er metodeevidens; upstream bør skrive
+   testen mot sitt kanoniske manifest og sin generator.
 
 ---
 
@@ -364,8 +368,7 @@ fra referanse-PoC-en, ikke kode som skal flyttes til produksjon.
 
 - **Tokens:** strukturanalyse av `@gyldendal/kobber-tokens` 13.0.0
   (fortsatt nyeste på npm 2026-07-20; 1 876 JS-bladverdier over seks
-  eksportområder), kontrastfeiing av 41 kuraterte par
-  (`packages/kobber/scripts/contrast-report.mjs`).
+  eksportområder), pluss WCAG 2.x-måling av 41 kuraterte kandidatpar.
 - **Figma:** variable defs per komponent-node og sideliste via
   Figma-API (kun lesing), 2026-07-04.
 - **Referansesystemer:** offentlig dokumentasjon og token-pakker fra

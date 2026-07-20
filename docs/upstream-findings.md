@@ -67,7 +67,8 @@ Highlights fra feiingen (fullstendig tabell genereres av skriptet):
 | Text Module                     | alle fire flater                          | 11,3–16,4:1 |
 | Sekundærtekst (`subtle/tone-a`) | på hvit og aubergine-25                   | 6,2–6,4:1   |
 
-Godt jobbet — paletten er gjennomgående solid.
+De målte parene er gjennomgående solide; matrisen støtter ingen
+konklusjon om varianter den ikke dekker.
 
 ## 3. Observasjon: fokusfargen mot primærfargen
 
@@ -103,14 +104,14 @@ Ikke feil, men hull vi har måttet jobbe rundt — nyttige å kjenne til:
   Dokumenter gjerne paringen som tokens, så den ikke må gjettes.
 - **`cards-and-modules/radius`** har `small` og `large`, men ingen
   `medium` — skalaen har hull.
-- **WIP-grupper med underscore** (`_textInput`, `_listElements`,
-  `_dropdownMenu`, `_contextualNavigationBar`, `_dropdownItem`,
-  `_slider`, `_sliderController`) ble brukt i referanse-PoC-en —
-  ferdigstilling og stabilitetsmerking hjelper alle konsumenter.
-- **Navigation Bar på mobil**: size=mobile-varianten skjuler menyen
-  uten å vise en vei inn. Vi har implementert hamburger/disclosure
-  (demo: øverste meny på mobil) — si ifra hvis dere vil designe et
-  offisielt mønster, så bytter vi til det.
+- **WIP-grupper med underscore:** `_textInput`, `_listElements`,
+  `_dropdownMenu`, `_contextualNavigationBar` og `_dropdownItem` ble
+  konsumert i referanse-PoC-en. `_slider` og `_sliderController` ble
+  observert i pakken, men ikke implementert eller validert.
+  Ferdigstilling og stabilitetsmerking hjelper konsumentene.
+- **Navigation Bar på mobil**: size=mobile-varianten skjulte menyen
+  uten å vise en vei inn. PoC-en demonstrerte hamburger/disclosure;
+  upstream må spesifisere og teste det offisielle mønsteret uavhengig.
 - **Ingen motion-tokens** (varighet/easing). Referanse-PoC-en foreslo
   et sett i `kobber-lab` (`motion.ts`: 120/240/400 ms +
   enter/exit-easing). Seks av tolv Lab-forslag brukte disse direkte;
@@ -160,6 +161,10 @@ akseptansekriterier og testopplegg står i
   `919ef1f8047a1cca2dfc8bc283770ce74dd59e68`.
 - Figma: variable defs per komponent-node, kun lest 2026-07-04; ikke
   re-verifisert 2026-07-20.
-- Kjør på nytt: `cd packages/kobber && node scripts/contrast-report.mjs`.
-- Automatisk side-feiing (axe-core over alle demosider):
-  `apps/demo/scripts/axe-audit.mjs`. Se også `docs/a11y-audit.md`.
+- Metodeevidens: PoC-skriptet
+  `packages/kobber/scripts/contrast-report.mjs` implementerer WCAG
+  2.x-luminans og den kuraterte matrisen. Skriv en uavhengig
+  upstream-test fra WCAG-spesifikasjonen og et designgodkjent
+  pair-manifest; ikke kopier eller tilpass PoC-skriptet.
+- Axe-metodens dekning og begrensninger er dokumentert i
+  `docs/a11y-audit.md`.

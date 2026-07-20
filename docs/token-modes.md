@@ -28,9 +28,11 @@ primitives eller komponent-tokens.**
   13.0.0 er 938 av 940 komponentdeklarasjoner referanser (CSS-byggene) —
   arkitekturen deres er altså _bygget_ for dette. Én komponent-token som
   peker direkte på en primitive vil derimot stå stille når moden bytter;
-  `validate-references`-skriptet deres bør gjøres om til en hard regel:
-  komponenter → groups/semantics, groups → semantics, kun semantics →
-  primitives.
+  `validate-references`-skriptet bør håndheve en eksplisitt graf.
+  Et mulig utgangspunkt er components → groups/semantics/universal,
+  groups/universal → semantics/primitives etter dokumenterte unntak,
+  og semantics → primitives/foundations. Dagens faktiske graf må
+  kartlegges før regelen gjøres hard.
 
 Konsekvensen i tall: med modes på semantikklaget er mørk modus i
 størrelsesorden **50–100 nye rolleverdier**. Med modes på
@@ -121,36 +123,40 @@ CSS-builden er allerede riktig formet for dette. Anbefalt output:
   klientstrategi eller akseptert fallback.
 - Stabile ASCII-slugs for modenavn (`dark`, `barn`) — de blir
   attributtverdier og filnavn.
-- **JS-builden**: flatede literaler kan per definisjon ikke uttrykke
-  modes. Ikke lag `tokens.dark.js`-varianter (kombinatorikk); tilby i
-  stedet en variant der verdiene er `var(--k-…)`-strenger. Behold gjerne
-  dagens flate build som «statisk lys modus»-artefakt.
+- **JS-builden**: dagens flate schema representerer bare én mode.
+  JavaScript kan representere flere modes med et annet schema, men
+  ikke lag én `tokens.dark.js`-fil per kombinasjon. Tilby CSS-var-
+  referanser eller et eksplisitt mode-aware objekt/manifest. Behold
+  eventuelt dagens flate build som dokumentert statisk default-mode.
 
-### Hva referanse-PoC-en avslørte om konsumentkostnad
+### Konsumentkontrakter observert i referanse-PoC-en
 
-Hele biblioteket leser tokens gjennom én fil (`styles/tokens.ts`) —
-guardrailen «ingen råverdier i komponentfiler» var forberedelsen til
-akkurat dette. Migreringen er:
+PoC-en viste hvilke kontrakter upstream må støtte, ikke en
+implementasjon som skal gjenbrukes:
 
-1. Importer `k-tokens.css` (med modes) én gang i appen.
-2. La `tokens.ts` levere `var(--k-…)`-strenger i stedet for literaler.
-   vanilla-extract skriver strenger rett inn i CSS — **null endringer i
-   komponentfilene** for alle rene oppslag.
-3. Håndter unntakene: omtrent 300 `val()`-kall finnes i de to
-   PoC-pakkene; 11 gjør aritmetikk (`padding * 2`, `blur * 6`,
-   `gap / 2`) og må bli `calc()`. En håndfull steder limer alfakanal på
-   hex (`${farge}66`) og trenger `color-mix()` eller egen alfa-rolle.
-   Dette er PoC-tall, ikke et estimat for upstream.
-4. Appen setter `<html data-mode data-density>` (cookie + serverrendring;
-   demoens prerender-løype beviser mønsteret uten hydreringsblink).
+1. CSS-konsumenter trenger én dokumentert import og en eksplisitt
+   default-selector; dagens pakke skjuler variablene bak
+   `.kobber-theme-default`.
+2. JS-konsumenter trenger enten `var(--k-…)`-referanser eller et
+   mode-aware manifest. Dagens resolverte literaler kan bare
+   representere én statisk mode.
+3. Aritmetikk på tokenverdier må fungere når verdien er en CSS-var.
+   Upstream bør tilby ferdige composites/`calc()` der kontrakten krever
+   det, i stedet for at hver konsument parser eller ganger strenger.
+4. Alfa må være et typet token/transform, ikke strengkonkatenering på
+   hex.
+5. SSR må ha en eksplisitt kontrakt for hvor mode-attributtet kommer
+   fra. Cookie, tidlig klientkode og systempreferanse har ulike
+   konsekvenser; PoC-en implementerte ikke modes og beviser derfor ikke
+   blinkfri hydrering.
 
-### Testing per mode (billig, fordi det finnes fra før)
+### Nye upstream-tester per mode
 
-- **Kontrast**: dagens skript måler 41 par; med modes blir det par ×
-  modes-matrisen. Mørk modus er historisk der kontrastfeil oppstår —
-  gate i pipeline, per mode, før publisering.
-- **axe-feiing**: kjør per `data-mode`-kombinasjon (samme skript, ett
-  attributt å sette).
+- **Kontrast**: etabler først et designgodkjent pair-manifest, og test
+  deretter par × modes-matrisen. Gate i pipeline per mode før
+  publisering.
+- **axe-feiing**: upstream etablerer en egen audit per
+  `data-mode`-kombinasjon; PoC-skriptet er bare metodeevidens.
 - **Paritetslint**: hver variabel i en mode-kolleksjon skal ha verdi i
   alle modes (Figma faller stille tilbake til default — lint det i
   bygget).
@@ -169,6 +175,6 @@ akkurat dette. Migreringen er:
 4. Vurder Tema-kolleksjonen sist — størst opprydding (fjerner målt
    25×-duplikasjon), men også størst flytting.
 
-Referansedemoen kan brukes som historisk testmateriale, men upstream bør
-etablere sin egen mode-matrise og visuelle regresjon. PoC-koden skal
-ikke bli en runtime- eller testavhengighet i det ekte repoet.
+Referansedemoen er bare en visuell illustrasjon. Upstream etablerer sin
+egen mode-matrise og visuelle regresjon uten å kopiere eller tilpasse
+PoC-kode, tester eller skript.

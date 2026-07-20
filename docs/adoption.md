@@ -8,17 +8,17 @@ repositories.
 
 ## Transfer
 
-| Artifact | Use in the real repository |
-| --- | --- |
-| `docs/token-quality-roadmap.md` | Issue-ready token build, data-quality and architecture backlog |
-| `docs/upstream-findings.md` | Concise verified defects and dated Figma observations |
-| `docs/design-system-review.md` | Architecture feedback and prioritization |
-| `docs/token-modes.md` | Figma/CSS mode design, constraints and test matrix |
-| `docs/responsive-tokens.md` | Fluid layout endpoint and generation specification |
-| `docs/a11y-audit.md` | Audit method, patterns and cautions to reproduce upstream |
-| `docs/proposals/*.md` | Product needs not represented in Kobber Figma at audit time |
-| `docs/components/*.md` | Usage and accessibility responsibilities worth folding into official docs |
-| `docs/dam.md` | Assumptions that must be verified against the real DAM contract |
+| Artifact                        | Use in the real repository                                                |
+| ------------------------------- | ------------------------------------------------------------------------- |
+| `docs/token-quality-roadmap.md` | Issue-ready token build, data-quality and architecture backlog            |
+| `docs/upstream-findings.md`     | Concise verified defects and dated Figma observations                     |
+| `docs/design-system-review.md`  | Architecture feedback and prioritization                                  |
+| `docs/token-modes.md`           | Figma/CSS mode design, constraints and test matrix                        |
+| `docs/responsive-tokens.md`     | Fluid layout endpoint and generation specification                        |
+| `docs/a11y-audit.md`            | Audit method, patterns and cautions to reproduce upstream                 |
+| `docs/proposals/*.md`           | Product needs not represented in Kobber Figma at audit time               |
+| `docs/components/*.md`          | Usage and accessibility responsibilities worth folding into official docs |
+| `docs/dam.md`                   | Assumptions that must be verified against the real DAM contract           |
 
 ## Do not transfer
 
@@ -29,9 +29,10 @@ repositories.
 - `CLAUDE.md` implementation workflow;
 - component tests as-is.
 
-Code and tests may be read to understand how a finding was discovered.
-Any useful test must be rewritten against the real repository's public
-API and tooling.
+Code and tests may be read only to understand how a finding was
+discovered. Do not copy or adapt source, tests or audit scripts—even as
+non-production scaffolding. Write new upstream implementations from the
+documented observable contracts and establish provenance there.
 
 ## Handoff procedure
 
@@ -60,14 +61,17 @@ API and tooling.
 ## Definition of done for the handoff
 
 - Every P0/P1 item in `docs/token-quality-roadmap.md` has an upstream
-  issue URL, owner and disposition.
+  issue URL and owner. Every P2 item has at least an explicit
+  disposition: accepted backlog, rejected with reason, or deferred with
+  prerequisite.
 - Current Figma evidence is attached where a design decision is needed.
 - Accepted recommendations have tests in the real repository.
 - Rejected recommendations record the technical reason, so dated
   findings are not repeatedly rediscovered.
 - Official Kobber docs contain the guidance that consumers need.
-- No production package or application imports code from this
-  repository.
+- No source, test or script from this repository has been copied or
+  adapted for any purpose; no package, application or upstream tooling
+  imports it.
 
 ## Historical evidence limitations
 

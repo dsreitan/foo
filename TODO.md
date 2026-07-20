@@ -27,13 +27,20 @@ need and current Figma evidence exist.
 The unchecked items below were not completed in the PoC. They are
 inputs to upstream prioritization, not tasks to implement here.
 
-- [ ] **Icons from DAM** — replace placeholder SVGs when the DAM CDN has the icon set (npm icon packages are deprecated); URLs via src/assets/dam.ts
-- [ ] **PP Mori webfont from DAM** — @font-face in apps/demo once the DAM CDN serves the font files; URLs via src/assets/dam.ts
-- [ ] **Theming** — flip `styles/tokens.ts` to the CSS-variables token build; theme = redefining the semantic layer (`brand`, `rettsdata`, themes nature/fantasy/thriller/romance/vacation/nostalgia)
+- [ ] **Icons from DAM** — upstream must define the official icon asset
+      contract when DAM serves the set; deprecated npm icon packages
+      are not a target
+- [ ] **PP Mori webfont from DAM** — upstream documents asset IDs,
+      formats and loading responsibilities when the files exist
+- [ ] **Theming** — upstream supplies mode-aware semantic CSS variables;
+      see `docs/token-modes.md`
 - [ ] **Reading vs brand typography** — body/title/lead have `reading` (Inter) variants for long-form content
-- [ ] **Elevation tokens** — missing in Kobber; `styles/elevation.ts` carries a placeholder
+- [ ] **Elevation roles** — z-index and shadow leaves exist, but no
+      coherent role-based elevation scale; PoC-en brukte en lokal
+      placeholder
 - [ ] **Code Connect** — map the code components to their Figma counterparts
-- [x] **Logo component** — placeholder wordmark; swap to DAM image when asset IDs exist
+- [x] **Logo component** — PoC-en validerte bare en placeholder;
+      upstream spesifiserer og implementerer DAM-varianten uavhengig
 
 ## Actions
 
@@ -46,13 +53,13 @@ inputs to upstream prioritization, not tasks to implement here.
 
 - [x] **Checkbox** (atomic native input)
 - [ ] **Checkbox Group** — PoC never implemented the advertised
-  `<fieldset>/<legend>` grouping contract
+      `<fieldset>/<legend>` grouping contract
 - [x] **Radiobutton** (atomic native input)
 - [ ] **Radio Group** — PoC grouped only by shared `name`, without a
-  named `<fieldset>/<legend>`
+      named `<fieldset>/<legend>`
 - [x] **Switch**
 - [x] **Text Area** (Figma component set `text-area`)
-- [x] **Search** — full search field with active/typing states (only the navbar trigger exists here)
+- [x] **Search** — full search field with active/typing states
 - [ ] **Multiple Choice / Multiple Choice Item**
 - [ ] **Slider** (`_slider`, `_sliderController` — WIP tokens)
 

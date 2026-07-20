@@ -15,7 +15,10 @@ Backdrop: `aubergine-1000-20`. Nye tokens som trengs:
 ## Tilgjengelighet
 
 Fokusfelle, fokus-retur og Escape kommer gratis fra `<dialog>`/`showModal`.
-Tittel er en `<h2>`; lukkeknapp med overstyrbar norsk etikett.
+Dialogen skal ha tilgjengelig navn via `aria-labelledby` til en ekte
+overskrift, eller `aria-label` når ingen synlig tittel finnes.
+Overskriftsnivået må kunne velges etter sidekonteksten; ikke hardkod
+`<h2>`. Lukkeknappen har overstyrbar norsk etikett.
 
 ## Animasjonsforslag
 

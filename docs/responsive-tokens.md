@@ -3,9 +3,10 @@
 Til Kobber-teamet: hvordan uttrykke responsiv side-rytme —
 `clamp(min, …, maks)` for spacing og store overskrifter — i et system
 der Figma-variabler bare kan holde statiske tall. Kort svar: **tokenene
-er endepunktene (min/maks), formelen bor i pipelinen, og bare
-layout-laget er flytende.** Utopia (utopia.fyi) er referansemetoden;
-dette er den tilpasset Kobbers arkitektur.
+er endepunktene (min/maks), og formelen bor i pipelinen. Flytende
+verdier begrenses til layout-rytme og eksplisitt displaytypografi —
+aldri komponentanatomi eller brødtekst.** Utopia (utopia.fyi) er
+referansemetoden; dette er den tilpasset Kobbers arkitektur.
 
 ## Problemet
 
@@ -65,8 +66,10 @@ Regelen som holder systemet forutsigbart:
 | Hero-/display-typografi         | Brødtekst, labels (leselighet) |
 | Maksbredder for innholdsspalter | Radius, stroke, ikonstørrelser |
 
-- **Kobber har allerede riktig hjem for dette**: `layouts`-laget. Gjør
-  layout-rollene flytende; rør ikke `components`.
+- **Layout spacing har allerede riktig hjem**: `layouts`-laget.
+  Displaytypografi må bo i en egen semantisk typografirolle som
+  refereres av tekstkomponentene; ikke legg viewportlogikk direkte i
+  `components`.
 - Komponent-indre avstander skal _ikke_ følge viewport — en knapp i et
   smalt sidepanel på en bred skjerm skal se ut som en knapp. Størrelses-
   variasjon per målgruppe er tetthets-modens jobb (`barn`-mode, se

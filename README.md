@@ -13,7 +13,9 @@ Kobber-repoene. Referansen omfatter 33 komponentfamilier, 12
 komponentforslag, 112 tester og en kuratert kontrastmatrise på 41 par.
 
 **Arkivert referansedemo:** <https://dsreitan.github.io/foo/> — visuelt
-bevismateriale, ikke en produksjons- eller distribusjonskanal.
+bevismateriale, ikke en produksjons- eller distribusjonskanal. Tekst i
+selve demoen kan fortsatt inneholde eldre påstander om tokens/APG; bruk
+dokumentene under som autoritativ handoff.
 
 ## Til Kobber-teamet: start her
 
@@ -61,7 +63,7 @@ docs/
   proposals/     # forslagsdokumentene bak kobber-lab
   *.md           # feedback-dokumentene over + adoption.md + a11y-audit.md
 CLAUDE.md        # arbeidsregler og guardrails (også for KI-agenter)
-TODO.md          # gjenstående roadmap
+TODO.md          # historisk dekningsmatrise og upstream-gap
 ```
 
 `kobber` konsumeres som kildepakke (`exports` peker på `src/`) — demoen
@@ -108,9 +110,9 @@ arkiverte demoen deployes.
 
 ## Videre
 
-- [`CLAUDE.md`](CLAUDE.md) — arbeidsreglene: guardrails, komponent-
-  oppskriften, workflow for nye komponenter. Les denne før du endrer noe.
 - [`docs/adoption.md`](docs/adoption.md) — dokument-handoff: hva som
   skal og ikke skal overføres til de ekte repoene.
 - [`TODO.md`](TODO.md) — historisk dekningsmatrise og upstream-gap, ikke
   en aktiv kode-roadmap.
+- [`CLAUDE.md`](CLAUDE.md) — historiske PoC-guardrails som forklarer
+  hvordan evidensen ble produsert; de er ikke workflow for upstream.

@@ -6,8 +6,9 @@ prerendered `statisk.html`.
 
 This is an audit of a disposable reference PoC, not of the real Kobber
 repository or production products. Code fixes marked “Fixed” happened
-only in the PoC. Transfer the patterns and test cases, not the
-implementation.
+only in the PoC. Treat the written findings as requirements; write
+independent upstream implementations and tests without copying or
+adapting PoC artifacts.
 
 ## Method
 
@@ -24,12 +25,12 @@ implementation.
 
 ## Findings and status
 
-| #   | Finding                                                                                                                                                                                                      | Severity             | Status                                                                                                                                                                                                                                                                                                          |
-| --- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1   | `heading-order`: ContentCard/InfoCard/ProfileCard hardcoded `<h3>`, skipping levels on pages without an h2                                                                                                   | moderate             | **Fixed in PoC** — cards take `headingLevel` (2/3/4, default 3); upstream should adopt an equivalent outline contract independently                                                                                                                                                                               |
-| 2   | `heading-order`: dashboard stat titles defaulted to h3 under an h1                                                                                                                                           | moderate             | **Fixed in PoC** — `<Text as="h2">` in the app                                                                                                                                                                                                                                                                  |
-| 3   | Nav bar menus were unreachable on mobile (`display: none`)                                                                                                                                                   | serious (functional) | **Fixed in PoC** — hamburger/disclosure toggles with `aria-expanded` + `aria-controls`; Kobber should define the official mobile pattern                                                                                                                                                                         |
-| 4   | `color-contrast`: primary button text on brand background is **4.24:1** (needs 4.5:1). `text-label/brand/toneB` `#f9eaed` on `button/background/brand/primary/toneA` `#dc134f` — the published token pairing | serious              | **Upstream** — root-caused to token DRIFT: current Figma has `#fdf9f9` for this variable (4.73:1, passes); npm 13.0.0 ships the stale `#f9eaed`. Republishing the tokens package fixes it everywhere. Full report + token-wide contrast sweep (41 pairs, 2 failures, both this pair): docs/upstream-findings.md |
+| #   | Finding                                                                                                                                                                                                      | Severity             | Status                                                                                                                                                                                                                                                                                                                                |
+| --- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | `heading-order`: ContentCard/InfoCard/ProfileCard hardcoded `<h3>`, skipping levels on pages without an h2                                                                                                   | moderate             | **Fixed in PoC** — cards take `headingLevel` (2/3/4, default 3); upstream should adopt an equivalent outline contract independently                                                                                                                                                                                                   |
+| 2   | `heading-order`: dashboard stat titles defaulted to h3 under an h1                                                                                                                                           | moderate             | **Fixed in PoC** — `<Text as="h2">` in the app                                                                                                                                                                                                                                                                                        |
+| 3   | Nav bar menus were unreachable on mobile (`display: none`)                                                                                                                                                   | serious (functional) | **Fixed in PoC** — hamburger/disclosure toggles with `aria-expanded` + `aria-controls`; Kobber should define the official mobile pattern                                                                                                                                                                                              |
+| 4   | `color-contrast`: primary button text on brand background is **4.24:1** (needs 4.5:1). `text-label/brand/toneB` `#f9eaed` on `button/background/brand/primary/toneA` `#dc134f` — the published token pairing | serious              | **Upstream candidate** — Figma-API-observasjonen 2026-07-04 hadde `#fdf9f9` (4,73:1), mens npm 13.0.0 har `#f9eaed`. Re-verifiser dagens Figma-kilde; publiser en rettelse hvis avviket består. Produkter må oppgradere og deploye. Den separate, kuraterte matrisen hadde 2/41 brudd, begge dette paret: `docs/upstream-findings.md` |
 
 Within the automated scope above, axe reported no other violations.
 That is not evidence that every ARIA contract or assistive-technology
@@ -62,57 +63,58 @@ resolving them:
 ## Per-component status
 
 Legend: pattern = the contract attempted and test-locked in the PoC.
-It is reference input for upstream, not a production certification.
+The last column evaluates whether the need or pattern is relevant to
+upstream. It never recommends retaining or copying a PoC component.
 
 ### packages/kobber
 
-| Component                            | Pattern / a11y contract                                                                     | Usefulness verdict                                               |
-| ------------------------------------ | ------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
-| Accordion                            | native `<details>/<summary>`                                                                | Keep — zero-JS disclosure                                        |
-| Alert (Label/Banner/Accordion)       | `role="alert"` for warning, `role="status"` otherwise; banner dismiss is a labelled button  | Keep — three variants map to real use                            |
-| Badge                                | text in a `<span>`, color never sole meaning                                                | Keep; document "pair with text, not color-only" stays in gallery |
-| Breadcrumb                           | `<nav aria-label>` + `<ol>`, `aria-current="page"` on the last item                         | Keep — also drives drill-down (see `#/innhold`)                  |
-| Button                               | native button; `iconOnly` requires `aria-label`; contrast finding #4                        | Keep                                                             |
-| ButtonGroup                          | `role="group"` semantics via layout only                                                    | Keep, small                                                      |
-| Checkbox / Radiobutton / Switch      | real native inputs, label-wrapped; Switch has `role="switch"`                               | Keep                                                             |
-| Collapsible                          | button with `aria-expanded` + measured region                                               | Keep                                                             |
-| ContentCard / InfoCard / ProfileCard | `<article>` + configurable `headingLevel` (finding #1)                                      | Keep; image-slot alt duties documented per component             |
-| Counter                              | presentational `<span>`; meaning must come from adjacent text                               | Keep, but never standalone                                       |
-| Divider                              | `<hr>`                                                                                      | Keep                                                             |
-| Dropdown                             | Menu-like keyboard behavior; APG roles are incomplete (see handoff cautions)                 | Upstream must choose and complete one semantic pattern           |
-| Filter                               | `aria-pressed` toggle with counter                                                          | Keep                                                             |
-| List                                 | `<ul>/<ol>` with styled markers                                                             | Keep                                                             |
-| Logo                                 | `role="img"` + alt prop                                                                     | Keep (placeholder until DAM)                                     |
-| MenuItem                             | link with `aria-current="page"` when active                                                 | Keep                                                             |
-| NavLink(Group)                       | `<nav aria-label>` landmark                                                                 | Keep                                                             |
-| NavigationBar                        | landmarked menu; mobile hamburger disclosure (finding #3); labelled search/profile triggers | Keep                                                             |
-| ContextualNavigationBar              | separately labelled `<nav>`; mobile disclosure toggle                                       | Keep                                                             |
-| NavigationCard                       | one link named by its title; image slot `aria-hidden`                                       | Keep                                                             |
-| Popover                              | `aria-expanded/controls`, outside-click + Escape with focus return                          | Keep — Dropdown builds on it                                     |
-| ProductCard                          | whole card one link; price/subtitle inside the name                                         | Keep                                                             |
-| QuoteModule                          | `<figure>/<blockquote>/<figcaption>`                                                        | Keep                                                             |
-| Search                               | native `type="search"` input with `aria-label` default "Søk"                                | Keep                                                             |
-| Text                                 | typography veneer; per-variant default elements, `as` override                              | Keep — the only text nesting allowed                             |
-| TextArea / TextInput                 | real `<label htmlFor>` via `useId`                                                          | Keep (WIP tokens)                                                |
-| TextLink                             | native anchor, underline not color-only                                                     | Keep                                                             |
-| TextModule                           | `<section aria-label>` colored surface; text color cascades                                 | Keep                                                             |
+| Component                            | Pattern / a11y contract                                                                     | Upstream interpretation                                |
+| ------------------------------------ | ------------------------------------------------------------------------------------------- | ------------------------------------------------------ |
+| Accordion                            | native `<details>/<summary>`                                                                | Relevant zero-JS disclosure pattern                    |
+| Alert (Label/Banner/Accordion)       | `role="alert"` for warning, `role="status"` otherwise; banner dismiss is a labelled button  | Three distinct needs; validate urgency rules           |
+| Badge                                | text in a `<span>`, color never sole meaning                                                | Relevant; require non-colour meaning                   |
+| Breadcrumb                           | `<nav aria-label>` + `<ol>`, `aria-current="page"` on the last item                         | Relevant navigation pattern                            |
+| Button                               | native button; `iconOnly` requires `aria-label`; contrast finding #4                        | Core pattern; enforce accessible names                 |
+| ButtonGroup                          | `role="group"` semantics via layout only                                                    | Re-evaluate whether a named group is required          |
+| Checkbox / Radiobutton / Switch      | real native inputs, label-wrapped; Switch has `role="switch"`                               | Core native-control pattern; add named groups          |
+| Collapsible                          | button with `aria-expanded` + measured region                                               | Relevant with clipped-focus caution                    |
+| ContentCard / InfoCard / ProfileCard | `<article>` + configurable `headingLevel` (finding #1)                                      | Relevant; preserve contextual heading and image duties |
+| Counter                              | presentational `<span>`; meaning must come from adjacent text                               | Relevant only with surrounding meaning                 |
+| Divider                              | `<hr>`                                                                                      | Relevant native semantic                               |
+| Dropdown                             | Menu-like keyboard behavior; APG roles are incomplete (see handoff cautions)                | Upstream must choose and complete one semantic pattern |
+| Filter                               | `aria-pressed` toggle with counter                                                          | Relevant toggle pattern; clarify counter name          |
+| List                                 | `<ul>/<ol>` with styled markers                                                             | Relevant native semantic                               |
+| Logo                                 | `role="img"` + alt prop                                                                     | Relevant after DAM contract exists                     |
+| MenuItem                             | link with `aria-current="page"` when active                                                 | Relevant navigation pattern                            |
+| NavLink(Group)                       | `<nav aria-label>` landmark                                                                 | Relevant; avoid redundant unnamed landmarks            |
+| NavigationBar                        | landmarked menu; mobile hamburger disclosure (finding #3); labelled search/profile triggers | Needs an official responsive pattern                   |
+| ContextualNavigationBar              | separately labelled `<nav>`; mobile disclosure toggle                                       | Relevant when distinctly named                         |
+| NavigationCard                       | one link named by its title; image slot `aria-hidden`                                       | Relevant single-link-card pattern                      |
+| Popover                              | `aria-expanded/controls`, outside-click + Escape with focus return                          | Relevant after trigger composition is fixed            |
+| ProductCard                          | whole card one link; price/subtitle inside the name                                         | Re-evaluate accessible-name verbosity                  |
+| QuoteModule                          | `<figure>/<blockquote>/<figcaption>`                                                        | Relevant native semantic                               |
+| Search                               | native `type="search"` input with `aria-label` default "Søk"                                | Relevant native-control pattern                        |
+| Text                                 | typography veneer; per-variant default elements, `as` override                              | Relevant if semantic element remains selectable        |
+| TextArea / TextInput                 | real `<label htmlFor>` via `useId`                                                          | Core pattern; add hint/error relationship              |
+| TextLink                             | native anchor, underline not color-only                                                     | Core link pattern                                      |
+| TextModule                           | `<section aria-label>` colored surface; text color cascades                                 | Re-evaluate whether every surface needs a landmark     |
 
 ### packages/kobber-lab (proposals)
 
-| Component   | Pattern / a11y contract                                                                                                   | Usefulness verdict                                    |
-| ----------- | ------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------- |
-| Avatar      | `role="img"` + name when initials; alt duties documented                                                                  | Keep — lists/comments need it                         |
-| Dialog      | native `<dialog>` + `showModal`: platform focus trap, Escape                                                              | Keep                                                  |
-| EmptyState  | `<h2>` title so the state appears in heading navigation; illustration `aria-hidden`                                       | Keep                                                  |
-| Pagination  | `<nav aria-label>`, `aria-current="page"`, full button names, `aria-hidden` ellipsis                                      | Keep                                                  |
-| Pane(Group) | APG window splitter: `role="separator"`, `aria-value*`, arrows/Home/End; handles gone when panes stack on compact windows | Keep — workspaces need it                             |
-| ProgressBar | `role="progressbar"` with clamped `aria-valuenow`                                                                         | Keep                                                  |
-| Select      | native `<select>` + real label — platform semantics                                                                       | Keep — fills the Dropdown-vs-form gap                 |
-| Skeleton    | `aria-hidden`; app must pair with a `role="status"` announcement                                                          | Keep, with the documented duty                        |
-| StatCard    | plain text pairs, no fake semantics                                                                                       | Keep                                                  |
-| Tabs        | APG tabs, automatic activation, roving tabindex                                                                           | Keep                                                  |
-| Toast       | `role="status"`/`alert`; stacking & timing owned by the app                                                               | Keep                                                  |
-| Tooltip     | `aria-describedby`, hover _and_ focus, Escape dismiss (WCAG 1.4.13)                                                       | Keep — but never for content that exists nowhere else |
+| Component   | Pattern / a11y contract                                                                                                   | Upstream interpretation                                |
+| ----------- | ------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------ |
+| Avatar      | `role="img"` + name when initials; alt duties documented                                                                  | Relevant list/comment need                             |
+| Dialog      | native `<dialog>` + `showModal`: platform focus trap, Escape; context-selectable heading                                  | High-value proposal; browser/AT validation required    |
+| EmptyState  | context-selectable heading so the state appears in heading navigation; illustration `aria-hidden`                         | Relevant product pattern                               |
+| Pagination  | `<nav aria-label>`, `aria-current="page"`, full button names, `aria-hidden` ellipsis                                      | Relevant navigation pattern                            |
+| Pane(Group) | APG window splitter: `role="separator"`, `aria-value*`, arrows/Home/End; handles gone when panes stack on compact windows | Complex proposal; validate with AT                     |
+| ProgressBar | `role="progressbar"` with clamped `aria-valuenow`                                                                         | Relevant status pattern                                |
+| Select      | native `<select>` + real label — platform semantics                                                                       | Prefer native control                                  |
+| Skeleton    | `aria-hidden`; app must pair with a `role="status"` announcement                                                          | Relevant with documented announcement duty             |
+| StatCard    | plain text pairs, no fake semantics                                                                                       | Relevant composition pattern                           |
+| Tabs        | APG tabs, automatic activation, roving tabindex                                                                           | High-value APG pattern; browser/AT validation required |
+| Toast       | `role="status"`/`alert`; stacking & timing owned by the app                                                               | Relevant with urgency/timing policy                    |
+| Tooltip     | `aria-describedby`, hover _and_ focus, Escape dismiss (WCAG 1.4.13)                                                       | Supplementary text only; validate with AT              |
 
 ## Re-audit checklist for the real repository
 

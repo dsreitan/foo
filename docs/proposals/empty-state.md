@@ -16,11 +16,14 @@ handlingsslot for en knapp. Nye tokens: `empty-state/padding`,
 
 ## Tilgjengelighet
 
-Tittelen er en `<h2>` slik at tilstanden dukker opp i
-overskriftsnavigasjon. Illustrasjonen er `aria-hidden` (dekorativ; bruk
-alt="" på DAM-bilder). Handlingsknappen er et vanlig fokuserbart
-element. Ved tomt SØKERESULTAT bør appen i tillegg announcere antall
-treff i en egen `role="status"` (komponenten er statisk innhold).
+Tittelen skal være en ekte overskrift med nivå valgt ut fra
+sidekonteksten, slik at tilstanden dukker opp riktig i
+overskriftsnavigasjon uten å hoppe over nivåer. API-et bør tilby
+`headingLevel` eller polymorf `as`, ikke hardkode `<h2>`. Illustrasjonen
+er `aria-hidden` (dekorativ; bruk `alt=""` på DAM-bilder).
+Handlingsknappen er et vanlig fokuserbart element. Ved tomt
+søkeresultat bør appen i tillegg annonsere antall treff i en egen
+`role="status"`; komponenten er ellers statisk innhold.
 
 ## Animasjonsforslag
 

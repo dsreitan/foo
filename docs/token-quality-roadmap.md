@@ -30,7 +30,7 @@ en verdi endres:
 - npm 13.0.0 publiserer samme teksttoken som `#f9eaed`;
 - kontrasten er 4,24:1 med npm-verdien og 4,73:1 med den observerte
   Figma-verdien;
-- en manuelt kuratert matrise på 41 foreskrevne par hadde 39 pass og to
+- en manuelt kuratert matrise på 41 kandidatpar hadde 39 pass og to
   brudd, begge med dette paret.
 
 Dette er verifikasjonsinput, ikke bevis på dagens Figma-tilstand.
@@ -72,15 +72,15 @@ Den siste deklarasjonen vinner, så den offentlige `+1`-egenskapen gir
 gyldig numerisk `0`. Disse syv tokenene finnes i begge CSS-bygg, men
 mangler i JavaScript og `tokens.d.ts`:
 
-| Logisk sti | Publisert CSS-egenskap |
-| --- | --- |
-| `primitives.size["0"]` | `--kobber-primitives-size-0` |
-| `primitives.elevation.zIndex["0"]` | `--kobber-primitives-elevation-z-index-0` |
-| `primitives.opacity["0"]` | `--kobber-primitives-opacity-0` |
-| `semantics.effect.gradient.stops["0%"]` | `--kobber-semantics-effect-gradient-stops-0` |
-| `groups.collapsibles.gradient.stops["0%"]` | `--kobber-groups-collapsibles-gradient-stops-0` |
-| `components.collapsible.gradient.start` | `--kobber-components-collapsible-gradient-start` |
-| `layouts.page.gap` | `--kobber-layouts-page-gap` |
+| Logisk sti                                 | Publisert CSS-egenskap                           |
+| ------------------------------------------ | ------------------------------------------------ |
+| `primitives.size["0"]`                     | `--kobber-primitives-size-0`                     |
+| `primitives.elevation.zIndex["0"]`         | `--kobber-primitives-elevation-z-index-0`        |
+| `primitives.opacity["0"]`                  | `--kobber-primitives-opacity-0`                  |
+| `semantics.effect.gradient.stops["0%"]`    | `--kobber-semantics-effect-gradient-stops-0`     |
+| `groups.collapsibles.gradient.stops["0%"]` | `--kobber-groups-collapsibles-gradient-stops-0`  |
+| `components.collapsible.gradient.start`    | `--kobber-components-collapsible-gradient-start` |
+| `layouts.page.gap`                         | `--kobber-layouts-page-gap`                      |
 
 **Akseptansekriterier:**
 
@@ -90,7 +90,9 @@ mangler i JavaScript og `tokens.d.ts`:
   eksplisitte og dokumenterte unntak.
 
 **Test i upstream:** Direkte regresjonstester for stiene over, pluss en
-fixture med nullprimitiv og en flerstegs aliaskjede som ender i null.
+fixture med numerisk `0` og en flerstegs aliaskjede som resolver til
+`0`. Test `null` og `undefined` separat etter den kildekontrakten som
+velges; de må aldri forveksles med tallet `0`.
 
 ## 3. P0 — gjør alle publiserte formater til én kontrakt
 
@@ -123,12 +125,12 @@ tekst-snapshots.
 Pakken beviser motsigelsene under, men en designer må avgjøre om navnet
 eller målet er riktig:
 
-| Lokalt alias | Nåværende mål |
-| --- | --- |
-| `groups.inputs.color.aubergine-525` | `wine-525` |
-| `groups.badges.color.carmine-25` | `carmine-50` |
-| `groups.cardsAndModules.color.nostalgia-600` | `nostalgia-850` |
-| `groups.cardsAndModules.color.aubergine-150` | `aubergine-250` |
+| Lokalt alias                                           | Nåværende mål                 |
+| ------------------------------------------------------ | ----------------------------- |
+| `groups.inputs.color.aubergine-525`                    | `wine-525`                    |
+| `groups.badges.color.carmine-25`                       | `carmine-50`                  |
+| `groups.cardsAndModules.color.nostalgia-600`           | `nostalgia-850`               |
+| `groups.cardsAndModules.color.aubergine-150`           | `aubergine-250`               |
 | `groups.popovers.effects.shadow.color.neutral-1000-10` | ugjennomsiktig `concrete-325` |
 
 Det finnes også en publisert stavefeil: `augbergine-1000-10`.
@@ -227,8 +229,9 @@ Transparente farger trenger også en eksplisitt `backdrop`-referanse.
 
 - hvert systemforeskrevne par har unik ID, referanser, bruk/terskel og
   relevante modes;
-- alle komponenteide forgrunn/bakgrunn-varianter er listet eller
-  eksplisitt unntatt;
+- alle designforeskrevne forgrunn/bakgrunn-kombinasjoner er listet
+  eller eksplisitt unntatt, også når forgrunn og bakgrunn kommer fra
+  forskjellige områder som `textLabel` og `button`;
 - referanser, duplikater, mode-dekning og kontrast valideres i pipeline;
 - dagens Figma-paringer eies og godkjennes av designteamet før
   41-par-listen importeres.
@@ -255,9 +258,25 @@ Behold `groups`-aliaser som har reell gjenbruk. Fjern ubrukte og
 én-til-én passthrough-aliaser; ikke pensjoner hele laget uten
 bruksmåling.
 
-**Akseptansekriterier:** Første aliasmigrering har null resolverte
-verdiendringer, gammel→ny-sti publiseres maskinlesbart, og state- og
-referanseretning lintes.
+**Akseptansekriterier for første komplette vertikale snitt:**
+
+- Button, Filter og Menu Item har en godkjent state-tabell per slot med
+  hvilke states som gjelder, hvilke som aliaser `rest`, og hvilke som
+  ikke gjelder;
+- midlertidige og varige states bruker forskjellig, dokumentert
+  vokabular, og ugyldige kombinasjoner feiler lint;
+- state-layer-tokens har egen type/metadata og kan ikke brukes som
+  ugjennomsiktig replacement uten eksplisitt transform;
+- tillatt referansegraf er dokumentert, for eksempel
+  components → groups/semantics/universal, groups/universal →
+  semantics/primitives etter eksplisitte regler, og semantics →
+  primitives/foundations;
+- sykluser, komponent→primitive-hopp uten allowlist, ukjent state og
+  manglende applicability feiler bygget;
+- migreringen har null resolverte verdiendringer med mindre en separat
+  designendring er godkjent;
+- gammel→ny-sti publiseres maskinlesbart, gamle stier er aliaser i en
+  navngitt deprecation-periode, og fjerning skjer først i varslet major.
 
 ## 9. P2 — design modes etter semantisk eierskap
 
