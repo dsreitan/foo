@@ -1,107 +1,83 @@
-# Adoption: moving kobber into a product monorepo
+# Documentation handoff to the real Kobber repository
 
-The agreed first step: **one consumer team transplants the library
-source into their monorepo, keeps developing it there, and adopts it
-gradually in their own product.** Until that move happens, development
-continues in this repo. After the move, this repo is archived with a
-pointer — one source of truth, no sync problem.
+The earlier plan to transplant this React source into a consumer
+monorepo is retired. **No code from this repository will be adopted or
+maintained in production.** The reference PoC exists only to provide
+evidence, usage experiments and documentation for the real Kobber
+repositories.
 
-Source transplant (not npm publish) is the right first move because the
-consumer's stack matches this repo exactly: **Vite, vanilla-extract and
-React 18**. Their bundler already compiles `.css.ts`, so the packages
-can be consumed as source with zero packaging work. A publish pipeline
-becomes worth building when a _second_ consumer appears (see Later).
+## Transfer
 
-**React 18 is verified**: the full test suite (105 tests, including
-renderToString + hydration with zero console errors) passes on React
-18.3.1. Peer deps are `^18.3.0 || ^19.0.0`. Button is `forwardRef` so it
-works as a Popover/Dropdown trigger on 18; other components don't
-expose refs yet — add `forwardRef` per component when a real need
-appears.
+| Artifact | Use in the real repository |
+| --- | --- |
+| `docs/token-quality-roadmap.md` | Issue-ready token build, data-quality and architecture backlog |
+| `docs/upstream-findings.md` | Concise verified defects and dated Figma observations |
+| `docs/design-system-review.md` | Architecture feedback and prioritization |
+| `docs/token-modes.md` | Figma/CSS mode design, constraints and test matrix |
+| `docs/responsive-tokens.md` | Fluid layout endpoint and generation specification |
+| `docs/a11y-audit.md` | Audit method, patterns and cautions to reproduce upstream |
+| `docs/proposals/*.md` | Product needs not represented in Kobber Figma at audit time |
+| `docs/components/*.md` | Usage and accessibility responsibilities worth folding into official docs |
+| `docs/dam.md` | Assumptions that must be verified against the real DAM contract |
 
-## What moves
+## Do not transfer
 
-| Piece                          | Where                             | Note                                                                                                |
-| ------------------------------ | --------------------------------- | --------------------------------------------------------------------------------------------------- |
-| `packages/kobber`              | their `packages/`                 | keep the package name `kobber` so imports never change                                              |
-| `packages/kobber-lab`          | their `packages/`                 | the proposals channel to the Kobber team                                                            |
-| `apps/demo`                    | their `apps/`                     | not optional in spirit: it is the living documentation, the a11y/SSR test bed and the deploy target |
-| `docs/`                        | repo root or next to the packages | components, proposals, a11y-audit, dam, this file                                                   |
-| `CLAUDE.md`, `TODO.md`         | next to the packages              | the guardrails must travel with the code                                                            |
-| `.github/workflows/deploy.yml` | adapt                             | demo deploy (Pages or internal hosting)                                                             |
+- `packages/kobber` or `packages/kobber-lab`;
+- `apps/demo`;
+- package manifests, build configuration or source-package exports;
+- this repository's GitHub Pages workflow;
+- `CLAUDE.md` implementation workflow;
+- component tests as-is.
 
-## Runbook
+Code and tests may be read to understand how a finding was discovered.
+Any useful test must be rewritten against the real repository's public
+API and tooling.
 
-1. **Copy with history**: `git remote add kobber-poc <this repo>` +
-   `git fetch` + `git subtree add --prefix=libs/kobber kobber-poc main`
-   (or a plain file copy if history doesn't matter).
-2. **Workspace**: add the folders to their `pnpm-workspace.yaml`;
-   `kobber-lab` and the demo depend on `kobber` via `workspace:*`.
-3. **Test infra lives at the monorepo ROOT** (pnpm strict resolution +
-   vitest pick this up from the root only):
-   - `vitest.config.ts` with the vanilla-extract plugin, `jsdom` and
-     `globals: true` (needed for testing-library auto-cleanup). If they
-     already have a root vitest workspace, register these packages as
-     projects with those settings instead.
-   - Root devDependencies: `vitest`, `jsdom`, `@testing-library/react`,
-     `@vanilla-extract/vite-plugin`.
-4. **Scripts**: this repo uses Vite+ (`vp`) — alpha tooling the consumer
-   should NOT be forced onto. The library code has no dependency on it;
-   swap `vp test` → `vitest run`, `vp lint` → their linter (oxlint
-   config-free works), `vp fmt` → their formatter, `tsgo` → `tsc` if
-   they prefer (tsgo is stricter and has caught real bugs; keep it if
-   the alpha is acceptable).
-5. **TypeScript**: source compiles with `moduleResolution: "bundler"`,
-   `verbatimModuleSyntax`, strict. Any TS ≥ 5.6 works.
-6. **Deploy the demo** from their repo — every push deploying the
-   gallery is the library's documentation site.
-7. **Prerender stays**: `apps/demo` builds `statisk.html` via
-   `vite build --ssr` (see `scripts/prerender.mjs`); both SPA and SSG
-   consumption must keep working. The SSR tests enforce this per
-   component.
-8. **Archive this repo** with a README pointing at the new home.
+## Handoff procedure
 
-## Working agreement after the move
+1. **Record the evidence baseline.** Attach token package version,
+   tarball integrity, audit date and any Figma node IDs to every issue.
+2. **Re-verify mutable sources.** npm 13.0.0 package defects are
+   reproducible; Figma values and API visibility are observations from
+   2026-07-04 and must be checked again.
+3. **Create issues in dependency order.** Start with artifact
+   correctness, then data integrity and documentation, followed by
+   contrast metadata, semantic migration, modes and responsive output.
+   The exact order and acceptance criteria are in
+   `docs/token-quality-roadmap.md`.
+4. **Port acceptance criteria, not solutions.** The real repository may
+   use a different generator, component API or test runner. Preserve
+   the observable contract.
+5. **Close with packed-artifact evidence.** Validate the result of
+   `npm pack`, not only source files or a local build directory.
+6. **Update official documentation.** Fold accepted component and
+   accessibility guidance into the real documentation site so this
+   repository is not a permanent second source of truth.
+7. **Archive this repository.** Once issues and relevant docs have been
+   transferred, leave a pointer to the official locations and stop
+   updating the PoC.
 
-- The guardrails in CLAUDE.md still apply, most importantly:
-  `packages/kobber` mirrors the Kobber Figma — product-specific needs go
-  to `packages/kobber-lab` as documented proposals, app concerns stay in
-  the app.
-- Adopt gradually: start with leaf components (Button, Badge, Text,
-  inputs) on new surfaces; don't rewrite existing pages. The demo pages
-  (butikk/dashbord/lekser/arbeidsflate...) show the intended
-  composition patterns.
-- New components follow the workflow in CLAUDE.md (tokens dump →
-  official CSS reference → implement → tests + SSR matrix + axe sweep →
-  docs → demo).
+## Definition of done for the handoff
 
-## Later — the backlog for broad, multi-team usability
+- Every P0/P1 item in `docs/token-quality-roadmap.md` has an upstream
+  issue URL, owner and disposition.
+- Current Figma evidence is attached where a design decision is needed.
+- Accepted recommendations have tests in the real repository.
+- Rejected recommendations record the technical reason, so dated
+  findings are not repeatedly rediscovered.
+- Official Kobber docs contain the guidance that consumers need.
+- No production package or application imports code from this
+  repository.
 
-In priority order; none of it blocks the first consumer:
+## Historical evidence limitations
 
-1. **Publish build** (trigger: a second consumer, or a consumer without
-   vanilla-extract): compile to ESM + `.d.ts` + one static CSS file so
-   `npm install` + one CSS import works with zero special tooling.
-   Publish under the `@gyldendal` scope; semver + changelog
-   (e.g. Changesets) from the first release.
-2. **Gallery "vis kode" snippets** — copy-paste usage per component is
-   the adoption engine — plus a consumer-facing README (install, fonts,
-   SSR notes, a11y duties).
-3. **Complete per-component docs** (`docs/components/` covers 8 of 33).
-4. **DAM assets**: PP Mori webfont (system fallback today), real icons
-   (16px placeholders today), real Logo — all through `createDam`.
-5. **Theming**: flip `styles/tokens.ts` to a CSS-variables build to
-   unlock the kobber-base dark theme without touching components.
-6. **Report upstream**: docs/upstream-findings.md is a ready-to-send
-   report (token drift breaking WCAG on the primary button, focus-ring
-   observation, token gaps).
-7. **Contribution guide**: when something goes in kobber vs kobber-lab
-   vs app code, definition of done, who reviews.
-8. **CI hardening**: run the axe sweep (apps/demo/scripts/axe-audit.mjs)
-   in CI; add visual regression screenshots when the look stabilizes.
-9. **Ref story**: done for the interactive set — Button, Filter and all
-   form controls (incl. lab Select) are `forwardRef` to their native
-   element; link components take router links via `as`
-   (docs/components/router-links.md). Extend to remaining components
-   only on demand (moot on React 19, where ref-as-prop flows through
-   `...props`).
+- The PoC had 112 passing tests when audited, but its CI only installed
+  React 19. React 18.3 was a dated local verification, not a permanent
+  matrix.
+- The axe run covered 12 hash routes plus `statisk.html` on desktop and
+  only `#/` on mobile. It was not a full browser/AT certification.
+- The contrast script contains 41 curated pairs, not an exhaustive
+  machine-derived inventory.
+- The reference implementation contains known API and semantic gaps
+  listed in `docs/a11y-audit.md`; this reinforces why code must not be
+  transplanted.

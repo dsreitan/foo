@@ -1,14 +1,18 @@
-# Kobber design system – component roadmap
+# Kobber design system — reference coverage matrix
 
 Inventory sources: the [Kobber Komponentbibliotek Figma library](https://www.figma.com/design/zMcbm8ujSMldgS1VB70IMP/Kobber-Komponentbibliotek),
 the token groups in `@gyldendal/kobber-tokens` v13 (`components.*`), and the
 official `@gyldendal/kobber-components` package. Names prefixed with `_` in
 the tokens are work-in-progress in Kobber's own taxonomy — expect churn.
 
-Status legend follows Kobber's component lifecycle (from the Figma
-"Introduksjon" page): design → tokens → development → review/QA → live.
+This is a historical coverage matrix for the disposable reference PoC,
+not an implementation backlog for this repository or the real Kobber
+repository. Checked means “exercised in the PoC”, not “ready for
+production”. Unchecked items are upstream design-system gaps or
+unvalidated inventory. Transfer them as issues only when a real product
+need and current Figma evidence exist.
 
-## Done in this repo
+## Validated in the reference PoC
 
 - [x] **Text** — label/body/lead/title/heading/display (+ core typography styles)
 - [x] **Button** — brand/neutral × primary/secondary/tertiary + UI Button (success/warning/informative), iconOnly
@@ -19,6 +23,9 @@ Status legend follows Kobber's component lifecycle (from the Figma
 - [x] **Navigation Bar** — logo | menu | search trigger + profile
 
 ## Foundations
+
+The unchecked items below were not completed in the PoC. They are
+inputs to upstream prioritization, not tasks to implement here.
 
 - [ ] **Icons from DAM** — replace placeholder SVGs when the DAM CDN has the icon set (npm icon packages are deprecated); URLs via src/assets/dam.ts
 - [ ] **PP Mori webfont from DAM** — @font-face in apps/demo once the DAM CDN serves the font files; URLs via src/assets/dam.ts
@@ -37,8 +44,12 @@ Status legend follows Kobber's component lifecycle (from the Figma
 
 ## Forms
 
-- [x] **Checkbox / Checkbox Group** (official CSS exists — good reference)
-- [x] **Radiobutton / Radio Group**
+- [x] **Checkbox** (atomic native input)
+- [ ] **Checkbox Group** — PoC never implemented the advertised
+  `<fieldset>/<legend>` grouping contract
+- [x] **Radiobutton** (atomic native input)
+- [ ] **Radio Group** — PoC grouped only by shared `name`, without a
+  named `<fieldset>/<legend>`
 - [x] **Switch**
 - [x] **Text Area** (Figma component set `text-area`)
 - [x] **Search** — full search field with active/typing states (only the navbar trigger exists here)
@@ -86,12 +97,21 @@ Status legend follows Kobber's component lifecycle (from the Figma
 - [ ] **Content Wrapper / Content Top Block** — layout primitives on the `layouts` tokens
 - [ ] **Media Player / Media Player Item** — video/audio playback (subtitles, speed, fullscreen)
 
-## Suggested order
+## Suggested upstream order
 
-1. Forms cluster (Checkbox, Radio, Switch, Text Area, Search) — shared field
-   patterns, official CSS to verify against
-2. Feedback cluster (Alert Label/Banner/Accordion, Counter) — small, token-complete
-3. Text Link + Breadcrumb + List — finishes typographic navigation
-4. Content Card + Product Card — highest-value modules, exercise badge/text composition
-5. Foundations: icon package + webfont early (they upgrade everything already built);
-   theming when a second product (e.g. Rettsdata) needs it
+1. **Token artifact correctness:** CSS-name uniqueness, zero-value
+   parity and packed-output contract tests
+   (`docs/token-quality-roadmap.md` 1–3).
+2. **Data and documentation integrity:** alias/alpha mismatches and
+   executable package README examples (roadmap 4–6).
+3. **Accessibility contract data:** re-verify the Figma contrast pair,
+   publish prescribed foreground/background pairs, and define official
+   mobile navigation and form-group patterns.
+4. **Incremental architecture:** semantic roles, explicit state
+   applicability, then modes and responsive output (roadmap 7–10).
+5. **Component coverage:** prioritize remaining Figma components from
+   real product demand. Do not continue the PoC implementation.
+
+The former Forms → Feedback → Links → Cards build order is obsolete;
+those clusters were only milestones for generating the reference
+evidence.

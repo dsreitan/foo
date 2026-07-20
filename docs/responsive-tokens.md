@@ -11,12 +11,12 @@ dette er den tilpasset Kobbers arkitektur.
 
 Side-luft i dag er trappetrinn: `layouts/content/space/padding` har
 `small=24 … xxlarge=64`, og konsumenter bytter trinn med media queries
-(vår demo: 24 px mobil → 40 px desktop, ett hopp på 768 px). Det gir
+(referanse-PoC-en brukte ett hopp på 768 px). Det gir
 synlige sprang, flere breakpoints å vedlikeholde, og ingen definert
 oppførsel mellom dem. Moderne CSS løser dette med flytende verdier:
 
 ```css
-padding-inline: clamp(24px, 13.7px + 2.86vw, 56px);
+padding-inline: clamp(24px, 13.333333px + 2.962963vw, 56px);
 ```
 
 — kontinuerlig skalering fra 24 px ved 360 px viewport til 56 px ved
@@ -27,9 +27,12 @@ padding-inline: clamp(24px, 13.7px + 2.86vw, 56px);
 Figma-variabler kan ikke holde `clamp()` eller `vw`. Ikke prøv å presse
 formelen inn i Figma — del ansvaret:
 
-1. **Tokens = endepunktene.** Hver flytende rolle er et _par_:
-   `layout/page-inset/min = 24`, `layout/page-inset/max = 56`. I DTCG
-   kan paret være ett composite-token (`{ "min": …, "max": … }`).
+1. **Tokens = endepunktene.** Hver flytende rolle er en token-gruppe
+   med to vanlige dimension-tokens:
+   `layout/page-inset/min = 24px`,
+   `layout/page-inset/max = 56px`. Ikke bruk en egendefinert
+   `{min,max}` DTCG composite-type; den er ikke en standard
+   DTCG-token-type.
 2. **To globale ankere som primitives**: `viewport/min = 360`,
    `viewport/max = 1440`. Det er hele konfigurasjonen formelen trenger.
 3. **Formelen bor i Style Dictionary-bygget** (lineær interpolasjon
@@ -44,12 +47,12 @@ formelen inn i Figma — del ansvaret:
    CSS-builden emitterer ferdig `clamp()`; JS-builden kan levere samme
    streng. Ingen konsument regner selv.
 
-4. **I Figma: bruk modes som endepunkt-visning.** En «Viewport»-
+4. **I Figma kan modes brukes som endepunkt-visning.** En «Viewport»-
    kolleksjon med modes `kompakt`/`bred` der variabelen viser min- og
    maks-verdien: designere setter mode på rammen (360-ramme = kompakt,
-   1440-ramme = bred) og ser riktige endepunkter — som er nøyaktig det
-   designeren skal bestemme. Det _mellom_ endepunktene er matematikk,
-   og hører ikke hjemme i et designverktøy.
+   1440-ramme = bred) og ser riktige endepunkter. Figma velger ikke mode
+   automatisk etter rammebredden; dette er en manuell QA-forhåndsvisning,
+   ikke runtime-modellen eller den kanoniske kilden.
 
 ## Hvilke tokens skal være flytende — og hvilke aldri
 
@@ -88,18 +91,21 @@ _avstand_ er px-endepunkter akseptable. Legg denne regelen i samme
 token-lint som resten (par-komplett: både min og maks finnes; min <
 maks; typografi-par er rem-baserte).
 
-## Slik spiller det ut i kode (demonstrert i demoen)
+## Referanse-implementasjon i PoC-en
 
-Demo-appens sider byttet fra media query-trapp til clamp — se
+Referansedemoens sider byttet fra media query-trapp til clamp — se
 `fluidSpace()` i `apps/demo/src/pages/pages.css.ts`, som interpolerer
 mellom eksisterende `layouts/content`-tokens (24→56 px inset, 24→40 px
 gap) over 360–1440 px. Det er nøyaktig koden Style Dictionary-bygget
-ville generert; når tokens-pakken en dag leverer ferdige
-`clamp()`-strenger, slettes hjelperen og verdiene brukes rett fra
-`var(--k-layout-…)`.
+kan generere. Koden er illustrasjon og skal ikke flyttes til det ekte
+repoet; implementer og test formelen i token-pipelinen.
 
 Gevinsten i konsumentkoden er målbar: media query-blokkene for
 side-luft forsvinner (breakpointet beholdes kun der _strukturen_
 endres, som når paneler stables), og mellomstørrelser — nettbrett,
 delt skjerm, sidepaneler — får definert oppførsel i stedet for å arve
 nærmeste trinn.
+
+Pipeline-testen bør substituere begge viewportankerne og kreve eksakte
+endepunktverdier, samt sample mellomstørrelser for monotoni og bounds.
+Flytende typografi må i tillegg nettlesertestes ved 200 % tekstzoom.

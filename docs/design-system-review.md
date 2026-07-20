@@ -1,17 +1,16 @@
 # Kobber sett fra en konsument — og fra en KI-agent
 
-Vennlig og konstruktiv tilbakemelding til Kobber-teamet, skrevet etter å
-ha implementert **33 Kobber-komponenter og 12 komponentforslag** i React
-utelukkende fra tokens-pakken og Figma-filen, dokumentert og
-tilgjengelighetstestet dem, og konsumert **hvert eneste token
-programmatisk** — inkludert av en KI-agent som byggeverktøy. Det gjør
-oss antakelig til den mest intensive konsumenten Kobber har hatt, og
-denne rapporten er betalingen: hva som fungerer, hva de beste
-designsystemene i verden gjør annerledes, og hva som ville gjort Kobber
-til et system både mennesker og maskiner kan bygge feilfritt på.
+Vennlig og konstruktiv tilbakemelding til Kobber-teamet, basert på en
+React-referanse-PoC fra juli 2026: **33 Kobber-komponentfamilier og 12
+komponentforslag**, strukturanalyse av alle publiserte tokenverdier og
+datert lesing av Figma-filen. Ingen kode fra PoC-en skal flyttes til
+produksjon; denne rapporten, funnene og testmetoden er leveransen til
+det ekte upstream-repoet.
 
-Konkrete bugs/funn ligger i `docs/upstream-findings.md` (token-drift som
-bryter WCAG, fokusfargen, hull i skalaene). Anbefalingene for
+Konkrete bugs/funn ligger i `docs/upstream-findings.md`
+(formatkollisjon, tapte nullverdier, token-drift som bryter WCAG,
+fokusfargen og hull i skalaene). Issue-klare akseptansekriterier ligger
+i `docs/token-quality-roadmap.md`. Anbefalingene for
 variabel-modes (mørk modus, barnemodus, temaer) er utdypet i
 `docs/token-modes.md`, og for flytende clamp()-verdier i sidelayout i
 `docs/responsive-tokens.md`. Dette dokumentet er
@@ -30,11 +29,11 @@ Først det som fortjener honnør, fordi det er reelt og uvanlig:
   mellomstore designsystemer har bare globale tokens og overlater
   komponentene til gjetting. Vi bygde en hel komponentbibliotek-PoC
   nesten uten å spørre en designer — det er tokens-arbeidets fortjeneste.
-- **Arkitekturen har allerede seks lag**: `primitives` (14 fargefamilier,
-  size, font, elevation, opacity, blur, spread) → `semantics` →
-  `universal` (focus/disabled/hover) → `groups` → `components` →
-  `layouts`. Fundamentet for et førsteklasses system er altså støpt;
-  kritikken under handler om hvordan lagene brukes, ikke om at de mangler.
+- **Pakken eksporterer seks nyttige områder**: `primitives`,
+  `semantics`, `universal`, `groups`, `components` og `layouts`.
+  Referansegrafen er ikke en helt lineær sekslagskjede: `layouts` er en
+  søskenkonsument, og enkelte lag refererer flere retninger nedover.
+  Fundamentet for et førsteklasses system er likevel støpt.
 - **Tokens publiseres på npm med semver.** Selvfølgelig for de store,
   sjeldent i praksis ellers.
 - **Figma-variablene har god navnehygiene** (`button/background/color/
@@ -42,9 +41,10 @@ brand/primary/tone-a/fallback`) og komponent-props i Figma
   (color × level × tone) mapper 1:1 til kode-varianter. Vår Button-API
   er bokstavelig talt Figma-propene — det beste enkelttrekket ved å
   konsumere Kobber.
-- **Paletten er solid.** 39 av 41 tekst/flate-par passerer WCAG AA, de
-  fleste med god margin (8:1–16:1). De to bruddene er samme fargepar og
-  skyldes drift, ikke design.
+- **De målte parene er stort sett solide.** Av 41 manuelt kuraterte
+  tekst/flate-par passerer 39 WCAG AA, de fleste med god margin
+  (8:1–16:1). De to bruddene er samme fargepar. Matrisen er ikke en
+  uttømmende sweep av alle tema- og produktvarianter.
 - **Norske beskrivelser på komponentene** («Brukes når man endrer hva
   som vises innenfor samme grensesnitt») — vi siterer dem i JSDoc.
   Fortsett med det; det er dokumentasjon som følger med gratis.
@@ -82,10 +82,12 @@ En konsument kan ikke spørre systemet «hva er standard tekstfarge på en
 brand-flate?»; man må kunne paletten utenat eller reverse-engineere
 komponent-tokens.
 
-Konsekvensen er målbar i komponentlaget: **1 024 fargeverdier, men bare
-123 unike farger**. `#691837` er deklarert **56 ganger** under 56 ulike
-stier, `#f9eaed` 42 ganger. Hver av dem er i praksis samme semantiske
-beslutning («mørk brand-tekst», «lys brand-flate») som ikke har noe navn.
+Konsekvensen er målbar i hele pakken: **1 024 hex-forekomster, men bare
+123 unike farger**. Komponentområdet alene har 526 hex-blader og 84
+unike farger. Gjentakelser som `#691837` og `#f9eaed` viser at samme
+semantiske beslutning («mørk brand-tekst», «lys brand-flate») ofte
+mangler et rollenavn. Tallene beskriver publiserte, resolverte verdier;
+de sier ikke alene hvor mange kildedefinisjoner som er duplisert.
 
 **Anbefaling:** Gi semantikklaget rollenavn — `text/primary`,
 `text/on-brand`, `surface/default`, `surface/brand`, `border/subtle` —
@@ -149,13 +151,18 @@ erstatningsfarger. I dag finnes dessuten tre mekanismer parallelt:
 {fallback,hover}-objekter (42), søsken-tokens (982 rene strenger) og
 universal-overlegget.
 
-**d) Tilstandsvokabularet varierer**: `active` (filter, search) vs
-`pressed` (menu-item) for samme tilstand.
+**d) Tilstandsvokabularet varierer**: `active` (filter, search) og
+`pressed` (menu-item) brukes uten en publisert state-taksonomi. De er
+ikke nødvendigvis samme tilstand: `pressed` bør normalt være
+øyeblikkelig interaksjon, mens Filter sannsynligvis mener varig
+`selected`.
 
 **Anbefaling samlet:** `fallback` → `default`; komplett tilstandsmatrise
-via aliaser; skill `state-layer` fra erstatningsfarger som to typede
-konsepter; ett vokabular (`hovered/pressed/…`) — og lint alt i
-token-bygget.
+for states som faktisk gjelder for komponenten, via aliaser; skill
+`state-layer` fra erstatningsfarger som to typede konsepter; skill
+midlertidige states (`hovered`, `pressed`) fra varige (`selected`,
+`checked`, `expanded`) — og lint applicability og vokabular. Ikke tving
+alle komponenter inn i én universell matrise.
 
 ### 4. Navne- og skala-grammatikken spriker
 
@@ -168,9 +175,11 @@ Målt på hele pakken:
   medium), `menus/radius` har `{small, medium, large}`, `menus/space`
   har i tillegg `tiny`. Sammen med `padding.medium` vs
   `padding.inline.small`-varianter må hver gruppe læres separat.
-- **305 rå palettnøkler** (`aubergine-50`, `wine-150`…) ligger duplisert
-  inn i 29 gruppe-stier (`groups/buttons/color`, `groups/menus/color` …)
-  — paletten re-eksponeres per gruppe i stedet for å refereres.
+- Mange palettformede nøkler (`aubergine-50`, `wine-150`…) ligger
+  re-eksponert i gruppe-stier (`groups/buttons/color`,
+  `groups/menus/color` …). En ny gjennomgang fant 241 hex-blader i
+  `groups`; det tidligere tallet 305 kunne ikke reproduseres og skal
+  ikke brukes som beslutningsgrunnlag.
 
 **Anbefaling:** skriv en navnegrammatikk på én side (Polaris har en
 forbilledlig: `--p-color-{property}-{role}-{variant}-{state}`) og lint
@@ -183,11 +192,13 @@ Først honnør der den hører hjemme, for her er dere lenger fremme enn vi
 først antok: bygget er **Style Dictionary**, det finnes
 valideringsskript (`validate-references`, `find-unused-tokens`), og
 `dist/CHANGELOG.txt` genereres per versjon med semver-klassifisering og
-ADDED/REMOVED-lister. Dessuten **bevarer CSS-buildene hele
-referansegrafen**: i `tokens.css` er 938 av 939 komponent-deklarasjoner
-`var()`-referanser (763 → groups, 175 → semantics), groups og semantics
-refererer videre nedover, og kun primitives-laget inneholder literale
-hex-verdier (96 stk). Lagdelingen er altså reelt publisert — i CSS.
+ADDED/REMOVED-lister. Dessuten **bevarer CSS-byggene nesten hele
+referansegrafen**: i `tokens.css` er 938 av 940
+komponentdeklarasjoner `var()`-referanser (763 → groups, 175 →
+semantics); to er literaler. Det finnes også literale
+`#ffffff`-verdier i semantics og layouts, så «kun primitives har
+literaler» er ikke en gyldig invariant. Lagdelingen er likevel nyttig
+publisert i CSS.
 
 En detalj kjeden avslører: `text-label/…/brand/tone-b` peker i 13.0.0 på
 `semantics/typography/color/brand/aubergine-50`. Driften mot Figma
@@ -203,16 +214,20 @@ To ting gjenstår:
   usynlig. Kilde-JSON-en (design-token-eksporten som CSS og JS bygges
   fra) ligger ikke i `dist`. Konsekvens: CSS-konsumenter kan spore
   intensjon, JS-konsumenter kan ikke.
-- **Utgivelsen er et manuelt steg.** Figma sier i dag `#fdf9f9` der
-  siste publiserte npm (13.0.0) sier `#f9eaed` — driften som er årsaken
-  til WCAG-bruddet (`docs/upstream-findings.md` funn 1) er altså ikke
-  en datamodellfeil, men et release-etterslep.
+- **Utgivelsen er ikke pipeline-gatet.** Pakke-README-en beskriver både
+  en automatisert `/release`-kommando og en manuell fallback, men ingen
+  publisert provenance som knytter npm-artefakten til en Figma-eksport.
+  Figma-observasjonen 2026-07-04 var `#fdf9f9`, mens npm 13.0.0 fortsatt
+  publiserte `#f9eaed` 2026-07-20. Re-verifiser kilden før årsaken
+  konkluderes; forskjellen beviser drift, ikke hvilket prosessteg som
+  feilet.
 
 **Anbefaling:** (a) legg kilde-JSON-en (gjerne i W3C DTCG-format med
-`$value`/`$type` og aliaser) i `dist` — eller bygg JS-varianten med
-`outputReferences` — slik at JS/agent-konsumenter får samme sporbarhet
-som CSS-konsumentene allerede har; med Style Dictionary på plass er
-dette konfigurasjon, ikke ny pipeline. (b) Automatiser publiseringen
+`$value`/`$type` og aliaser) i `dist`, og lag eventuelt en egen
+JS-formatter som publiserer referanser. Style Dictionarys innebygde
+JS/ESM-format bevarer ikke aliaser bare ved å skru på
+`outputReferences`; det krever formatterarbeid og kontraktstester.
+(b) Automatiser publiseringen
 (eller minst en CI-diff Figma ↔ siste npm) slik at endringer i Figma
 ikke kan bli liggende upublisert ubemerket. Changelog-genereringen dere
 har er forbilledlig — gjør den gjerne maskinlesbar (JSON ved siden av
@@ -220,14 +235,15 @@ txt) med deprecation-markører.
 
 ### 6. Fundamenter som mangler (og ett som var gjemt)
 
-- **Motion: 0 tokens** (duration/easing finnes ikke). Vi har foreslått
-  et sett i kobber-lab (`120/240/400 ms` + enter/exit-easing) som 12
-  komponentforslag allerede bruker.
+- **Motion: 0 tokens** (duration/easing finnes ikke). Referanse-PoC-en
+  foreslo `120/240/400 ms` + enter/exit-easing; seks av tolv
+  Lab-forslag importerte settet direkte.
 - **Breakpoints: 0 tokens.** Vi har hardkodet 768 px; M3s window size
   classes er en god mal.
-- **Elevation:** `primitives/elevation/zindex` finnes (bra!), men
-  skygger ligger spredt som 52 komponent-verdier uten felles skala
-  knyttet til flatenivåer (jf. Carbons `layer`-modell).
+- **Elevation:** `primitives/elevation/zindex` finnes, men skygger
+  ligger spredt uten felles skala knyttet til flatenivåer. De 52 målte
+  shadow-relaterte bladene er pakkeomfattende, ikke 52
+  komponentverdier.
 - **Gjemt gull:** `universal/focus` og `universal/disabled` er
   glimrende — men udokumenterte. Fokusringens tiltenkte offset
   (`focus/container/padding`) må dokumenteres som krav
@@ -235,9 +251,10 @@ txt) med deprecation-markører.
 
 ### 7. Figma-filen er lukket for maskiner
 
-Målt i dag: **APIet ser 3 sider** i filen — «Introduksjon», «Text» og
-«Filter». Resten av biblioteket (40+ komponentsett) er usynlig for
-API-et og kun tilgjengelig når et menneske limer en node-lenke i chat.
+Per Figma-API-lesingen **2026-07-04** så klienten 3 sider i filen —
+«Introduksjon», «Text» og «Filter». Resten var bare tilgjengelig via
+direkte node-lenker. Tilgang, publiseringsstatus og sidetall kan ha
+endret seg; re-verifiser dette før funnet sendes som issue.
 For oss betydde det manuell venting på lenker; for verktøy som Code
 Connect, dokumentasjonsgeneratorer og designlinting betyr det at de
 ikke kan kjøre i det hele tatt.
@@ -251,23 +268,20 @@ sitert ordrett i vår kodedokumentasjon.
 
 ### 8. Trengs både `groups` og `semantics`?
 
-Referansekjeden er i dag fire hopp: komponenter → groups (763 av 938
-referanser) → semantics → primitives. De store systemene klarer seg med
-tre (primitiv → semantisk → komponent). `groups`-laget ser ut til å
-være kategori-bekvemmelighet («fargene knapper bruker»), men det er
-også laget der paletten re-eksponeres rått — 305 palettnøkler à la
-`groups/buttons/color/aubergine-50` — og hvert ekstra hopp er et sted
-drift og navnespriket kan oppstå. Når semantikklaget får rollenavn
-(funn 1), blir spørsmålet konkret: hva sier `groups/buttons/color` som
-ikke `surface/brand` + `text/on-brand` sier bedre? **Anbefaling:**
-vurder å la groups-laget pensjoneres inn i semantikken som del av
-rolle-omdøpingen — færre lag å holde konsistente, kortere kjeder å
-resonnere om.
+Komponenter har i dag 763 referanser til `groups` og 175 til
+`semantics`. `groups` øker grafdybden og er stedet der mange
+palettformede aliaser re-eksponeres, men laget har også reell gjenbruk:
+en måling fant 146 gruppevariabler med flere konsumenter.
+**Anbefaling:** behold delte kategoriroller som uttrykker intent, fjern
+ubrukte og én-til-én passthrough-aliaser, og forby rå
+palett-reeksponering. Pensjonering av hele laget er ikke begrunnet uten
+migrerings- og bruksmåling.
 
 ### 9. Alfakanal bakes inn i hex
 
-**132 verdier** er 8-sifrede hexer (`#1d00011a`) — farge og opasitet
-limt sammen. Intensjonen («aubergine-1000 på 10 %») går tapt, og
+**132 forekomster** er 8-sifrede hexer (`#1d00011a`), fordelt på 29
+unike transparente farger — farge og opasitet limt sammen. Intensjonen
+(«aubergine-1000 på 10 %») går tapt, og
 verdien kan ikke følge en fargerolle i mørk modus. `primitives/opacity`
 finnes allerede — la overlegg og skygger være _par_ (fargereferanse +
 opasitetsreferanse) eller egne typede tokens, så overlever intensjonen
@@ -322,41 +336,42 @@ rangert etter hva som faktisk kostet og reddet tid:
 
 ## Fem prioriterte anbefalinger
 
-1. **Publiser ny tokens-versjon fra gjeldende Figma, og automatiser
-   utgivelsen** (eller minst en CI-diff Figma ↔ siste npm) — retter
-   dagens WCAG-brudd uten kodeendringer hos noen konsument, og gjør at
-   release-etterslep ikke kan bli usynlig drift. (Detaljer:
-   `docs/upstream-findings.md` funn 1.)
-2. **Rollebaserte semantiske tokens med on-par** (`surface/brand` +
-   `text/on-brand`), og la komponent-tokens referere dem. Størst
-   varig gevinst; kan gjøres gradvis komponent for komponent.
-3. **Én navne- og tilstandsgrammatikk, lintet i token-bygget.**
-   En side dokumentasjon + en lint-regel; stopper kategori 3 og 4 for
-   alltid.
-4. **Gi JS-konsumentene referansene CSS-buildene allerede har**: legg
-   kilde-JSON (gjerne DTCG) i `dist`, eller bygg JS med
-   `outputReferences` — konfigurasjon i Style Dictionary-oppsettet dere
-   allerede kjører. Maskinlesbar changelog med deprecations på kjøpet.
-5. **Åpne Figma-strukturen** (synlige sider, publisert bibliotek,
-   beskrivelser overalt, Code Connect når koden er hjemme hos et team).
+1. **Gjør genererte artefakter korrekte og paritets-testet.** Rett
+   z-index-navnekollisjonen og de syv nullverdiene som mangler i JS/d.ts;
+   gate kilde ↔ CSS ↔ JS ↔ TypeScript fra pakket tarball. Se
+   `docs/token-quality-roadmap.md` punkt 1–3.
+2. **Re-verifiser Figma-paret og publiser korrigert tokens-versjon.**
+   Automatiser deretter provenance eller minst diff mellom godkjent
+   Figma-eksport og npm. Konsumentene må fortsatt oppgradere og deploye.
+3. **Innfør rollebaserte semantiske tokens og foreskrevne kontrastpar**
+   (`surface/brand` + `text/on-brand`) gradvis, med Button og Filter som
+   første migrering.
+4. **Definer og lint navne-, alias- og state-grammatikk.** Skill
+   `pressed` fra `selected`, state-layer fra erstatningsfarge, og la
+   palettformede aliasnavn matche faktisk mål og alfa.
+5. **Publiser maskinlesbar intensjon og provenance:** DTCG-kilde eller
+   kanonisk manifest, maskinlesbar changelog/deprecations og stabile
+   Figma-nodekoblinger. Åpne Figma-strukturen etter at dagens
+   tilgangsstatus er re-verifisert.
 
-Og en stående invitasjon: alt vi har bygget — 33 komponenter, 12
-dokumenterte forslag med demoer, kontrast- og axe-skriptene,
-SSR-testene — er ment som underlag for dere. Demoen viser hele systemet
-i bruk på realistiske sider, og `docs/proposals/` er ønskelisten vår i
-prioritert rekkefølge.
+All dokumentasjon, alle målinger og anbefalinger i `docs/` er ment som
+underlag for Kobber-teamet. Pakker, demo og tester er bevismateriale
+fra referanse-PoC-en, ikke kode som skal flyttes til produksjon.
 
 ---
 
 ## Metode
 
 - **Tokens:** strukturanalyse av `@gyldendal/kobber-tokens` 13.0.0
-  (1 876 bladverdier over seks eksport-lag; skript i repoets historikk),
-  kontrastfeiing av 41 par (`packages/kobber/scripts/contrast-report.mjs`).
+  (fortsatt nyeste på npm 2026-07-20; 1 876 JS-bladverdier over seks
+  eksportområder), kontrastfeiing av 41 kuraterte par
+  (`packages/kobber/scripts/contrast-report.mjs`).
 - **Figma:** variable defs per komponent-node og sideliste via
   Figma-API (kun lesing), 2026-07-04.
 - **Referansesystemer:** offentlig dokumentasjon og token-pakker fra
   Material 3, Carbon, Polaris, Spectrum, Primer og Atlassian.
-- **Praksis:** 33 komponenter + 12 forslag implementert, 112
-  automatiske tester inkl. SSR/hydrering, axe-feiing av 13 sider,
-  verifisert på React 18 og 19.
+- **Praksis:** 33 komponentfamilier + 12 forslag validert i
+  referanse-PoC, 112 automatiske tester inkl. SSR/hydrering. Axe ble
+  kjørt på 12 hash-ruter + `statisk.html` på desktop og bare `#/` på
+  mobil, med menyer åpne. React 18 ble verifisert i en datert lokal
+  kjøring; den nåværende CI-en tester bare installert React 19.

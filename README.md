@@ -1,40 +1,52 @@
-# Kobber i React — komponentbibliotek, demo og designsystem-feedback
+# Kobber-referanse — audit, anbefalinger og komponentforslag
 
-React-implementasjon av Gyldendals [Kobber-designsystem](https://kobber.gyldendal.no/),
-bygget utelukkende fra [`@gyldendal/kobber-tokens`](https://www.npmjs.com/package/@gyldendal/kobber-tokens)
+Referansedokumentasjon for Gyldendals
+[Kobber-designsystem](https://kobber.gyldendal.no/), basert på en
+React/vanilla-extract-PoC bygget fra
+[`@gyldendal/kobber-tokens`](https://www.npmjs.com/package/@gyldendal/kobber-tokens)
 og [Figma-filen](https://www.figma.com/design/zMcbm8ujSMldgS1VB70IMP/Kobber-Komponentbibliotek)
-(kun lesing). PoC med produksjonsambisjoner: 33 komponenter, 12
-dokumenterte komponentforslag, 112 tester, WCAG-feiet, SSR-verifisert.
+(kun lesing).
 
-**Live demo:** <https://dsreitan.github.io/foo/> — galleri med alle
-komponenter (`#/komponenter`), åtte komposerte eksempelsider (nettbutikk,
-dashbord, lekseoversikt, arbeidsflate …), Lab-siden med forslagene
-(`#/lab`), og en prerendret utgave av komponentsiden (`statisk.html`).
+**PoC-koden skal ikke overføres til produksjon.** Dokumentasjonen,
+målingene og issue-klare akseptansekriterier skal brukes i de ekte
+Kobber-repoene. Referansen omfatter 33 komponentfamilier, 12
+komponentforslag, 112 tester og en kuratert kontrastmatrise på 41 par.
+
+**Arkivert referansedemo:** <https://dsreitan.github.io/foo/> — visuelt
+bevismateriale, ikke en produksjons- eller distribusjonskanal.
 
 ## Til Kobber-teamet: start her
 
-Vi har konsumert hvert eneste token programmatisk og lest Figma-filen
-via API — funnene er skrevet som vennlig, tallfestet feedback:
+PoC-en konsumerte de publiserte tokenene programmatisk og leste
+Figma-filen via API. Start med handoff-planen:
 
-1. **[`docs/design-system-review.md`](docs/design-system-review.md)** —
+1. **[`docs/token-quality-roadmap.md`](docs/token-quality-roadmap.md)** —
+   prioriterte, issue-klare feil og forbedringer med
+   akseptansekriterier og testopplegg. Her ligger også de nye
+   formatfeilene: CSS-navnekollisjon og tapte nullverdier.
+2. **[`docs/design-system-review.md`](docs/design-system-review.md)** —
    hoveddokumentet: arkitekturnivået, sammenlignet med Material 3,
    Carbon, Polaris, Spectrum, Primer og Atlassian, pluss hvordan en
    KI-agent helst konsumerer et designsystem. Ni funn, fem prioriterte
    anbefalinger.
-2. [`docs/upstream-findings.md`](docs/upstream-findings.md) — de
+3. [`docs/upstream-findings.md`](docs/upstream-findings.md) — de
    konkrete funnene, klare til å limes inn i issues (token-drift som
-   bryter WCAG på primærknappen, fokusfargen, kontrastfeiing av 41 par).
-3. [`docs/token-modes.md`](docs/token-modes.md) — anbefalinger for
+   bryter WCAG på primærknappen, generatorfeil og 41 kuraterte
+   kontrastpar).
+4. [`docs/token-modes.md`](docs/token-modes.md) — anbefalinger for
    variabel-modes (mørk modus, barnemodus, temaer).
-4. [`docs/responsive-tokens.md`](docs/responsive-tokens.md) — hvordan
+5. [`docs/responsive-tokens.md`](docs/responsive-tokens.md) — hvordan
    uttrykke flytende `clamp()`-verdier i tokens og Figma.
-5. [`docs/proposals/`](docs/proposals/) — 12 komponentforslag
+6. [`docs/proposals/`](docs/proposals/) — 12 komponentforslag
    (motivasjon, anatomi, foreslåtte tokens, UU, animasjonsspek) med
    kjørbare demoer under «Lab» i demoen.
 
-Måleskriptene er i repoet og kan kjøres på nytt:
+Pakkeanalysen ble re-verifisert mot npm 13.0.0 den 2026-07-20.
+Figma-observasjoner er fra 2026-07-04 og må sjekkes igjen før
+verdiendringer. Historiske måleskript ligger i:
 `packages/kobber/scripts/contrast-report.mjs` (WCAG-kontrast på alle
-fargepar) og `apps/demo/scripts/axe-audit.mjs` (axe over alle sider).
+kuraterte par) og `apps/demo/scripts/axe-audit.mjs` (axe; eksternt
+Playwright/axe-oppsett kreves).
 
 ## Layout
 
@@ -56,11 +68,15 @@ TODO.md          # gjenstående roadmap
 og testene kjører alltid mot siste kode uten byggesteg. Import:
 
 ```ts
-import { Button, Filter } from "kobber"; // forslag fra "kobber-lab"
+import { Button, Filter } from "kobber";
+import { Dialog } from "kobber-lab"; // forslag, ikke en Kobber-komponent
 import { tokens, typography } from "kobber/styles";
 ```
 
-## Kom i gang (pnpm + Vite+ `vp`)
+`packages/` og `apps/demo/` er referanseartefakter. Importeksempelet
+over forklarer testoppsettet; det er ikke en adopsjonsanbefaling.
+
+## Reprodusere PoC-evidens (valgfritt)
 
 ```bash
 pnpm install
@@ -72,30 +88,29 @@ pnpm run typecheck  # tsgo (TypeScript 7 native preview)
 pnpm run build      # demo + prerender av statisk.html
 ```
 
-Verifisert på **React 18.3 og 19** (peer deps `^18.3 || ^19`). Hver push
-til `main` kjører lint/test/typecheck/build og deployer demoen til
-GitHub Pages.
+React 18.3 ble verifisert i en datert lokal kjøring. Nåværende CI
+installerer React 19 og kjører lint/test/typecheck/build før den
+arkiverte demoen deployes.
 
-## Kvalitetsgarantier
+## Hva PoC-en faktisk validerte
 
-- **Tokens-only**: ingen råverdier i komponentfiler; alt går gjennom
-  `styles/tokens.ts` (eneste importør av `@gyldendal/kobber-tokens`).
-- **UU**: WAI-ARIA APG-mønstre per komponent (test-låst), axe-feiet på
-  alle sider i desktop + mobil, kontrastmålt (se `docs/a11y-audit.md`;
-  eneste gjenstående funn er upstream token-drift).
+- **Tokens:** hoveddelen av komponentstyling gikk gjennom
+  `styles/tokens.ts`; noen dokumenterte råverdi-unntak finnes, så dette
+  er ikke en upstream-garanti.
+- **UU:** axe ble kjørt på 12 hash-ruter + `statisk.html` på desktop og
+  bare `#/` på mobil. Kontrastmatrisen har 2 brudd av 41 kuraterte par
+  på npm 13.0.0. Se begrensninger og handoff-varsler i
+  `docs/a11y-audit.md`.
 - **SSR/SSG**: hver komponent renderToString + hydreres uten feil
-  (`tests/ssr.test.tsx` i begge pakker); demoen prerendrer
-  komponentsiden som bevis.
+  i PoC-testene; demoen prerendrer komponentsiden som historisk bevis.
 - **Router-vennlig**: lenkekomponenter tar `as={Link}`
-  (react-router/TanStack/Next), skjemakontroller er `forwardRef`
-  (se `docs/components/router-links.md`).
+  i referanse-API-et. Overfør kontrakten, ikke implementasjonen.
 
 ## Videre
 
 - [`CLAUDE.md`](CLAUDE.md) — arbeidsreglene: guardrails, komponent-
   oppskriften, workflow for nye komponenter. Les denne før du endrer noe.
-- [`docs/adoption.md`](docs/adoption.md) — planen for flytting inn i et
-  konsument-monorepo + backloggen for bred gjenbruk (publiseringsbygg,
-  kodesnutter i galleriet, komplette komponentdocs).
-- [`TODO.md`](TODO.md) — gjenstående komponenter og fundamenter
-  (DAM-fonter/-ikoner, theming, Slider …).
+- [`docs/adoption.md`](docs/adoption.md) — dokument-handoff: hva som
+  skal og ikke skal overføres til de ekte repoene.
+- [`TODO.md`](TODO.md) — historisk dekningsmatrise og upstream-gap, ikke
+  en aktiv kode-roadmap.
